@@ -13,11 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.model.Company;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyViewHolder> {
     private List<Company> companyList;
     private Context context;
+    private static final String LOGO_BASE_URL = "http://172.16.12.122:8080/storage/company/";
 
     public CompanyAdapter(Context context, List<Company> companyList) {
         this.context = context;
@@ -35,10 +38,33 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     public void onBindViewHolder(@NonNull CompanyViewHolder holder, int position) {
         Company company = companyList.get(position);
         holder.tvCompanyName.setText(company.getName());
-        // holder.tvIndustry.setText("Ngành nghề: " + company.getIndustry());
-        // holder.tvPositions.setText("Đang tuyển: " + company.getNumPositions() + " vị trí");
-        holder.tvViewDetails.setText("View details");
-        // holder.imgLogo.setImageResource(company.getLogoResId()); // Nếu có hình
+
+        String logoFileName = company.getLogo();
+        Log.d("ADAPTER_LOGO_URL", "Company: " + company.getName() + ", FileName: " + logoFileName);
+
+        if (logoFileName != null && !logoFileName.isEmpty()) {
+            String fullLogoUrl = LOGO_BASE_URL + logoFileName;
+            Log.d("ADAPTER_LOGO_URL", "Constructed URL: " + fullLogoUrl);
+
+            Picasso.get()
+                    .load(fullLogoUrl)
+                    .placeholder(R.drawable.ic_company)
+                    .error(R.drawable.ic_company)
+                    .into(holder.imgLogo, new com.squareup.picasso.Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d("PICASSO_DEBUG", "Success loading image for: " + company.getName());
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e("PICASSO_DEBUG", "Error loading image from " + fullLogoUrl, e);
+                        }
+                    });
+        } else {
+            Log.w("ADAPTER_LOGO_URL", "Logo FileName is null or empty for: " + company.getName());
+            holder.imgLogo.setImageResource(R.drawable.ic_company);
+        }
     }
 
     @Override
@@ -53,13 +79,11 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
     public static class CompanyViewHolder extends RecyclerView.ViewHolder {
         ImageView imgLogo;
-        TextView tvCompanyName, tvIndustry, tvPositions, tvViewDetails;
+        TextView tvCompanyName, tvViewDetails;
         public CompanyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLogo = itemView.findViewById(R.id.img_logo);
             tvCompanyName = itemView.findViewById(R.id.tv_company_name);
-            tvIndustry = itemView.findViewById(R.id.tv_industry);
-            tvPositions = itemView.findViewById(R.id.tv_positions);
             tvViewDetails = itemView.findViewById(R.id.tv_view_details);
         }
     }
