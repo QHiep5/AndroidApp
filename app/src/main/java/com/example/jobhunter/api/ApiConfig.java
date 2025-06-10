@@ -4,6 +4,7 @@ package com.example.jobhunter.api;
 public class ApiConfig {
     public static final String BASE_URL = "http://192.168.0.114:8080/api/v1/";
 
+
     // Endpoint cho từng entity
     public static final String USER = BASE_URL + "users";
     public static final String COMPANY = BASE_URL + "companies";

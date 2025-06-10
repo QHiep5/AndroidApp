@@ -26,6 +26,9 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.JobDetailActivity" />
         <activity android:name=".activity.UploadCVActivity"/>
+        <activity
+            android:name=".activity.CompanyDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
