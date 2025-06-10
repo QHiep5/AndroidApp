@@ -26,7 +26,7 @@ public class HomeViewModel extends ViewModel {
 
     public void fetchTopCompanies(Context context, String token) {
         CompanyApi.getCompanies(context, token, response -> {
-            Log.d("API_RESPONSE", response.toString()); // In response ra logcat
+            Log.d("API_RESPONSE", "Top Companies Response: " + response.toString()); // In response ra logcat
             List<Company> companies = new ArrayList<>();
             try {
                 JSONObject data = response.getJSONObject("data");
@@ -36,7 +36,10 @@ public class HomeViewModel extends ViewModel {
                     Company company = new Company();
                     company.setName(obj.optString("name"));
                     company.setLogo(obj.optString("logo"));
-                    Log.d("API_LOGO_URL", "Parsed URL: " + company.getLogo()); // DEBUG
+                    String fullLogoUrl = company.getLogo();
+                    if (fullLogoUrl != null) {
+                        Log.d("API_LOGO_URL", "Constructed URL: " + fullLogoUrl); // DEBUG
+                    }
                     // Parse các trường khác nếu cần
                     companies.add(company);
                 }
@@ -53,6 +56,7 @@ public class HomeViewModel extends ViewModel {
 
     public void fetchSuggestedJobs(Context context, String token) {
         JobApi.getJobs(context, token, response -> {
+            Log.d("API_RESPONSE", "Suggested Jobs Response: " + response.toString()); // DEBUG
             List<Job> jobs = new ArrayList<>();
             try {
                 JSONObject data = response.getJSONObject("data");
@@ -64,13 +68,26 @@ public class HomeViewModel extends ViewModel {
                     job.setLocation(obj.optString("location"));
                     job.setSalary(obj.optDouble("salary"));
                     job.setStartDate(obj.optString("startDate"));
-                    // Parse các trường khác nếu cần
+
+                    JSONObject companyObj = obj.optJSONObject("company");
+                    if (companyObj != null) {
+                        Company company = new Company();
+                        // Lấy 'logo' từ đối tượng 'company'
+                        company.setLogo(companyObj.optString("logo"));
+                        job.setCompany(company);
+                    }
+                    
                     jobs.add(job);
                 }
+                Log.d("VIEWMODEL_DEBUG", "Posting " + jobs.size() + " suggested jobs to LiveData."); // DEBUG
                 suggestedJobs.postValue(jobs);
             } catch (Exception e) {
-                error.postValue("Lỗi parse danh sách việc làm");
+                Log.e("PARSE_ERROR", "Lỗi parse danh sách công việc", e); // DEBUG
+                error.postValue("Lỗi parse danh sách công việc: " + e.getMessage());
             }
-        }, errorListener -> error.postValue("Lỗi lấy danh sách việc làm"));
+        }, errorListener -> {
+            Log.e("API_ERROR", "Lỗi lấy danh sách công việc", errorListener); // DEBUG
+            error.postValue("Lỗi lấy danh sách công việc: " + errorListener.toString());
+        });
     }
 }

@@ -4,92 +4,103 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="109dp"
         android:padding="16dp">
 
-        <!-- Logo hình tròn có viền -->
+        <!-- Logo -->
         <ImageView
             android:id="@+id/imgHinh"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/circle_border"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop" />
 
         <!-- Tên công ty / tiêu đề -->
         <TextView
             android:id="@+id/txtTen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/imgHinh"
-            android:layout_marginStart="12dp"
             android:layout_alignTop="@id/imgHinh"
+            android:layout_marginStart="12dp"
+            android:layout_toEndOf="@id/imgHinh"
             android:text="abc"
             android:textColor="@color/textPrimary"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:maxLines="1"/>
 
-        <!-- Vị trí -->
+        <!-- Tên công ty / tiêu đề -->
+        \
+
+
+        <!-- Wrapper cho Địa chỉ và Lương -->
         <LinearLayout
-            android:id="@+id/locationLayout"
+            android:id="@+id/infoWrapper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/txtTen"
-            android:layout_toEndOf="@id/imgHinh"
-            android:layout_marginTop="6dp"
             android:layout_marginStart="12dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginTop="25dp"
+            android:layout_toEndOf="@id/imgHinh"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_location" />
-
-            <TextView
-                android:id="@+id/txtLocation"
+            <!-- Vị trí -->
+            <LinearLayout
+                android:id="@+id/locationLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Hồ Chí Minh"
-                android:textSize="14sp"
-                android:textColor="@color/textSecondary" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <!-- Lương -->
-        <LinearLayout
-            android:id="@+id/salaryLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/locationLayout"
-            android:layout_toEndOf="@id/imgHinh"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="12dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_location" />
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_flash" />
+                <TextView
+                    android:id="@+id/txtLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="Hồ Chí Minh"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/txtSalary"
+            <!-- Lương -->
+            <LinearLayout
+                android:id="@+id/salaryLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="10,000 đ"
-                android:textSize="14sp"
-                android:textColor="@color/textSecondary" />
+                android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_flash" />
+
+                <TextView
+                    android:id="@+id/txtSalary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="10,000 đ"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Ngày đăng bên góc dưới phải -->
@@ -97,11 +108,11 @@
             android:id="@+id/txtTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/infoWrapper"
+            android:layout_alignParentEnd="true"
             android:text="7 days ago"
             android:textColor="#888888"
-            android:textSize="12sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignBottom="@id/salaryLayout" />
+            android:textSize="12sp" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

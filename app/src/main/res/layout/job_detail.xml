@@ -1,154 +1,220 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white">
+    android:background="#F7F9FB">
 
-    <!-- Toolbar -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#03A9F4"
-        android:title="ME Technician (Kĩ Thuật Viên...)"
-        android:titleTextColor="@android:color/white"
-        app:navigationIcon="@drawable/ic_back" />
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="@android:color/white">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Back"
+                app:tint="@color/colorPrimary" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
 
     <!-- Nội dung chính có thể cuộn -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginBottom="80dp"> <!-- thêm khoảng trống tránh bị che -->
+            android:padding="16dp">
 
-            <!-- Tiêu đề -->
+            <!-- Tiêu đề công việc -->
             <TextView
-                android:id="@+id/tv_job_title"
+                android:id="@+id/tv_job_title_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ME Technician (Kĩ Thuật Viên Bảo Trì)"
+                tools:text="ME Technician (Kĩ Thuật Viên Bảo Trì)"
                 android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="#000000"
-                android:layout_marginBottom="8dp" />
+                android:textSize="22sp"
+                android:textColor="@color/textPrimary"
+                android:layout_marginBottom="12dp" />
 
-            <!-- Lương & thời gian -->
+            <!-- Địa điểm -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="4dp">
-
                 <TextView
-                    android:text="Thương lượng"
-                    android:textColor="#F5A623"
-                    android:textStyle="bold"
-                    android:layout_marginEnd="16dp"
-                    android:textSize="14sp"/>
-
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa điểm: "
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp" />
                 <TextView
-                    android:text="Toàn thời gian"
-                    android:textColor="#888888"
-                    android:textSize="14sp" />
+                    android:id="@+id/tv_job_location_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Hồ Chí Minh"
+                    android:textColor="@color/salaryText"
+                    android:textSize="16sp" />
             </LinearLayout>
 
-            <!-- Địa điểm & thời gian -->
-            <TextView
-                android:text="Hồ Chí Minh"
-                android:textColor="#666666"
-                android:layout_marginBottom="4dp"
-                android:textSize="14sp" />
-
-            <TextView
-                android:text="Đăng 24 ngày trước • Bạn còn 6 ngày để ứng tuyển"
-                android:textColor="#888888"
-                android:textSize="13sp"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Nút Ứng tuyển -->
+            <!-- Lương -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <Button
-                    android:id="@+id/btn_apply"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#F5A623"
-                    android:text="Ứng Tuyển"
-                    android:textColor="@android:color/white"
-                    android:textAllCaps="false"/>
+                android:layout_marginBottom="4dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lương: "
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_job_salary_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="30,000,000đ"
+                    android:textColor="@color/salaryText"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
             </LinearLayout>
 
-            <!-- Vì sao nên ứng tuyển -->
-            <TextView
-                android:text="Vì sao nên ứng tuyển"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:text="• Company Shuttle Bus\n• On-the-job training with experienced staff\n• Bảo hiểm 24H"
-                android:textSize="14sp"
-                android:textColor="#444444"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Mô tả công việc -->
-            <TextView
-                android:text="Mô tả công việc"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/tv_job_description"
+            <!-- Kỹ năng -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="- Maintains machine programs...\n- Optimizes machine programs...\n- Observes machine and line performance...\n- Maintains and repairs all SMT equipment..."
-                android:textSize="14sp"
-                android:textColor="#444444" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kỹ năng: "
+                    android:textColor="@color/textSecondary"
+                    android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_job_skills_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="NodeJS, Java"
+                    android:textColor="@color/salaryText"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_see_more"
-                android:layout_width="wrap_content"
+            <!-- Nút Ứng tuyển -->
+            <Button
+                android:id="@+id/btn_apply"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="#F5A623"
+                android:text="Ứng Tuyển Ngay"
+                android:textColor="@android:color/white"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Thông tin công ty -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Xem thêm"
-                android:textColor="#2196F3"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp" />
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/iv_company_logo"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="16dp"
+                        tools:src="@tools:sample/avatars"/>
+                    <TextView
+                        android:id="@+id/tv_company_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/iv_company_logo"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="15dp"
+                        tools:text="Jabil Vietnam Company Limited"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Khung Mô tả công việc -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:contentPadding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_job_description_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mô tả công việc"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@color/textPrimary" />
+
+                    <TextView
+                        android:id="@+id/tv_job_description_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="- Maintains machine programs...\n- Optimizes machine programs...\n- Observes machine and line performance...\n- Maintains and repairs all SMT equipment..."
+                        android:textSize="15sp"
+                        android:lineSpacingExtra="4dp"
+                        android:textColor="@color/textSecondary" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
     </ScrollView>
-
-    <!-- Nút Apply cố định -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="@android:color/white">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:text="Ứng Tuyển"
-            android:backgroundTint="#F5A623"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"/>
-    </LinearLayout>
 </LinearLayout>
