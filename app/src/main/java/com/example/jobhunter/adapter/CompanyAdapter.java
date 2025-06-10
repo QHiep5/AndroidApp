@@ -20,7 +20,7 @@ import java.util.List;
 public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyViewHolder> {
     private List<Company> companyList;
     private Context context;
-    private static final String LOGO_BASE_URL = "http://172.16.12.122:8080/storage/company/";
+    private static final String LOGO_BASE_URL = "http://192.168.0.114:8080/storage/company/";
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {

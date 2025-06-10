@@ -22,11 +22,13 @@ import com.android.volley.NetworkResponse;
 public class JobDetailViewModel extends AndroidViewModel {
     private static final String TAG = "JobDetailViewModel";
     private final MutableLiveData<Job> _jobLiveData = new MutableLiveData<>();
+
     public LiveData<Job> getJobLiveData() {
         return _jobLiveData;
     }
 
     private final MutableLiveData<String> _errorLiveData = new MutableLiveData<>();
+
     public LiveData<String> getErrorLiveData() {
         return _errorLiveData;
     }
@@ -43,10 +45,16 @@ public class JobDetailViewModel extends AndroidViewModel {
                 response -> {
                     Log.i(TAG, "4. API Response Received: " + response.toString());
                     try {
-                        Job job = parseJob(response);
-                        Log.d(TAG, "5. JSON parsed successfully into Job object: " + job.getName());
-                        _jobLiveData.postValue(job);
-                        Log.i(TAG, "6. LiveData updated with new Job.");
+                        JSONObject dataObj = response.optJSONObject("data");
+                        if (dataObj != null) {
+                            Job job = parseJob(dataObj);
+                            Log.d(TAG, "5. JSON parsed successfully into Job object: " + job.getName());
+                            _jobLiveData.postValue(job);
+                            Log.i(TAG, "6. LiveData updated with new Job.");
+                        } else {
+                            Log.e(TAG, "ERROR: data object is null in response");
+                            _errorLiveData.postValue("Lỗi: Không có dữ liệu công việc trong phản hồi.");
+                        }
                     } catch (JSONException e) {
                         Log.e(TAG, "ERROR parsing job details JSON", e);
                         _errorLiveData.postValue("Lỗi parse chi tiết công việc: " + e.getMessage());
@@ -62,17 +70,7 @@ public class JobDetailViewModel extends AndroidViewModel {
                         Log.e(TAG, "API Volley Error (no network response)", error);
                     }
                     _errorLiveData.postValue(errorMessage);
-                }
-        ) {
-            @Override
-            public java.util.Map<String, String> getHeaders() {
-                java.util.Map<String, String> headers = new java.util.HashMap<>();
-                String authToken = (token != null && !token.isEmpty()) ? token : "EMPTY_TOKEN";
-                headers.put("Authorization", "Bearer " + authToken);
-                Log.i(TAG, "2. Setting Authorization Header: Bearer " + authToken.substring(0, Math.min(10, authToken.length())) + "...");
-                return headers;
-            }
-        };
+                });
 
         Log.i(TAG, "3. Adding request to Volley queue.");
         Volley.newRequestQueue(application).add(request);
@@ -98,9 +96,22 @@ public class JobDetailViewModel extends AndroidViewModel {
         if (skillsArray != null && skillsArray.length() > 0) {
             StringBuilder skillsBuilder = new StringBuilder();
             for (int i = 0; i < skillsArray.length(); i++) {
-                skillsBuilder.append(skillsArray.getString(i));
-                if (i < skillsArray.length() - 1) {
-                    skillsBuilder.append(", ");
+                String skillName = null;
+                try {
+                    Object skillObj = skillsArray.get(i);
+                    if (skillObj instanceof JSONObject) {
+                        skillName = ((JSONObject) skillObj).optString("name");
+                    } else if (skillObj instanceof String) {
+                        skillName = (String) skillObj;
+                    }
+                } catch (Exception e) {
+                    // fallback
+                }
+                if (skillName != null && !skillName.isEmpty()) {
+                    skillsBuilder.append(skillName);
+                    if (i < skillsArray.length() - 1) {
+                        skillsBuilder.append(", ");
+                    }
                 }
             }
             detailedJob.setSkills(skillsBuilder.toString());

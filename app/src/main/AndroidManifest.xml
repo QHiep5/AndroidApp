@@ -14,14 +14,6 @@
         android:theme="@style/Theme.JobHunter"
         tools:targetApi="31">
 
-        <service
-            android:name=".api.ApiClient"
-            android:exported="false"></service>
-        <service
-            android:name=".api.ApiService"
-            android:enabled="true"
-            android:exported="true" />
-
         <activity
             android:name=".activity.LoginActivity"
             android:exported="true">
@@ -33,6 +25,7 @@
         </activity>
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.JobDetailActivity" />
+        <activity android:name=".activity.UploadCVActivity"/>
     </application>
 
 </manifest>

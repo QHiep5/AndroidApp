@@ -22,7 +22,7 @@ import android.util.Log;
 public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewHolder> {
     private List<Job> jobList;
     private Context context;
-    private static final String LOGO_BASE_URL = "http://172.16.12.122:8080/storage/company/";
+    private static final String LOGO_BASE_URL = "http://192.168.0.114:8080/storage/company/";
 
     public JobListAdapter(Context context, List<Job> jobList) {
         this.context = context;

@@ -1,6 +1,9 @@
 package com.example.jobhunter.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +30,8 @@ public class JobDetailActivity extends AppCompatActivity {
     private static final String TAG = "JobDetailActivity";
     private JobDetailViewModel jobDetailViewModel;
     private ImageView btnBack, ivCompanyLogo;
-    private TextView tvJobTitleData, tvJobLocationData, tvJobSalaryData, tvJobSkillsData, tvJobDescriptionData, tvCompanyName;
+    private TextView tvJobTitleData, tvJobLocationData, tvJobSalaryData, tvJobSkillsData, tvJobDescriptionData,
+            tvCompanyName;
     private Button btnApply;
     private long jobId;
     private SessionManager sessionManager;
@@ -50,8 +54,7 @@ public class JobDetailActivity extends AppCompatActivity {
         setupToolbar();
         setupViewModel();
 
-        String token = sessionManager.getAuthToken();
-        jobDetailViewModel.fetchJobById(getApplication(), String.valueOf(jobId), token != null ? token : "");
+        jobDetailViewModel.fetchJobById(getApplication(), String.valueOf(jobId), null);
     }
 
     private void findViews() {
@@ -64,6 +67,21 @@ public class JobDetailActivity extends AppCompatActivity {
         tvCompanyName = findViewById(R.id.tv_company_name);
         ivCompanyLogo = findViewById(R.id.iv_company_logo);
         btnApply = findViewById(R.id.btn_apply);
+
+        btnApply.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("jobhunter_prefs", MODE_PRIVATE);
+            long userId = prefs.getInt("user_id", 0);
+            String userEmail = prefs.getString("user_email", "");
+            if (userId == 0 || userEmail.isEmpty()) {
+                Toast.makeText(this, "Bạn cần đăng nhập để nộp CV!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Intent intent = new Intent(this, UploadCVActivity.class);
+            intent.putExtra("userId", userId);
+            intent.putExtra("jobId", jobId);
+            intent.putExtra("userEmail", userEmail);
+            startActivity(intent);
+        });
     }
 
     private void setupToolbar() {
@@ -92,7 +110,7 @@ public class JobDetailActivity extends AppCompatActivity {
         Log.d(TAG, "updateUi called with job: " + job.getName());
         tvJobTitleData.setText(job.getName());
         tvJobLocationData.setText(job.getLocation());
-        tvJobDescriptionData.setText(job.getDescription());
+        tvJobDescriptionData.setText(Html.fromHtml(job.getDescription()));
         tvJobSkillsData.setText(job.getSkills());
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
