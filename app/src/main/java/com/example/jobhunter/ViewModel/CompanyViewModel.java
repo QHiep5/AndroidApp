@@ -38,8 +38,15 @@ public class CompanyViewModel extends AndroidViewModel {
                 for (int i = 0; i < result.length(); i++) {
                     JSONObject obj = result.getJSONObject(i);
                     Company c = new Company();
+                    c.setId(obj.optLong("id"));
                     c.setName(obj.optString("name"));
-                    // Parse các trường khác nếu cần
+                    c.setDescription(obj.optString("description"));
+                    c.setAddress(obj.optString("address"));
+                    c.setLogo(obj.optString("logo"));
+                    c.setCreatedAt(obj.optString("createdAt"));
+                    c.setUpdatedAt(obj.optString("updatedAt"));
+                    c.setCreatedBy(obj.optString("createdBy"));
+                    c.setUpdatedBy(obj.optString("updatedBy"));
                     companyList.add(c);
                 }
                 companies.setValue(companyList);

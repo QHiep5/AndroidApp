@@ -65,10 +65,10 @@ public class CompanyListFragment extends Fragment {
         init();
         companiesListView.setAdapter(companyAdapter);
         companiesListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        
         companyAdapter.setOnItemClickListener(company -> {
             Intent intent = new Intent(getContext(), com.example.jobhunter.activity.CompanyDetailActivity.class);
             intent.putExtra("company_id", company.getId());
-            intent.putExtra("company_name", company.getName());
             startActivity(intent);
         });
 

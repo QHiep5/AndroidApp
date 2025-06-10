@@ -48,6 +48,19 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         Company company = companyList.get(position);
         holder.tvCompanyName.setText(company.getName());
 
+        // Hiển thị ngành nghề (field)
+        if (holder.tvCompanyField != null) {
+//            holder.tvCompanyField.setText(company.getDescription() != null ? company.getDescription() : "-");
+            holder.tvCompanyField.setText(company.getDescription() != null ? "Công nghệ thông tin" : "-");
+
+        }
+        // Hiển thị số vị trí tuyển (positions)
+        if (holder.tvCompanyPositions != null) {
+//            holder.tvCompanyPositions.setText(company.getAddress() != null ? company.getAddress() : "-");
+            holder.tvCompanyPositions.setText(company.getAddress() != null ? "12" : "-");
+
+        }
+
         String logoFileName = company.getLogo();
         Log.d("ADAPTER_LOGO_URL", "Company: " + company.getName() + ", FileName: " + logoFileName);
 
@@ -92,12 +105,14 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
     public static class CompanyViewHolder extends RecyclerView.ViewHolder {
         ImageView imgLogo;
-        TextView tvCompanyName, tvViewDetails;
+        TextView tvCompanyName, tvViewDetails, tvCompanyField, tvCompanyPositions;
         public CompanyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLogo = itemView.findViewById(R.id.img_logo);
             tvCompanyName = itemView.findViewById(R.id.tv_company_name);
             tvViewDetails = itemView.findViewById(R.id.tv_view_details);
+            tvCompanyField = itemView.findViewById(R.id.tv_company_field);
+            tvCompanyPositions = itemView.findViewById(R.id.tv_company_positions);
         }
     }
 }

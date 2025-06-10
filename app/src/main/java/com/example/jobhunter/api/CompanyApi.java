@@ -34,7 +34,7 @@ public class CompanyApi {
 
     // Lấy company theo id (GET /api/v1/companies/{id})
     public static void getCompany(Context context, String companyId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.COMPANY + companyId;
+        String url = ApiConfig.COMPANY + "/" + companyId;
         JsonObjectRequest request = new JsonObjectRequest(
             com.android.volley.Request.Method.GET,
             url,
@@ -45,7 +45,9 @@ public class CompanyApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
