@@ -5,17 +5,17 @@ public class ApiConfig {
     public static final String BASE_URL = "http://172.16.12.122:8080/api/v1/";
 
     // Endpoint cho từng entity
-    public static final String USER = BASE_URL + "users/";
+    public static final String USER = BASE_URL + "users";
     public static final String COMPANY = BASE_URL + "companies";
     public static final String JOB = BASE_URL + "jobs";
-    public static final String RESUME = BASE_URL + "resumes/";
-    public static final String SKILL = BASE_URL + "skills/";
+    public static final String RESUME = BASE_URL + "resumes";
+    public static final String SKILL = BASE_URL + "skills";
     public static final String FILE = BASE_URL + "files";
-    public static final String PERMISSION = BASE_URL + "permissions/";
-    public static final String ROLE = BASE_URL + "roles/";
-    public static final String SUBSCRIBER = BASE_URL + "subscribers/";
+    public static final String PERMISSION = BASE_URL + "permissions";
+    public static final String ROLE = BASE_URL + "roles";
+    public static final String SUBSCRIBER = BASE_URL + "subscribers";
 
     // Endpoint cho xác thực (nếu backend tách riêng /api/auth/)
-    public static final String AUTH_LOGIN = BASE_URL.replace("/v1/", "/auth/login");
+    public static final String AUTH_LOGIN = BASE_URL + "auth/login";
     public static final String AUTH_REGISTER = BASE_URL.replace("/v1/", "/auth/register");
 }
