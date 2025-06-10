@@ -1,6 +1,8 @@
 package com.example.jobhunter.ViewModel;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -24,6 +26,7 @@ public class HomeViewModel extends ViewModel {
 
     public void fetchTopCompanies(Context context, String token) {
         CompanyApi.getCompanies(context, token, response -> {
+            Log.d("API_RESPONSE", response.toString()); // In response ra logcat
             List<Company> companies = new ArrayList<>();
             try {
                 JSONObject data = response.getJSONObject("data");
@@ -37,9 +40,13 @@ public class HomeViewModel extends ViewModel {
                 }
                 topCompanies.postValue(companies);
             } catch (Exception e) {
-                error.postValue("Lỗi parse danh sách công ty");
+                Log.e("PARSE_ERROR", "Lỗi parse danh sách công ty", e);
+                error.postValue("Lỗi parse danh sách công ty: " + e.getMessage());
             }
-        }, errorListener -> error.postValue("Lỗi lấy danh sách công ty"));
+        }, errorListener -> {
+            Log.e("API_ERROR", "Lỗi lấy danh sách công ty", errorListener);
+            error.postValue("Lỗi lấy danh sách công ty: " + errorListener.toString());
+        });
     }
 
     public void fetchSuggestedJobs(Context context, String token) {
