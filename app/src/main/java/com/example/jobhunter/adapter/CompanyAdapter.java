@@ -21,6 +21,15 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     private List<Company> companyList;
     private Context context;
     private static final String LOGO_BASE_URL = "http://172.16.12.122:8080/storage/company/";
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(Company company);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public CompanyAdapter(Context context, List<Company> companyList) {
         this.context = context;
@@ -65,6 +74,10 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
             Log.w("ADAPTER_LOGO_URL", "Logo FileName is null or empty for: " + company.getName());
             holder.imgLogo.setImageResource(R.drawable.ic_company);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onItemClick(company);
+        });
     }
 
     @Override
