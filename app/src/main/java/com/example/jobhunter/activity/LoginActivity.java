@@ -1,6 +1,8 @@
 package com.example.jobhunter.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.jobhunter.R;
 import com.example.jobhunter.api.AuthApi;
+import com.example.jobhunter.api.UserApi;
 import com.example.jobhunter.util.TokenManager;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +25,15 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Kiểm tra nếu đã đăng nhập thì chuyển sang MainActivity
+        String token = TokenManager.getToken(this);
+        if (token != null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         getUsername = findViewById(R.id.username_input);
         getPassword = findViewById(R.id.password_input);
@@ -60,29 +72,34 @@ public class LoginActivity extends AppCompatActivity {
 
         AuthApi.login(this, loginData, response -> {
             try {
-                android.util.Log.d("LOGIN_RESPONSE", response.toString());
-                if (!response.has("data")) {
-                    Toast.makeText(this, "Server không trả về data!", Toast.LENGTH_SHORT).show();
-                    android.util.Log.e("LOGIN_DEBUG", "Response không có data: " + response.toString());
+                if (!response.has("data"))
                     return;
-                }
                 JSONObject data = response.getJSONObject("data");
-                if (!data.has("access_token")) {
-                    Toast.makeText(this, "Server không trả về access_token!", Toast.LENGTH_SHORT).show();
-                    android.util.Log.e("LOGIN_DEBUG", "Data không có access_token: " + data.toString());
+                if (!data.has("access_token"))
                     return;
-                }
                 String token = data.getString("access_token");
                 TokenManager.saveToken(this, token);
-                String checkToken = TokenManager.getToken(this);
-                android.util.Log.d("TOKEN_CHECK", "Token vừa lưu: " + checkToken);
-                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                // Lấy thông tin user từ response
+                JSONObject user = data.getJSONObject("user");
+                int userId = user.optInt("id");
+                String userName = user.optString("name");
+                String userEmail = user.optString("email");
+
+                // Lưu thông tin user vào SharedPreferences
+                SharedPreferences prefs = getSharedPreferences("jobhunter_prefs", MODE_PRIVATE);
+                prefs.edit()
+                        .putInt("user_id", userId)
+                        .putString("user_name", userName)
+                        .putString("user_email", userEmail)
+                        .apply();
+
+                // Chuyển sang MainActivity
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             } catch (JSONException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Lỗi xử lý token", Toast.LENGTH_SHORT).show();
-                android.util.Log.e("LOGIN_DEBUG", "JSONException: " + e.getMessage());
             }
         }, error -> {
             // Debug: In lỗi ra log
