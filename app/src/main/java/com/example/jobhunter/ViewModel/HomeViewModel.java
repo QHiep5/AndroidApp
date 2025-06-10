@@ -35,6 +35,8 @@ public class HomeViewModel extends ViewModel {
                     JSONObject obj = result.getJSONObject(i);
                     Company company = new Company();
                     company.setName(obj.optString("name"));
+                    company.setLogo(obj.optString("logo"));
+                    Log.d("API_LOGO_URL", "Parsed URL: " + company.getLogo()); // DEBUG
                     // Parse các trường khác nếu cần
                     companies.add(company);
                 }

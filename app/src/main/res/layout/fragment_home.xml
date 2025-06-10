@@ -11,97 +11,120 @@
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <!-- Nội dung chính -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/background">
 
             <!-- LINEAR 1: Toolbar + EditText tìm kiếm -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="?attr/actionBarSize"
                 android:orientation="horizontal"
                 android:background="@color/colorPrimary"
-                android:padding="8dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="16dp"
                 android:gravity="center_vertical">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="48dp"
-                    android:background="@android:color/transparent"
                     app:navigationIcon="@drawable/ic_menu" />
 
                 <EditText
                     android:id="@+id/et_search"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="44dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:background="@android:color/white"
+                    android:background="@drawable/round_conner"
+                    android:drawableStart="@drawable/ic_search_resized"
+                    android:drawablePadding="8dp"
                     android:hint="Tìm kiếm việc làm, công ty..."
-                    android:paddingLeft="40dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
                     android:singleLine="true"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/textHint"/>
             </LinearLayout>
 
-            <!-- ViewFlipper Banner -->
-            <ViewFlipper
-                android:id="@+id/viewFlipper"
+            <!-- Scrollable content -->
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginBottom="12dp"
-                android:autoStart="true"
-                android:flipInterval="3000" />
+                android:layout_height="match_parent">
 
-            <!-- LINEAR 2: Nhà tuyển dụng -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nhà Tuyển Dụng Hàng Đầu"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_top_companies"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:scrollbars="horizontal"/>
-            </LinearLayout>
-
-            <!-- LINEAR 3: Gợi ý việc làm -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gợi ý việc làm cho bạn"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp"/>
+                    android:orientation="vertical">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_suggested_jobs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-            </LinearLayout>
+                    <!-- ViewFlipper Banner -->
+                    <ViewFlipper
+                        android:id="@+id/viewFlipper"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginBottom="12dp"
+                        android:autoStart="true"
+                        android:flipInterval="3000" />
+
+                    <!-- LINEAR 2: Nhà tuyển dụng -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Nhà Tuyển Dụng Hàng Đầu"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/textPrimary"
+                            android:layout_marginBottom="8dp"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_top_companies"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:scrollbars="horizontal"/>
+                    </LinearLayout>
+
+                    <!-- LINEAR 3: Gợi ý việc làm -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gợi ý việc làm cho bạn"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/textPrimary"
+                            android:layout_marginBottom="8dp"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_suggested_jobs"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
 
         <!-- Navigation Drawer -->
@@ -114,8 +137,9 @@
                 android:id="@+id/nav_list_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-            />
+                />
         </com.google.android.material.navigation.NavigationView>
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jobhunter.adapter.ViewpagerAdater;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import com.google.android.material.navigation.NavigationBarView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.jobhunter.R;
 
 
 public class MainActivity extends AppCompatActivity {
-    ViewPager mViewPager;
+    ViewPager2 mViewPager;
     BottomNavigationView mBottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
 //getSupportActionBar().setBackgroundDrawable(new
 //        ColorDrawable(getResources().getColor(R.color.colorAccent));
-        ViewpagerAdater viewpagerAdater = new ViewpagerAdater(getSupportFragmentManager(),
-                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        ViewpagerAdater viewpagerAdater = new ViewpagerAdater(this);
         mViewPager.setAdapter(viewpagerAdater);
 
-        mViewPager.setCurrentItem(0);
-//        getSupportActionBar().setTitle("Person");
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+        mViewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
+                super.onPageSelected(position);
                 switch (position){
                     case 0:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
@@ -48,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_company).setChecked(true);
 //                        getSupportActionBar().setTitle("Home");
-
                         break;
                     case 2:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_job).setChecked(true);
@@ -57,15 +52,12 @@ public class MainActivity extends AppCompatActivity {
                     case 3:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
 //                        getSupportActionBar().setTitle("Setting");
-
-
+                        break;
                 }
             }
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
         });
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        mBottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
@@ -77,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     mViewPager.setCurrentItem(2);
                 }
                 else if (itemId == R.id.nav_profile) {
-                    mViewPager.setCurrentItem(2);
+                    mViewPager.setCurrentItem(3);
                 }
                 return true;
             }
