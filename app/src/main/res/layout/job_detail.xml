@@ -1,0 +1,154 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#03A9F4"
+        android:title="ME Technician (Kĩ Thuật Viên...)"
+        android:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_back" />
+
+    <!-- Nội dung chính có thể cuộn -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginBottom="80dp"> <!-- thêm khoảng trống tránh bị che -->
+
+            <!-- Tiêu đề -->
+            <TextView
+                android:id="@+id/tv_job_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ME Technician (Kĩ Thuật Viên Bảo Trì)"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Lương & thời gian -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:text="Thương lượng"
+                    android:textColor="#F5A623"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:text="Toàn thời gian"
+                    android:textColor="#888888"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Địa điểm & thời gian -->
+            <TextView
+                android:text="Hồ Chí Minh"
+                android:textColor="#666666"
+                android:layout_marginBottom="4dp"
+                android:textSize="14sp" />
+
+            <TextView
+                android:text="Đăng 24 ngày trước • Bạn còn 6 ngày để ứng tuyển"
+                android:textColor="#888888"
+                android:textSize="13sp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Nút Ứng tuyển -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/btn_apply"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#F5A623"
+                    android:text="Ứng Tuyển"
+                    android:textColor="@android:color/white"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
+
+            <!-- Vì sao nên ứng tuyển -->
+            <TextView
+                android:text="Vì sao nên ứng tuyển"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:textColor="#000000" />
+
+            <TextView
+                android:text="• Company Shuttle Bus\n• On-the-job training with experienced staff\n• Bảo hiểm 24H"
+                android:textSize="14sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Mô tả công việc -->
+            <TextView
+                android:text="Mô tả công việc"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:textColor="#000000" />
+
+            <TextView
+                android:id="@+id/tv_job_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="- Maintains machine programs...\n- Optimizes machine programs...\n- Observes machine and line performance...\n- Maintains and repairs all SMT equipment..."
+                android:textSize="14sp"
+                android:textColor="#444444" />
+
+            <TextView
+                android:id="@+id/tv_see_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xem thêm"
+                android:textColor="#2196F3"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Nút Apply cố định -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@android:color/white">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="Ứng Tuyển"
+            android:backgroundTint="#F5A623"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"/>
+    </LinearLayout>
+</LinearLayout>

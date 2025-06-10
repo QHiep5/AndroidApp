@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="16dp">
+
+    <!-- Logo hình tròn -->
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginBottom="12dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circle_border" />
+
+    <!-- Tên công ty -->
+    <TextView
+        android:id="@+id/tv_company_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trung tâm Công nghệ thông tin\nBIDV"
+        android:textAlignment="center"
+        android:textColor="#002A7F"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Ngành nghề -->
+    <TextView
+        android:id="@+id/tv_industry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngành nghề: Công nghệ thông tin "
+        android:textColor="#444444"
+        android:textSize="14sp" />
+
+    <!-- Vị trí tuyển -->
+    <TextView
+        android:id="@+id/tv_positions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Đang tuyển: 12 vị trí"
+        android:textColor="#F57C00"
+        android:textSize="14sp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- View details -->
+    <TextView
+        android:id="@+id/tv_view_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View details"
+        android:textColor="#002A7F"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</LinearLayout>

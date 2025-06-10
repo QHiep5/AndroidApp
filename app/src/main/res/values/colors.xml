@@ -1,0 +1,31 @@
+<resources>
+    <!-- Màu chủ đạo (xanh dương nhạt) -->
+    <color name="colorPrimary">#4CB1F7</color> <!-- Thanh trên cùng, toolbar -->
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorAccent">#00BFFF</color> <!-- Nút nổi bật, icon search -->
+
+    <!-- Màu nền tổng thể -->
+    <color name="background">#F7F9FB</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Màu text -->
+    <color name="textPrimary">#222222</color>
+    <color name="textSecondary">#757575</color>
+    <color name="textHint">#B0B0B0</color>
+
+    <!-- Màu danh mục/icon nhạt -->
+    <color name="iconCategory">#B3E5FC</color>
+    <color name="iconCategoryBorder">#81D4FA</color>
+
+    <!-- Màu vàng nhạt cho lương/thương lượng -->
+    <color name="salaryHighlight">#FFF9C4</color>
+    <color name="salaryText">#FBC02D</color>
+
+    <!-- Màu bottom navigation -->
+    <color name="bottomNavSelected">#4CB1F7</color>
+    <color name="bottomNavUnselected">#B0B0B0</color>
+
+    <!-- Màu viền, divider -->
+    <color name="divider">#E0E0E0</color>
+    <color name="border">#E3E3E3</color>
+</resources>
