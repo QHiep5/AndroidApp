@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +27,7 @@ public class CompanyListFragment extends Fragment {
 
     private CompanyViewModel companyViewModel;
     private CompanyAdapter companyAdapter;
-    private RecyclerView companiesGridView;
+    private RecyclerView companiesListView;
     private String mParam1;
     private String mParam2;
 
@@ -61,10 +61,10 @@ public class CompanyListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_company_list, container, false);
-        companiesGridView = v.findViewById(R.id.company_gridview);
+        companiesListView = v.findViewById(R.id.company_listview);
         init();
-        companiesGridView.setAdapter(companyAdapter);
-        companiesGridView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        companiesListView.setAdapter(companyAdapter);
+        companiesListView.setLayoutManager(new LinearLayoutManager(getContext()));
         companyAdapter.setOnItemClickListener(company -> {
             Intent intent = new Intent(getContext(), com.example.jobhunter.activity.CompanyDetailActivity.class);
             intent.putExtra("company_id", company.getId());

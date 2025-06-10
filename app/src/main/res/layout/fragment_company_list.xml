@@ -17,25 +17,25 @@
         android:orientation="horizontal"
         android:padding="12dp"
         android:gravity="center_vertical"
-        android:background="@drawable/bg_company_list_gradient"
+        android:background="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_search"
-            android:tint="#ffeaea"/>
         <EditText
-            android:id="@+id/search_edit_text"
+            android:id="@+id/et_search"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:hint="Tìm kiếm công ty..."
-            android:textColor="#ffeaea"
-            android:textColorHint="#ffeaea"
-            android:paddingStart="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/round_conner"
+            android:drawableStart="@drawable/ic_search_resized"
+            android:drawablePadding="8dp"
+            android:hint="Tìm kiếm việc làm, công ty..."
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:singleLine="true"
+            android:textColor="@color/textPrimary"
+            android:textColorHint="@color/textHint"/>
             android:textSize="16sp"/>
     </LinearLayout>
 
@@ -55,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_company_list_gradient"
             android:paddingBottom="0dp">
 
 <!--            &lt;!&ndash; Tiêu đề (nếu muốn giữ) &ndash;&gt;-->
@@ -70,7 +69,7 @@
 
             <!-- RecyclerView sát navigation bar -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/company_gridview"
+                android:id="@+id/company_listview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
