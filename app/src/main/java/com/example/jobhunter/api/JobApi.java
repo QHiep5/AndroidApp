@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JobApi {
+
     // Lấy danh sách job (GET /api/v1/jobs)
     public static void getJobs(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = ApiConfig.JOB;
@@ -35,7 +36,7 @@ public class JobApi {
 
     // Lấy job theo id (GET /api/v1/jobs/{id})
     public static void getJob(Context context, String jobId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.JOB + jobId;
+        String url = ApiConfig.JOB + "/" + jobId;
         JsonObjectRequest request = new JsonObjectRequest(
             com.android.volley.Request.Method.GET,
             url,
@@ -46,7 +47,9 @@ public class JobApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };

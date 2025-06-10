@@ -1,14 +1,25 @@
 package com.example.jobhunter.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import android.widget.ViewFlipper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
+import com.example.jobhunter.adapter.JobListAdapter;
+import com.example.jobhunter.ViewModel.JobViewModel;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,33 +28,20 @@ import com.example.jobhunter.R;
  */
 public class JobListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private JobViewModel jobViewModel;
+    private RecyclerView rvSuggestedJobs;
+    private JobListAdapter jobListAdapter;
+    private ViewFlipper viewFlipper;
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
 
     public JobListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment JobListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static JobListFragment newInstance(String param1, String param2) {
+    public static JobListFragment newInstance() {
         JobListFragment fragment = new JobListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,15 +50,67 @@ public class JobListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_list, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_job_list, container, false);
+
+        // Initialize Views
+        drawerLayout = view.findViewById(R.id.drawer_layout);
+        toolbar = view.findViewById(R.id.toolbar);
+        viewFlipper = view.findViewById(R.id.viewFlipper);
+        rvSuggestedJobs = view.findViewById(R.id.rv_suggested_jobs);
+
+        // Setup RecyclerView
+        rvSuggestedJobs.setLayoutManager(new LinearLayoutManager(getContext()));
+        jobListAdapter = new JobListAdapter(getContext(),new ArrayList<>());
+        rvSuggestedJobs.setAdapter(jobListAdapter);
+        rvSuggestedJobs.setNestedScrollingEnabled(false);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Setup Toolbar and Drawer
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    activity, drawerLayout, toolbar,
+                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+        }
+
+        // Setup ViewFlipper
+        int[] banners = {R.drawable.banner_placeholder_1, R.drawable.banner_placeholder_2, R.drawable.banner_placeholder_3};
+        for (int banner : banners) {
+            ImageView imageView = new ImageView(getContext());
+            imageView.setImageResource(banner);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            viewFlipper.addView(imageView);
+        }
+        viewFlipper.setFlipInterval(3000);
+        viewFlipper.setAutoStart(true);
+        viewFlipper.setInAnimation(getContext(), android.R.anim.fade_in);
+        viewFlipper.setOutAnimation(getContext(), android.R.anim.fade_out);
+
+        // Setup ViewModel and Observe Data
+        jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
+        jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> {
+            if (jobs != null) {
+                jobListAdapter.setData(jobs);
+            }
+        });
+
+        // TODO: Replace "" with the actual authentication token
+        String token = "";
+        jobViewModel.fetchJobs(token);
     }
 }

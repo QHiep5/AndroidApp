@@ -1,12 +1,16 @@
 package com.example.jobhunter.model;
 
+import com.example.jobhunter.util.constant.LevelEnum;
+
+import java.util.List;
+
 public class Job {
     private long id;
     private String name;
     private String location;
     private double salary;
     private int quantity;
-    private String level; // Enum dạng String: "JUNIOR", "SENIOR", ...
+    private LevelEnum level; // Enum dạng String: "JUNIOR", "SENIOR", ...
     private String description;
     private String startDate;
     private String endDate;
@@ -16,8 +20,11 @@ public class Job {
     private String createdBy;
     private String updatedBy;
     private Company company;
+    private String skills;
+
     public Job() {}
-    public Job(long id, String name, String location, double salary, int quantity, String level, String description, String startDate, String endDate, boolean active, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company) {
+
+    public Job(long id, String name, String location, double salary, int quantity, LevelEnum level, String description, String startDate, String endDate, boolean active, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company, String skills) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -33,6 +40,7 @@ public class Job {
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
         this.company = company;
+        this.skills = skills;
     }
 
     public long getId() {
@@ -75,11 +83,11 @@ public class Job {
         this.quantity = quantity;
     }
 
-    public String getLevel() {
+    public LevelEnum getLevel() {
         return level;
     }
 
-    public void setLevel(String level) {
+    public void setLevel(LevelEnum level) {
         this.level = level;
     }
 
@@ -153,5 +161,13 @@ public class Job {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getSkills() {
+        return skills;
+    }
+
+    public void setSkills(String skills) {
+        this.skills = skills;
     }
 }
