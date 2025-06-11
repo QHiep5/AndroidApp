@@ -22,7 +22,8 @@ import android.util.Log;
 public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewHolder> {
     private List<Job> jobList;
     private Context context;
-    private static final String LOGO_BASE_URL = "http://192.168.0.114:8080/storage/company/";
+    private static final String TAG = "JobListAdapter";
+    private static final String LOGO_BASE_URL = "http://192.168.1.115:8080/storage/company/";
 
     public JobListAdapter(Context context, List<Job> jobList) {
         this.context = context;
@@ -39,46 +40,51 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
     @Override
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
         Job job = jobList.get(position);
-        if (job != null) {
-            holder.txtTen.setText(job.getName());
-            holder.txtLocation.setText(job.getLocation());
-            holder.txtTime.setText(job.getStartDate());
-
-            // Format salary for display
-            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            holder.txtSalary.setText(currencyFormat.format(job.getSalary()));
-
-            if (job.getCompany() != null && job.getCompany().getLogo() != null && !job.getCompany().getLogo().isEmpty()) {
-                String logoFileName = job.getCompany().getLogo();
-                String fullLogoUrl = LOGO_BASE_URL + logoFileName;
-
-                Picasso.get()
-                    .load(fullLogoUrl)
-                    .placeholder(R.drawable.ic_company)
-                    .error(R.drawable.ic_company)
-                    .into(holder.imgHinh);
-            } else {
-                holder.imgHinh.setImageResource(R.drawable.ic_company);
-            }
-
-            holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, JobDetailActivity.class);
-                intent.putExtra("JOB_ID", job.getId());
-                context.startActivity(intent);
-            });
+        if (job == null) {
+            Log.w(TAG, "Job object at position " + position + " is null.");
+            return;
         }
+
+        Log.d(TAG, "Binding view for position " + position + ", Job: " + job.getName());
+        holder.txtTen.setText(job.getName());
+        holder.txtLocation.setText(job.getLocation());
+        holder.txtTime.setText(job.getStartDate());
+
+        // Format salary for display
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        holder.txtSalary.setText(currencyFormat.format(job.getSalary()));
+
+        if (job.getCompany() != null && job.getCompany().getLogo() != null && !job.getCompany().getLogo().isEmpty()) {
+            String logoFileName = job.getCompany().getLogo();
+            String fullLogoUrl = LOGO_BASE_URL + logoFileName;
+            Log.d(TAG, "Loading image for " + job.getName() + " from URL: " + fullLogoUrl);
+
+            Picasso.get()
+                .load(fullLogoUrl)
+                .placeholder(R.drawable.ic_company)
+                .error(R.drawable.ic_company)
+                .into(holder.imgHinh);
+        } else {
+            String reason = job.getCompany() == null ? "Company object is null" : "Logo is null or empty";
+            Log.w(TAG, "No logo for job: " + job.getName() + ". Reason: " + reason + ". Using placeholder.");
+            holder.imgHinh.setImageResource(R.drawable.ic_company);
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, JobDetailActivity.class);
+            intent.putExtra("JOB_ID", job.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        int count = jobList == null ? 0 : jobList.size();
-        Log.d("JOB_ADAPTER_DEBUG", "getItemCount: " + count);
-        return count;
+        return jobList == null ? 0 : jobList.size();
     }
 
     public void setData(List<Job> jobs) {
         this.jobList = jobs;
-        Log.d("JOB_ADAPTER_DEBUG", "setData called with " + (jobs == null ? 0 : jobs.size()) + " items.");
+        Log.d(TAG, "Adapter setData called with " + (jobs == null ? 0 : jobs.size()) + " items. Notifying change.");
         notifyDataSetChanged();
     }
 

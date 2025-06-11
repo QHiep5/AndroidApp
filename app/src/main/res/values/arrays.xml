@@ -1,0 +1,11 @@
+<resources>
+    <!-- Other string resources -->
+
+    <string-array name="locations_array">
+        <item>Tất cả địa điểm</item>
+        <item>Hà Nội</item>
+        <item>Hồ Chí Minh</item>
+        <item>Đà Nẵng</item>
+        <item>Other</item>
+    </string-array>
+</resources> 

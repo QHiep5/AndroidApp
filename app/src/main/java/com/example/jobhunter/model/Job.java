@@ -20,11 +20,10 @@ public class Job {
     private String createdBy;
     private String updatedBy;
     private Company company;
-    private String skills;
+    private List<Skill> skills;
 
     public Job() {}
-
-    public Job(long id, String name, String location, double salary, int quantity, LevelEnum level, String description, String startDate, String endDate, boolean active, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company, String skills) {
+    public Job(long id, String name, String location, double salary, int quantity, LevelEnum level, String description, String startDate, String endDate, boolean active, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company, List<Skill> skills) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -163,11 +162,11 @@ public class Job {
         this.company = company;
     }
 
-    public String getSkills() {
+    public List<Skill> getSkills() {
         return skills;
     }
 
-    public void setSkills(String skills) {
+    public void setSkills(List<Skill> skills) {
         this.skills = skills;
     }
 }

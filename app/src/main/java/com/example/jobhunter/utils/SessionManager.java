@@ -37,6 +37,14 @@ public class SessionManager {
     }
 
     /**
+     * Checks if the user is logged in.
+     * @return true if an auth token exists, false otherwise.
+     */
+    public boolean isLoggedIn() {
+        return getAuthToken() != null && !getAuthToken().isEmpty();
+    }
+
+    /**
      * Clears the session data (e.g., on logout).
      */
     public void clearSession() {

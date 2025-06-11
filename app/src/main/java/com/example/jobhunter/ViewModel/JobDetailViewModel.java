@@ -10,6 +10,7 @@ import com.example.jobhunter.api.ApiConfig;
 import com.example.jobhunter.api.JobApi;
 import com.example.jobhunter.model.Company;
 import com.example.jobhunter.model.Job;
+import com.example.jobhunter.model.Skill;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import android.util.Log;
@@ -18,6 +19,8 @@ import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 import org.json.JSONException;
 import com.android.volley.NetworkResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JobDetailViewModel extends AndroidViewModel {
     private static final String TAG = "JobDetailViewModel";
@@ -93,31 +96,21 @@ public class JobDetailViewModel extends AndroidViewModel {
         }
 
         JSONArray skillsArray = response.optJSONArray("skills");
-        if (skillsArray != null && skillsArray.length() > 0) {
-            StringBuilder skillsBuilder = new StringBuilder();
+        if (skillsArray != null) {
+            List<Skill> skillsList = new ArrayList<>();
             for (int i = 0; i < skillsArray.length(); i++) {
-                String skillName = null;
-                try {
-                    Object skillObj = skillsArray.get(i);
-                    if (skillObj instanceof JSONObject) {
-                        skillName = ((JSONObject) skillObj).optString("name");
-                    } else if (skillObj instanceof String) {
-                        skillName = (String) skillObj;
-                    }
-                } catch (Exception e) {
-                    // fallback
-                }
-                if (skillName != null && !skillName.isEmpty()) {
-                    skillsBuilder.append(skillName);
-                    if (i < skillsArray.length() - 1) {
-                        skillsBuilder.append(", ");
-                    }
+                JSONObject skillJson = skillsArray.optJSONObject(i);
+                if (skillJson != null) {
+                    Skill skill = new Skill();
+                    skill.setId(skillJson.optLong("id"));
+                    skill.setName(skillJson.optString("name"));
+                    skillsList.add(skill);
                 }
             }
-            detailedJob.setSkills(skillsBuilder.toString());
-        } else {
-            detailedJob.setSkills("N/A");
+            detailedJob.setSkills(skillsList);
+            Log.d(TAG, "Parsed " + skillsList.size() + " skills for job.");
         }
+
         return detailedJob;
     }
 

@@ -1,5 +1,7 @@
 package com.example.jobhunter.model;
 
+import java.util.List;
+
 public class Skill {
     private long id;
     private String name;
@@ -7,7 +9,7 @@ public class Skill {
     private String updatedAt;
     private String createdBy;
     private String updatedBy;
-
+    public Skill(){};
     public Skill(long id, String name, String createdAt, String updatedAt, String createdBy, String updatedBy) {
         this.id = id;
         this.name = name;

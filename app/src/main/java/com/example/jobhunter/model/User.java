@@ -3,6 +3,8 @@ package com.example.jobhunter.model;
 import com.example.jobhunter.util.constant.GenderEnum;
 import com.example.jobhunter.util.constant.LevelEnum;
 
+import java.util.List;
+
 public class User {
     private long id;
     private String name;
@@ -19,12 +21,13 @@ public class User {
     private String updatedBy;
     private Company company;
     private String role; // Tên role, ví dụ: "USER", "HR"
+    private List<Skill> skills;
 
     // Constructors
     public User() {}
 
 
-    public User(long id, String name, String email, String password, GenderEnum gender, String address, double salary, LevelEnum level, String refreshToken, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company, String role) {
+    public User(long id, String name, String email, String password, GenderEnum gender, String address, double salary, LevelEnum level, String refreshToken, String createdAt, String updatedAt, String createdBy, String updatedBy, Company company, String role, List<Skill> skills) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -40,6 +43,7 @@ public class User {
         this.updatedBy = updatedBy;
         this.company = company;
         this.role = role;
+        this.skills = skills;
     }
 
     public long getId() {
@@ -160,5 +164,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
     }
 }

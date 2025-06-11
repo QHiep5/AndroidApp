@@ -19,11 +19,14 @@ import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.JobDetailViewModel;
 import com.example.jobhunter.api.ApiConfig;
 import com.example.jobhunter.model.Job;
+import com.example.jobhunter.model.Skill;
 import com.example.jobhunter.utils.SessionManager;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class JobDetailActivity extends AppCompatActivity {
 
@@ -111,7 +114,15 @@ public class JobDetailActivity extends AppCompatActivity {
         tvJobTitleData.setText(job.getName());
         tvJobLocationData.setText(job.getLocation());
         tvJobDescriptionData.setText(Html.fromHtml(job.getDescription()));
-        tvJobSkillsData.setText(job.getSkills());
+        
+        if (job.getSkills() != null && !job.getSkills().isEmpty()) {
+            String skillsString = job.getSkills().stream()
+                                     .map(Skill::getName)
+                                     .collect(Collectors.joining(", "));
+            tvJobSkillsData.setText(skillsString);
+        } else {
+            tvJobSkillsData.setText("Không yêu cầu kỹ năng cụ thể");
+        }
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         tvJobSalaryData.setText(currencyFormat.format(job.getSalary()));

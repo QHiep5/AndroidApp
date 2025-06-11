@@ -18,8 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.adapter.JobListAdapter;
+import com.example.jobhunter.utils.SessionManager;
 import com.example.jobhunter.ViewModel.JobViewModel;
 import java.util.ArrayList;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,12 +31,14 @@ import java.util.ArrayList;
  */
 public class JobListFragment extends Fragment {
 
+    private static final String TAG = "JobListFragment";
     private JobViewModel jobViewModel;
     private RecyclerView rvSuggestedJobs;
     private JobListAdapter jobListAdapter;
     private ViewFlipper viewFlipper;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private SessionManager sessionManager;
 
     public JobListFragment() {
         // Required empty public constructor
@@ -103,14 +108,31 @@ public class JobListFragment extends Fragment {
 
         // Setup ViewModel and Observe Data
         jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
+        Log.d(TAG, "ViewModel and SessionManager initialized.");
+
         jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> {
             if (jobs != null) {
+                Log.d(TAG, "Jobs LiveData updated. Received " + jobs.size() + " jobs. Submitting to adapter.");
                 jobListAdapter.setData(jobs);
+            } else {
+                Log.w(TAG, "Jobs LiveData updated with null list.");
             }
         });
 
-        // TODO: Replace "" with the actual authentication token
-        String token = "";
+        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.isEmpty()) {
+                Log.e(TAG, "Error LiveData updated: " + error);
+                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        sessionManager = new SessionManager(getContext());
+        String token = sessionManager.getAuthToken();
+        if (token == null || token.isEmpty()) {
+            Log.w(TAG, "Authentication token is NULL or EMPTY. Fetching jobs without auth.");
+        } else {
+            Log.i(TAG, "Authentication token found. Fetching jobs with token.");
+        }
         jobViewModel.fetchJobs(token);
     }
 }

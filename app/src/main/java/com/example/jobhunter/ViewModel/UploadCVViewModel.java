@@ -54,7 +54,7 @@ public class UploadCVViewModel extends AndroidViewModel {
                 android.util.Log.d("UPLOAD_CV", "File name: " + fileName + ", size: " + file.length());
 
                 Request.Builder requestBuilder = new Request.Builder()
-                        .url("http://192.168.0.114:8080/api/v1/files")
+                        .url("http://192.168.1.115:8080/api/v1/files")
                         .post(requestBody);
                 if (token != null && !token.isEmpty()) {
                     requestBuilder.addHeader("Authorization", "Bearer " + token);
@@ -113,7 +113,7 @@ public class UploadCVViewModel extends AndroidViewModel {
                 String token = prefs.getString("auth_token", null);
 
                 Request.Builder requestBuilder = new Request.Builder()
-                        .url("http://192.168.0.114:8080/api/v1/resumes")
+                        .url("http://192.168.1.115:8080/api/v1/resumes")
                         .post(requestBody);
                 if (token != null && !token.isEmpty()) {
                     requestBuilder.addHeader("Authorization", "Bearer " + token);
