@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.UploadCVViewModel;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import com.google.android.material.card.MaterialCardView;
 
 public class UploadCVActivity extends AppCompatActivity {
     private static final int PICK_FILE_REQUEST = 1;
@@ -21,8 +23,9 @@ public class UploadCVActivity extends AppCompatActivity {
     private String selectedFileName;
     private String uploadedFileName;
 
-    private TextView tvFileName;
-    private Button btnPickFile, btnUploadCV;
+    private TextView tvAttachCV;
+    private MaterialCardView cvAttachCV;
+    private Button btnConfirmApply;
     private ProgressBar progressBar;
 
     private UploadCVViewModel viewModel;
@@ -34,16 +37,15 @@ public class UploadCVActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_cv);
+        setContentView(R.layout.activity_upload);
 
-        tvFileName = findViewById(R.id.tvFileName);
-        btnPickFile = findViewById(R.id.btnPickFile);
-        btnUploadCV = findViewById(R.id.btnUploadCV);
+        tvAttachCV = findViewById(R.id.tv_attach_cv);
+        cvAttachCV = findViewById(R.id.btn_attach_cv);
+        btnConfirmApply = findViewById(R.id.btn_confirm_apply);
         progressBar = findViewById(R.id.progressBar);
 
         viewModel = new ViewModelProvider(this).get(UploadCVViewModel.class);
 
-        // Nhận userId, jobId, userEmail từ Intent
         userId = getIntent().getLongExtra("userId", 0);
         jobId = getIntent().getLongExtra("jobId", 0);
         userEmail = getIntent().getStringExtra("userEmail");
@@ -53,26 +55,25 @@ public class UploadCVActivity extends AppCompatActivity {
             return;
         }
 
-        btnPickFile.setOnClickListener(v -> openFilePicker());
-        btnUploadCV.setOnClickListener(v -> {
+        cvAttachCV.setOnClickListener(v -> openFilePicker());
+        btnConfirmApply.setOnClickListener(v -> {
             if (selectedFileUri != null && selectedFileName != null) {
                 viewModel.uploadFileToServer(getApplication(), selectedFileUri, selectedFileName);
             } else {
-                Toast.makeText(this, "Vui lòng chọn file", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn file CV", Toast.LENGTH_SHORT).show();
             }
         });
 
         viewModel.getIsLoading().observe(this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            btnUploadCV.setEnabled(!isLoading);
-            btnPickFile.setEnabled(!isLoading);
+            btnConfirmApply.setEnabled(!isLoading);
+            cvAttachCV.setEnabled(!isLoading);
         });
 
         viewModel.getUploadResult().observe(this, fileName -> {
             if (fileName != null) {
                 uploadedFileName = fileName;
                 Toast.makeText(this, "Upload file thành công", Toast.LENGTH_SHORT).show();
-                // Gửi thông tin nộp CV
                 viewModel.submitResume(userEmail, uploadedFileName, userId, jobId);
             } else {
                 Toast.makeText(this, "Upload file thất bại", Toast.LENGTH_SHORT).show();
@@ -103,7 +104,7 @@ public class UploadCVActivity extends AppCompatActivity {
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedFileUri = data.getData();
             selectedFileName = getFileNameFromUri(selectedFileUri);
-            tvFileName.setText(selectedFileName);
+            tvAttachCV.setText(selectedFileName);
         }
     }
 
@@ -133,7 +134,7 @@ public class UploadCVActivity extends AppCompatActivity {
                 .setMessage("Bạn đã nộp CV thành công! Chúng tôi sẽ liên hệ với bạn sớm.")
                 .setPositiveButton("OK", (dialog, which) -> {
                     dialog.dismiss();
-                    finish(); // Quay lại JobDetailActivity
+                    finish();
                 })
                 .setCancelable(false)
                 .show();

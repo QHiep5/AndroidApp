@@ -1,18 +1,19 @@
 package com.example.jobhunter.api;
 
 import android.content.Context;
-import com.android.volley.Response;
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.jobhunter.utils.FilterQueryBuilder;
+
 import org.json.JSONObject;
-import org.json.JSONArray;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
 
 public class JobApi {
 
@@ -128,17 +129,25 @@ public class JobApi {
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    public static void searchJobs(Context context, String token, String location, List<String> skills, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        Uri.Builder builder = Uri.parse(BASE_URL).buildUpon();
+    public static void searchJobs(Context context, String token, String location, List<String> skillIds, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        Map<String, List<String>> filters = new HashMap<>();
+
         if (location != null && !location.isEmpty() && !location.equals("Tất cả địa điểm")) {
-            builder.appendQueryParameter("location", location);
-        }
-        if (skills != null && !skills.isEmpty()) {
-            builder.appendQueryParameter("skills", TextUtils.join(",", skills));
+            filters.put("location", Collections.singletonList(location));
         }
 
-        String url = builder.build().toString();
-        Log.d(TAG, "searchJobs called.");
+        if (skillIds != null && !skillIds.isEmpty()) {
+            filters.put("skills", skillIds);
+        }
+
+        String encodedFilter = FilterQueryBuilder.buildFilterQuery(filters);
+
+        String url = BASE_URL;
+        if (!encodedFilter.isEmpty()) {
+            url += "?filter=" + encodedFilter;
+        }
+
+        Log.i("API_URL_DEBUG", "URL gửi đi: " + url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url, null, listener, errorListener) {
             @Override
@@ -146,12 +155,10 @@ public class JobApi {
                 Map<String, String> headers = new HashMap<>();
                 if (token != null && !token.isEmpty()) {
                     headers.put("Authorization", "Bearer " + token);
-                    Log.d(TAG, "Authorization Header Added to search request.");
                 }
                 return headers;
             }
         };
-        Log.i(TAG, "Search Request URL: " + url);
         VolleySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 }

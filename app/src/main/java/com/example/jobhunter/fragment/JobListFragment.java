@@ -20,6 +20,7 @@ import com.example.jobhunter.R;
 import com.example.jobhunter.adapter.JobListAdapter;
 import com.example.jobhunter.utils.SessionManager;
 import com.example.jobhunter.ViewModel.JobViewModel;
+import com.example.jobhunter.utils.ToolbarManager;
 import java.util.ArrayList;
 import android.util.Log;
 import android.widget.Toast;
@@ -82,16 +83,8 @@ public class JobListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Setup Toolbar and Drawer
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
-            activity.setSupportActionBar(toolbar);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    activity, drawerLayout, toolbar,
-                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-        }
+        // --- Thiết lập Toolbar bằng ToolbarManager ---
+        ToolbarManager.setupToolbarWithDrawer((AppCompatActivity) getActivity(), toolbar);
 
         // Setup ViewFlipper
         int[] banners = {R.drawable.banner_placeholder_1, R.drawable.banner_placeholder_2, R.drawable.banner_placeholder_3};

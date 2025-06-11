@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-public class AuthViewModel extends AndroidViewModel {
+public class  AuthViewModel extends AndroidViewModel {
     private MutableLiveData<JSONObject> loginResult = new MutableLiveData<>();
     private MutableLiveData<JSONObject> registerResult = new MutableLiveData<>();
     private MutableLiveData<String> error = new MutableLiveData<>();

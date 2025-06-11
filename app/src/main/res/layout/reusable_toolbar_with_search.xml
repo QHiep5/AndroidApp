@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This layout contains the Toolbar and the search bar.
+    It's designed to be included in other layouts like HomeFragment and JobListFragment.
+    The structure is a horizontal LinearLayout to keep the menu icon and search bar on the same row.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_bar_container"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorPrimary"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="4dp"
+    android:paddingEnd="16dp">
+
+    <!-- The Toolbar only contains the navigation icon (hamburger menu) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:navigationIcon="@drawable/ic_menu"
+        app:title="" />
+
+    <!-- The search bar is a TextView to make the whole area clickable -->
+    <TextView
+        android:id="@+id/et_search"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        android:background="@drawable/round_conner"
+        android:drawableStart="@drawable/ic_search_resized"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:hint="Tìm kiếm việc làm, công ty..."
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/textPrimary"
+        android:textColorHint="@color/textHint" />
+
+
+</LinearLayout> 

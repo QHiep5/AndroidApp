@@ -1,5 +1,6 @@
 package com.example.jobhunter.ViewModel;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import com.example.jobhunter.api.CompanyApi;
 import com.example.jobhunter.api.JobApi;
 import com.example.jobhunter.model.Company;
 import com.example.jobhunter.model.Job;
+import com.example.jobhunter.util.TokenManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -24,7 +26,12 @@ public class HomeViewModel extends ViewModel {
     public LiveData<List<Job>> getSuggestedJobs() { return suggestedJobs; }
     public LiveData<String> getError() { return error; }
 
-    public void fetchTopCompanies(Context context, String token) {
+    public void fetchTopCompanies(Context context) {
+        String token = TokenManager.getToken(context);
+        if (token == null || token.isEmpty()) {
+            error.postValue("Người dùng chưa đăng nhập");
+            return;
+        }
         CompanyApi.getCompanies(context, token, response -> {
             Log.d("API_RESPONSE", "Top Companies Response: " + response.toString()); // In response ra logcat
             List<Company> companies = new ArrayList<>();
@@ -54,7 +61,12 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    public void fetchSuggestedJobs(Context context, String token) {
+    public void fetchSuggestedJobs(Context context) {
+        String token = TokenManager.getToken(context);
+        if (token == null || token.isEmpty()) {
+            error.postValue("Người dùng chưa đăng nhập");
+            return;
+        }
         JobApi.getJobs(context, token, response -> {
             Log.d("API_RESPONSE", "Suggested Jobs Response: " + response.toString()); // DEBUG
             List<Job> jobs = new ArrayList<>();

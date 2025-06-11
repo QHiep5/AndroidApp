@@ -29,6 +29,7 @@
         <activity
             android:name=".activity.CompanyDetailActivity"
             android:exported="false" />
+        <activity android:name=".activity.SearchResultsActivity" />
         <activity android:name=".activity.ProfileDetailActivity"
             android:exported="false"
             />
