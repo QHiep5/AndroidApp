@@ -10,8 +10,10 @@ import com.example.jobhunter.api.JobApi;
 import com.example.jobhunter.model.Company;
 import com.example.jobhunter.model.Job;
 import com.example.jobhunter.model.Skill;
+import com.example.jobhunter.util.TokenManager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class JobViewModel extends AndroidViewModel {
     private static final String TAG = "JobViewModel";
     private final MutableLiveData<List<Job>> jobs = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
-
+    private final MutableLiveData<List<Job>> filteredJobs = new MutableLiveData<>();
     public JobViewModel(@NonNull Application application) {
         super(application);
     }
@@ -58,32 +60,55 @@ public class JobViewModel extends AndroidViewModel {
             handleError(error);
         });
     }
+    public LiveData<List<Job>> getFilteredJobs() {
+        return filteredJobs;
+    }
 
-    public void searchJobs(String token, String location, List<String> skills) {
-        Log.d(TAG, "searchJobs called with location: " + location + ", skills: " + skills.toString());
+    public LiveData<String> getError() {
+        return error;
+    }
+
+    public void searchJobs(String location, List<String> skills) {
+        String token = TokenManager.getToken(getApplication());
+        if (token == null || token.isEmpty()) {
+            error.postValue("Người dùng chưa đăng nhập");
+            return;
+        }
+
         JobApi.searchJobs(getApplication(), token, location, skills, response -> {
-            List<Job> jobList = new ArrayList<>();
+            Log.d(TAG, "Search Response: " + response.toString());
+            List<Job> jobs = new ArrayList<>();
             try {
-                Log.d(TAG, "Search API Response: " + response.toString());
                 JSONObject data = response.getJSONObject("data");
                 JSONArray result = data.getJSONArray("result");
                 for (int i = 0; i < result.length(); i++) {
-                    JSONObject jobJson = result.getJSONObject(i);
-                    Job job = parseJobFromJson(jobJson);
-                    jobList.add(job);
+                    JSONObject obj = result.getJSONObject(i);
+                    Job job = new Job();
+                    job.setId(obj.optInt("id"));
+                    job.setName(obj.optString("name"));
+                    job.setLocation(obj.optString("location"));
+                    job.setSalary(obj.optDouble("salary"));
+                    // Parse các trường khác nếu cần...
+
+                    JSONObject companyObj = obj.optJSONObject("company");
+                    if (companyObj != null) {
+                        Company company = new Company();
+                        company.setName(companyObj.optString("name"));
+                        company.setLogo(companyObj.optString("logo"));
+                        job.setCompany(company);
+                    }
+                    jobs.add(job);
                 }
-                jobs.setValue(jobList);
-                Log.d("JobViewModel", "Successfully parsed " + jobList.size() + " jobs from search.");
-            } catch (Exception e) {
-                Log.e("JobViewModel", "Error parsing search results", e);
-                error.setValue("Lỗi parse kết quả tìm kiếm: " + e.getMessage());
+                filteredJobs.postValue(jobs);
+            } catch (JSONException e) {
+                Log.e(TAG, "Lỗi phân tích JSON khi tìm kiếm công việc", e);
+                error.postValue("Lỗi phân tích dữ liệu: " + e.getMessage());
             }
-        }, error -> {
-            Log.e("JobViewModel", "Search API Error", error);
-            handleError(error);
+        }, errorListener -> {
+            Log.e(TAG, "Lỗi API khi tìm kiếm công việc", errorListener);
+            error.postValue("Lỗi mạng: " + errorListener.toString());
         });
     }
-
     private Job parseJobFromJson(JSONObject jobJson) throws org.json.JSONException {
         Job job = new Job();
         job.setId(jobJson.optLong("id"));

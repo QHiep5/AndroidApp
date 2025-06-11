@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.TimeoutError;
+import com.android.volley.NoConnectionError;
 import com.example.jobhunter.R;
 import com.example.jobhunter.api.AuthApi;
 import com.example.jobhunter.api.UserApi;
@@ -50,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
+        Log.d("LOGIN_DEBUG", "Bắt đầu phương thức login()");
+
         String username = getUsername.getText().toString().trim();
         String password = getPassword.getText().toString().trim();
 
@@ -69,6 +74,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Lỗi tạo dữ liệu đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        Log.d("LOGIN_DEBUG", "Chuẩn bị gọi AuthApi.login()");
 
         AuthApi.login(this, loginData, response -> {
             try {
@@ -102,14 +109,36 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, "Lỗi xử lý token", Toast.LENGTH_SHORT).show();
             }
         }, error -> {
-            // Debug: In lỗi ra log
-            if (error.networkResponse != null) {
-                android.util.Log.e("LOGIN_ERROR", "Status: " + error.networkResponse.statusCode);
-                android.util.Log.e("LOGIN_ERROR", "Data: " + new String(error.networkResponse.data));
+            // -- DEBUG: Cải thiện xử lý lỗi đăng nhập --
+            String errorMessage = "Đăng nhập thất bại. Vui lòng thử lại."; // Thông báo mặc định
+            if (error.networkResponse != null && error.networkResponse.data != null) {
+                try {
+                    String errorData = new String(error.networkResponse.data);
+                    JSONObject errorJson = new JSONObject(errorData);
+                    // Giả sử API trả về lỗi trong trường "message" hoặc "error"
+                    if (errorJson.has("message")) {
+                        errorMessage = errorJson.getString("message");
+                    } else if (errorJson.has("error")) {
+                        errorMessage = errorJson.getString("error");
+                    }
+                    // Ghi log chi tiết về lỗi từ server
+                    Log.e("LOGIN_API_ERROR", "Status Code: " + error.networkResponse.statusCode);
+                    Log.e("LOGIN_API_ERROR", "Response Data: " + errorData);
+                } catch (JSONException e) {
+                    // Lỗi khi phân tích JSON từ phản hồi lỗi
+                    Log.e("LOGIN_JSON_ERROR", "Không thể phân tích JSON lỗi: " + new String(error.networkResponse.data));
+                }
+            } else if (error instanceof NoConnectionError) {
+                errorMessage = "Không có kết nối mạng. Vui lòng kiểm tra lại.";
+                Log.e("LOGIN_VOLLEY_ERROR", "NoConnectionError: " + error.toString());
+            } else if (error instanceof TimeoutError) {
+                errorMessage = "Hết thời gian chờ. Máy chủ không phản hồi.";
+                Log.e("LOGIN_VOLLEY_ERROR", "TimeoutError: " + error.toString());
             } else {
-                android.util.Log.e("LOGIN_ERROR", "VolleyError: " + error.toString());
+                // Các lỗi Volley khác
+                Log.e("LOGIN_VOLLEY_ERROR", "Lỗi Volley không xác định: " + error.toString());
             }
-            Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
         });
     }
 }

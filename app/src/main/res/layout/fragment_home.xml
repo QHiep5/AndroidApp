@@ -1,145 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".fragment.HomeFragment"
+    tools:openDrawer="start">
 
-    <!-- DrawerLayout -->
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <!-- Nội dung chính -->
-        <LinearLayout
+        <include layout="@layout/reusable_toolbar_with_search" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/background">
+            android:layout_height="match_parent">
 
-            <!-- LINEAR 1: Toolbar + EditText tìm kiếm -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:orientation="horizontal"
-                android:background="@color/colorPrimary"
-                android:paddingStart="4dp"
-                android:paddingEnd="16dp"
-                android:gravity="center_vertical">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:navigationIcon="@drawable/ic_menu" />
-
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/round_conner"
-                    android:drawableStart="@drawable/ic_search_resized"
-                    android:drawablePadding="8dp"
-                    android:hint="Tìm kiếm việc làm, công ty..."
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:singleLine="true"
-                    android:textColor="@color/textPrimary"
-                    android:textColorHint="@color/textHint"/>
-            </LinearLayout>
-
-            <!-- Scrollable content -->
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-            <!-- ViewFlipper Banner -->
-            <ViewFlipper
-                android:id="@+id/viewFlipper"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:layout_marginBottom="12dp"
-                android:autoStart="true"
-                android:flipInterval="3000" />
-
-            <!-- LINEAR 2: Nhà tuyển dụng -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                        android:padding="16dp">
+                android:padding="16dp">
 
+                <!-- Filter Form -->
+                <LinearLayout
+                    android:id="@+id/filter_form_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+                    <!-- Location Section -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Địa điểm"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cg_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:chipSpacing="8dp"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_hanoi"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hà Nội" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_hochiminh"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hồ Chí Minh" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_danang"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đà Nẵng" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_other_location"
+                            style="@style/Widget.MaterialComponents.Chip.Choice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Other" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <!-- Skill Section -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Kỹ năng"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/selected_skills_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+
+                    <TextView
+                        android:id="@+id/tv_select_skills"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:drawableEnd="@drawable/ic_down"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Chọn kỹ năng..."
+                        android:textColor="@color/textSecondary"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btn_apply_filter"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Tìm kiếm" />
+
+                </LinearLayout>
+
+                <!-- Top Companies Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nhà Tuyển Dụng Hàng Đầu"
+                    android:layout_marginTop="16dp"
+                    android:text="Các công ty hàng đầu"
+                    android:textColor="@color/textPrimary"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            android:layout_marginBottom="8dp"/>
+                    android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_top_companies"
                     android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clipToPadding="false"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                    android:scrollbars="horizontal"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
 
-            <!-- LINEAR 3: Gợi ý việc làm -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                        android:padding="16dp">
-
+                <!-- Suggested Jobs Section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gợi ý việc làm cho bạn"
+                    android:layout_marginTop="16dp"
+                    android:text="Việc làm gợi ý"
+                    android:textColor="@color/textPrimary"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                            android:textColor="@color/textPrimary"
-                            android:layout_marginBottom="8dp"/>
+                    android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_suggested_jobs"
                     android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nestedScrollingEnabled="false"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
-        <!-- Navigation Drawer -->
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/navigation_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start" >
-            <ListView
-                android:id="@+id/nav_list_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-        </com.google.android.material.navigation.NavigationView>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+         />
 
-    </androidx.drawerlayout.widget.DrawerLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
 

@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import com.example.jobhunter.api.SkillApi;
 
 public class SkillRepository {
-    public void getSkills(Context context, String token, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+    public void getSkills(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         SkillApi.getSkills(context, token, listener, errorListener);
     }
 

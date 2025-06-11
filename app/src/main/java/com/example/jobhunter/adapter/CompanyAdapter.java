@@ -14,13 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.model.Company;
 import com.squareup.picasso.Picasso;
+import com.example.jobhunter.api.ApiConfig;
 
 import java.util.List;
 
 public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyViewHolder> {
     private List<Company> companyList;
     private Context context;
-    private static final String LOGO_BASE_URL = "http://192.168.1.115:8080/storage/company/";
+    private static final String LOGO_BASE_URL = ApiConfig.LOGO_BASE_URL;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -50,13 +51,15 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
 
         // Hiển thị ngành nghề (field)
         if (holder.tvCompanyField != null) {
-//            holder.tvCompanyField.setText(company.getDescription() != null ? company.getDescription() : "-");
+            // holder.tvCompanyField.setText(company.getDescription() != null ?
+            // company.getDescription() : "-");
             holder.tvCompanyField.setText(company.getDescription() != null ? "Công nghệ thông tin" : "-");
 
         }
         // Hiển thị số vị trí tuyển (positions)
         if (holder.tvCompanyPositions != null) {
-//            holder.tvCompanyPositions.setText(company.getAddress() != null ? company.getAddress() : "-");
+            // holder.tvCompanyPositions.setText(company.getAddress() != null ?
+            // company.getAddress() : "-");
             holder.tvCompanyPositions.setText(company.getAddress() != null ? "12" : "-");
 
         }
@@ -89,7 +92,8 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
         }
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onItemClick(company);
+            if (listener != null)
+                listener.onItemClick(company);
         });
     }
 
@@ -106,6 +110,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.CompanyV
     public static class CompanyViewHolder extends RecyclerView.ViewHolder {
         ImageView imgLogo;
         TextView tvCompanyName, tvViewDetails, tvCompanyField, tvCompanyPositions;
+
         public CompanyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLogo = itemView.findViewById(R.id.img_logo);

@@ -1,31 +1,20 @@
 package com.example.jobhunter.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.jobhunter.adapter.ViewpagerAdater;
-import com.example.jobhunter.util.TokenManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.jobhunter.R;
-import com.example.jobhunter.adapter.MenuAdapter;
-import com.example.jobhunter.fragment.CompanyListFragment;
-import com.example.jobhunter.fragment.HomeFragment;
 import com.example.jobhunter.fragment.JobListFragment;
-import com.example.jobhunter.fragment.ProfileFragment;
-import com.example.jobhunter.fragment.SearchFragment;
-import com.example.jobhunter.model.MenuItem;
 import com.example.jobhunter.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,14 +27,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sessionManager = new SessionManager(this);
-        if (!sessionManager.isLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);

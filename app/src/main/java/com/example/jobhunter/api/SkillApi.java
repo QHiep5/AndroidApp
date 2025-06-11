@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class SkillApi {
     // Lấy danh sách skill (GET /api/v1/skills)
-    public static void getSkills(Context context, String token, Response.Listener<JSONArray> listener, Response.ErrorListener errorListener) {
+    public static void getSkills(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = ApiConfig.SKILL;
-        JsonArrayRequest request = new JsonArrayRequest(
+        JsonObjectRequest request = new JsonObjectRequest(
             com.android.volley.Request.Method.GET,
             url,
             null,
