@@ -31,22 +31,12 @@ import com.example.jobhunter.utils.SessionManager;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
-    private SessionManager sessionManager;
     ViewPager2 mViewPager;
     BottomNavigationView mBottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sessionManager = new SessionManager(this);
-        if (!sessionManager.isLoggedIn()) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         initView();

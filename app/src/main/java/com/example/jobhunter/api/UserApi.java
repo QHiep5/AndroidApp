@@ -33,7 +33,9 @@ public class UserApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
@@ -42,7 +44,7 @@ public class UserApi {
 
     // Lấy user theo id (GET /api/v1/users/{id})
     public static void getUser(Context context, String userId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.USER + userId;
+        String url = ApiConfig.USER +"/"+ userId;
         JsonObjectRequest request = new JsonObjectRequest(
                 com.android.volley.Request.Method.GET,
                 url,
@@ -53,7 +55,9 @@ public class UserApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
@@ -73,7 +77,9 @@ public class UserApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
@@ -93,7 +99,9 @@ public class UserApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };
@@ -113,7 +121,9 @@ public class UserApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    headers.put("Authorization", "Bearer " + token);
+                }
                 return headers;
             }
         };

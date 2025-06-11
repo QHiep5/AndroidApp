@@ -9,6 +9,7 @@ public class User {
     private long id;
     private String name;
     private String email;
+    private Long age;
     private String password;
     private GenderEnum gender; // Có thể là "MALE", "FEMALE", "OTHER"
     private String address;
@@ -70,10 +71,13 @@ public class User {
         this.email = email;
     }
 
+    public long getAge() {
+        return age;
+    }
+
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -81,6 +85,8 @@ public class User {
     public GenderEnum getGender() {
         return gender;
     }
+
+    public void setAge(Long age ){this.age = age;}
 
     public void setGender(GenderEnum gender) {
         this.gender = gender;

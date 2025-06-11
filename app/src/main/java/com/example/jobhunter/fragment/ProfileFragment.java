@@ -23,6 +23,7 @@ public class ProfileFragment extends Fragment {
         TextView tvName = view.findViewById(R.id.tv_name);
         TextView tvUserId = view.findViewById(R.id.tv_user_id);
         Button btnLogout = view.findViewById(R.id.btn_logout);
+        Button btnEditProfile = view.findViewById(R.id.btn_editProfile);
         // Các view khác nếu cần: btn_upgrade, btn_edit_experience, ...
 
         SharedPreferences prefs = getContext().getSharedPreferences("jobhunter_prefs", getContext().MODE_PRIVATE);
@@ -48,6 +49,13 @@ public class ProfileFragment extends Fragment {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             requireActivity().finish();
+        });
+
+        btnEditProfile.setOnClickListener(v -> {
+            int userId = prefs.getInt("user_id", 0);
+            Intent intent = new Intent(getActivity(), com.example.jobhunter.activity.ProfileDetailActivity.class);
+            intent.putExtra("user_id", userId);
+            startActivity(intent);
         });
 
         return view;
