@@ -12,9 +12,11 @@ import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.CompanyDetailViewModel;
 import com.example.jobhunter.model.Company;
 import com.squareup.picasso.Picasso;
+import com.example.jobhunter.api.ApiConfig;
 
 public class CompanyDetailActivity extends AppCompatActivity {
     private CompanyDetailViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +43,13 @@ public class CompanyDetailActivity extends AppCompatActivity {
         tvField.setSelected(true);
         tvWebsite.setSelected(true);
 
-        viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())).get(CompanyDetailViewModel.class);
+        viewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()))
+                .get(CompanyDetailViewModel.class);
         viewModel.getCompanyLiveData().observe(this, company -> {
-            if (company == null) return;
+            if (company == null)
+                return;
             // Hiển thị dữ liệu lên giao diện
-            String logoUrl = "http://192.168.0.103:8080/storage/company/" + company.getLogo();
+            String logoUrl = ApiConfig.LOGO_BASE_URL + company.getLogo();
             Picasso.get()
                     .load(logoUrl)
                     .placeholder(R.drawable.ic_company)
@@ -57,16 +61,17 @@ public class CompanyDetailActivity extends AppCompatActivity {
             tvAddress.setText("  • " + company.getAddress());
             tvWebsite.setText("🌐 www.company.com"); // Nếu có trường website thì lấy từ API
             // Chuyển HTML sang text thuần
-            String plainDescription = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N ?
-                Html.fromHtml(company.getDescription(), Html.FROM_HTML_MODE_LEGACY).toString() :
-                Html.fromHtml(company.getDescription()).toString();
+            String plainDescription = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N
+                    ? Html.fromHtml(company.getDescription(), Html.FROM_HTML_MODE_LEGACY).toString()
+                    : Html.fromHtml(company.getDescription()).toString();
             tvDescription.setText(plainDescription);
             tvEmail.setText("Email: info@company.com"); // Nếu có trường email thì lấy từ API
             tvHotline.setText("   Hotline: 1900 1234"); // Nếu có trường hotline thì lấy từ API
             tvJobs.setText("Chức năng hiển thị việc làm sẽ bổ sung sau...");
         });
         viewModel.getErrorLiveData().observe(this, error -> {
-            if (error != null) Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            if (error != null)
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
         });
         viewModel.fetchCompany(String.valueOf(companyId), token);
     }

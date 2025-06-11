@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import org.json.JSONObject;
 import java.io.*;
 import okhttp3.*;
+import com.example.jobhunter.api.ApiConfig;
 
 public class UploadCVViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
@@ -54,7 +55,7 @@ public class UploadCVViewModel extends AndroidViewModel {
                 android.util.Log.d("UPLOAD_CV", "File name: " + fileName + ", size: " + file.length());
 
                 Request.Builder requestBuilder = new Request.Builder()
-                        .url("http://192.168.1.115:8080/api/v1/files")
+                        .url(ApiConfig.FILE)
                         .post(requestBody);
                 if (token != null && !token.isEmpty()) {
                     requestBuilder.addHeader("Authorization", "Bearer " + token);
@@ -113,7 +114,7 @@ public class UploadCVViewModel extends AndroidViewModel {
                 String token = prefs.getString("auth_token", null);
 
                 Request.Builder requestBuilder = new Request.Builder()
-                        .url("http://192.168.1.115:8080/api/v1/resumes")
+                        .url(ApiConfig.RESUME)
                         .post(requestBody);
                 if (token != null && !token.isEmpty()) {
                     requestBuilder.addHeader("Authorization", "Bearer " + token);

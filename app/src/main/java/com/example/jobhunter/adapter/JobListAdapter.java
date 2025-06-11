@@ -13,6 +13,7 @@ import com.example.jobhunter.activity.JobDetailActivity;
 import com.example.jobhunter.model.Job;
 import com.squareup.picasso.Picasso;
 import android.content.Intent;
+import com.example.jobhunter.api.ApiConfig;
 
 import java.util.List;
 import java.text.NumberFormat;
@@ -23,7 +24,7 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
     private List<Job> jobList;
     private Context context;
     private static final String TAG = "JobListAdapter";
-    private static final String LOGO_BASE_URL = "http://192.168.1.115:8080/storage/company/";
+    private static final String LOGO_BASE_URL = ApiConfig.LOGO_BASE_URL;
 
     public JobListAdapter(Context context, List<Job> jobList) {
         this.context = context;
@@ -60,10 +61,10 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
             Log.d(TAG, "Loading image for " + job.getName() + " from URL: " + fullLogoUrl);
 
             Picasso.get()
-                .load(fullLogoUrl)
-                .placeholder(R.drawable.ic_company)
-                .error(R.drawable.ic_company)
-                .into(holder.imgHinh);
+                    .load(fullLogoUrl)
+                    .placeholder(R.drawable.ic_company)
+                    .error(R.drawable.ic_company)
+                    .into(holder.imgHinh);
         } else {
             String reason = job.getCompany() == null ? "Company object is null" : "Logo is null or empty";
             Log.w(TAG, "No logo for job: " + job.getName() + ". Reason: " + reason + ". Using placeholder.");
