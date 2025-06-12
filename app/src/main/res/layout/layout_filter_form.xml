@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/filter_form_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+   >
+
+    <!-- Location -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Địa điểm"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:chipSpacing="8dp"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_hanoi"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="Hà Nội" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_hochiminh"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="Hồ Chí Minh" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_danang"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="Đà Nẵng" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_other_location"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:text="Other" />
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Skills -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Kỹ năng"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/selected_skills_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/tv_select_skills"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_down"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="Chọn kỹ năng..."
+        android:textColor="@color/textSecondary"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btn_apply_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Tìm kiếm" />
+</LinearLayout>

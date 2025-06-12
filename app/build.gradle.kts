@@ -44,4 +44,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation(libs.gson)
+
 }

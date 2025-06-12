@@ -1,0 +1,6 @@
+<activity android:name=".activity.JobDetailActivity" />
+<activity android:name=".activity.UploadCVActivity"/>
+<activity android:name=".activity.CvManagementActivity"/>
+<activity
+    android:name=".activity.CompanyDetailActivity"
+    android:exported="false" /> 

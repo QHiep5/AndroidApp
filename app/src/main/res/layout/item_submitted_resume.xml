@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="@android:color/white">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- STT - Đặt ở góc trái trên cùng, trong vòng tròn -->
+        <TextView
+            android:id="@+id/tv_stt"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:background="@drawable/circle_background"
+            android:textColor="@android:color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
+
+        <!-- Guideline để tạo khoảng cách giữa STT và nội dung -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_stt_spacing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="40dp" />
+
+        <!-- Job Title - Căn trái, trên cùng sau STT -->
+        <TextView
+            android:id="@+id/tv_job_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:paddingTop="4dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_stt_spacing"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_view_details"
+            tools:text="Senior Java Developer (JLPT N2, Sign-on Bonus)" />
+
+        <!-- Company Name - Căn trái, dưới Job Title -->
+        <TextView
+            android:id="@+id/tv_company_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textPrimary"
+            android:maxLines="1"
+            android:paddingTop="2dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_stt_spacing"
+            app:layout_constraintTop_toBottomOf="@id/tv_job_title"
+            app:layout_constraintEnd_toStartOf="@id/btn_view_details"
+            tools:text="DTN E-COMMERCE SOFTWARE COMPANY LIMITED" />
+
+        <!-- Status và Submission Date - Căn ngang hàng, dưới Company Name -->
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/textPrimary"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/guideline_stt_spacing"
+            app:layout_constraintTop_toBottomOf="@id/tv_company_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_submission_date"
+            tools:text="PENDING" />
+
+        <TextView
+            android:id="@+id/tv_submission_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/textPrimary"
+            android:paddingTop="4dp"
+            app:layout_constraintEnd_toEndOf="@id/btn_view_details"
+            app:layout_constraintTop_toBottomOf="@id/tv_company_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_status"
+            tools:text="Nộp ngày: 07-12-2024 14:30:49" />
+
+        <!-- View Details Button - Căn phải, căn giữa theo chiều dọc -->
+        <TextView
+            android:id="@+id/btn_view_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xem chi tiết"
+            android:textSize="12sp"
+            android:background="@drawable/button_background"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_job_title"
+            app:layout_constraintBottom_toBottomOf="@id/tv_status"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

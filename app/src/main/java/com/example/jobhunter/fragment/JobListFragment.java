@@ -1,5 +1,6 @@
 package com.example.jobhunter.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
+import com.example.jobhunter.activity.JobDetailActivity;
 import com.example.jobhunter.adapter.JobListAdapter;
 import com.example.jobhunter.utils.SessionManager;
 import com.example.jobhunter.ViewModel.JobViewModel;
@@ -74,6 +76,11 @@ public class JobListFragment extends Fragment {
         rvSuggestedJobs.setLayoutManager(new LinearLayoutManager(getContext()));
         jobListAdapter = new JobListAdapter(getContext(),new ArrayList<>());
         rvSuggestedJobs.setAdapter(jobListAdapter);
+        jobListAdapter.setOnJobClickListener(job -> {
+            Intent intent = new Intent(getContext(), JobDetailActivity.class);
+            intent.putExtra("JOB_ID", job.getId());
+            startActivity(intent);
+        });
         rvSuggestedJobs.setNestedScrollingEnabled(false);
 
         return view;

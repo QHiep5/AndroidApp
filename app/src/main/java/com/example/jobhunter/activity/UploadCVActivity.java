@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.UploadCVViewModel;
 import androidx.appcompat.app.AlertDialog;
-import androidx.cardview.widget.CardView;
 import com.google.android.material.card.MaterialCardView;
 
 public class UploadCVActivity extends AppCompatActivity {
@@ -27,7 +26,7 @@ public class UploadCVActivity extends AppCompatActivity {
     private MaterialCardView cvAttachCV;
     private Button btnConfirmApply;
     private ProgressBar progressBar;
-
+    private ImageView btnBack;
     private UploadCVViewModel viewModel;
 
     private String userEmail;
@@ -39,23 +38,33 @@ public class UploadCVActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
 
+        // Ánh xạ view
         tvAttachCV = findViewById(R.id.tv_attach_cv);
         cvAttachCV = findViewById(R.id.btn_attach_cv);
         btnConfirmApply = findViewById(R.id.btn_confirm_apply);
         progressBar = findViewById(R.id.progressBar);
+        btnBack = findViewById(R.id.btn_back); // <-- nút quay lại
 
         viewModel = new ViewModelProvider(this).get(UploadCVViewModel.class);
 
+        // Lấy dữ liệu được truyền sang
         userId = getIntent().getLongExtra("userId", 0);
         jobId = getIntent().getLongExtra("jobId", 0);
         userEmail = getIntent().getStringExtra("userEmail");
+
         if (userId == 0 || jobId == 0 || userEmail == null || userEmail.isEmpty()) {
             Toast.makeText(this, "Thiếu thông tin người dùng hoặc công việc!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        // Xử lý nút quay lại
+        btnBack.setOnClickListener(v -> finish());
+
+        // Chọn file
         cvAttachCV.setOnClickListener(v -> openFilePicker());
+
+        // Xác nhận nộp CV
         btnConfirmApply.setOnClickListener(v -> {
             if (selectedFileUri != null && selectedFileName != null) {
                 viewModel.uploadFileToServer(getApplication(), selectedFileUri, selectedFileName);
@@ -64,12 +73,14 @@ public class UploadCVActivity extends AppCompatActivity {
             }
         });
 
+        // Loading state
         viewModel.getIsLoading().observe(this, isLoading -> {
             progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             btnConfirmApply.setEnabled(!isLoading);
             cvAttachCV.setEnabled(!isLoading);
         });
 
+        // Kết quả upload file
         viewModel.getUploadResult().observe(this, fileName -> {
             if (fileName != null) {
                 uploadedFileName = fileName;
@@ -80,6 +91,7 @@ public class UploadCVActivity extends AppCompatActivity {
             }
         });
 
+        // Kết quả nộp CV
         viewModel.getSubmitResult().observe(this, result -> {
             if ("success".equals(result)) {
                 showSuccessDialog();
@@ -92,8 +104,11 @@ public class UploadCVActivity extends AppCompatActivity {
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        String[] mimeTypes = { "application/pdf", "application/msword",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document" };
+        String[] mimeTypes = {
+                "application/pdf",
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        };
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         startActivityForResult(intent, PICK_FILE_REQUEST);
     }
@@ -121,9 +136,7 @@ public class UploadCVActivity extends AppCompatActivity {
         if (result == null) {
             result = uri.getPath();
             int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
+            if (cut != -1) result = result.substring(cut + 1);
         }
         return result;
     }
