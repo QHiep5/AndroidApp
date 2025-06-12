@@ -27,6 +27,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
         // Bind views
         ImageView imgLogo = findViewById(R.id.img_company_logo);
+        ImageView btnBack = findViewById(R.id.btn_back_company); // <-- Nút quay lại
         TextView tvName = findViewById(R.id.tv_company_name);
         TextView tvBadge = findViewById(R.id.tv_company_badge);
         TextView tvField = findViewById(R.id.tv_company_field);
@@ -36,7 +37,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         TextView tvEmail = findViewById(R.id.tv_company_email);
         TextView tvHotline = findViewById(R.id.tv_company_hotline);
         TextView tvJobs = findViewById(R.id.tv_company_jobs_placeholder);
-        ImageView btnBack = findViewById(R.id.btn_back);
+        // ImageView btnBack = findViewById(R.id.btn_back);
 
         // Handle nút quay lại
         btnBack.setOnClickListener(v -> finish());
