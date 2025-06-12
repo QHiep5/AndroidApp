@@ -40,58 +40,17 @@ public class ResumeViewModel extends AndroidViewModel {
         return errorLiveData;
     }
 
-    public void getResumesByUser(String token) {
-        ResumeApi.getResumesByUser(getApplication(), token, response -> {
-            try {
-                Log.d(TAG, "JSON từ server trả về: " + response.toString());
+    public void fetchResumes(String token) {
+        ResumeApi.getResumes(getApplication(), token, response -> resumes.setValue(response), this::handleError);
+    }
 
-                JSONObject dataObject = response.getJSONObject("data");
-                Log.d(TAG, "JSON 'data': " + dataObject.toString());
-
-                JSONArray resultArray = dataObject.getJSONArray("result");
-                Log.d(TAG, "JSON 'result': " + resultArray.toString());
-
-                List<Resume> resumeList = new java.util.ArrayList<>();
-
-                for (int i = 0; i < resultArray.length(); i++) {
-                    JSONObject resumeObj = resultArray.getJSONObject(i);
-                    Resume resume = gson.fromJson(resumeObj.toString(), Resume.class);
-
-                    // ✅ Thêm companyName vào Job
-                    if (resume.getJob() != null && resumeObj.has("companyName")) {
-                        String companyName = resumeObj.getString("companyName");
-
-                        com.example.jobhunter.model.Company company = new com.example.jobhunter.model.Company();
-                        company.setName(companyName);
-                        resume.getJob().setCompany(company);
-                    }
-
-                    resumeList.add(resume);
-                }
-
-                if (!resumeList.isEmpty()) {
-                    Log.d(TAG, "Số lượng resume nhận được: " + resumeList.size());
-                    resumesLiveData.postValue(resumeList);
-                } else {
-                    Log.d(TAG, " Không có resume nào.");
-                    errorLiveData.postValue("Không có CV nào.");
-                }
-
-            } catch (Exception e) {
-                Log.e(TAG, "Lỗi parse JSON", e);
-                errorLiveData.postValue("Lỗi parse JSON: " + e.getMessage());
-            }
-        }, this::handleError);
+    public void fetchResume(String resumeId, String token) {
+        ResumeApi.getResume(getApplication(), resumeId, token, response -> resume.setValue(response), this::handleError);
     }
 
 
 
-    private void handleError(VolleyError error) {
-        if (error.networkResponse != null && error.networkResponse.data != null) {
-            this.errorLiveData.postValue(new String(error.networkResponse.data));
-        } else {
-            this.errorLiveData.postValue(error.getMessage());
-        }
+    private void handleError(VolleyError volleyError) {
+        error.setValue(volleyError.getMessage());
     }
-
 }
