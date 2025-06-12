@@ -23,12 +23,17 @@ import android.util.Log;
 public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewHolder> {
     private List<Job> jobList;
     private Context context;
+    private OnJobClickListener onJobClickListener;
     private static final String TAG = "JobListAdapter";
     private static final String LOGO_BASE_URL = ApiConfig.LOGO_BASE_URL;
 
     public JobListAdapter(Context context, List<Job> jobList) {
         this.context = context;
         this.jobList = jobList;
+    }
+
+    public void setOnJobClickListener(OnJobClickListener listener) {
+        this.onJobClickListener = listener;
     }
 
     @NonNull
@@ -41,40 +46,29 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
     @Override
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
         Job job = jobList.get(position);
-        if (job == null) {
-            Log.w(TAG, "Job object at position " + position + " is null.");
-            return;
-        }
+        if (job == null) return;
 
-        Log.d(TAG, "Binding view for position " + position + ", Job: " + job.getName());
         holder.txtTen.setText(job.getName());
         holder.txtLocation.setText(job.getLocation());
         holder.txtTime.setText(job.getStartDate());
 
-        // Format salary for display
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         holder.txtSalary.setText(currencyFormat.format(job.getSalary()));
 
         if (job.getCompany() != null && job.getCompany().getLogo() != null && !job.getCompany().getLogo().isEmpty()) {
-            String logoFileName = job.getCompany().getLogo();
-            String fullLogoUrl = LOGO_BASE_URL + logoFileName;
-            Log.d(TAG, "Loading image for " + job.getName() + " from URL: " + fullLogoUrl);
-
-            Picasso.get()
-                    .load(fullLogoUrl)
+            String logoUrl = LOGO_BASE_URL + job.getCompany().getLogo();
+            Picasso.get().load(logoUrl)
                     .placeholder(R.drawable.ic_company)
                     .error(R.drawable.ic_company)
                     .into(holder.imgHinh);
         } else {
-            String reason = job.getCompany() == null ? "Company object is null" : "Logo is null or empty";
-            Log.w(TAG, "No logo for job: " + job.getName() + ". Reason: " + reason + ". Using placeholder.");
             holder.imgHinh.setImageResource(R.drawable.ic_company);
         }
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, JobDetailActivity.class);
-            intent.putExtra("JOB_ID", job.getId());
-            context.startActivity(intent);
+            if (onJobClickListener != null) {
+                onJobClickListener.onJobClick(job);
+            }
         });
     }
 
@@ -85,7 +79,6 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
 
     public void setData(List<Job> jobs) {
         this.jobList = jobs;
-        Log.d(TAG, "Adapter setData called with " + (jobs == null ? 0 : jobs.size()) + " items. Notifying change.");
         notifyDataSetChanged();
     }
 
@@ -101,5 +94,10 @@ public class JobListAdapter extends RecyclerView.Adapter<JobListAdapter.JobViewH
             txtSalary = itemView.findViewById(R.id.txtSalary);
             txtTime = itemView.findViewById(R.id.txtTime);
         }
+    }
+
+    // ✅ Interface callback
+    public interface OnJobClickListener {
+        void onJobClick(Job job);
     }
 }

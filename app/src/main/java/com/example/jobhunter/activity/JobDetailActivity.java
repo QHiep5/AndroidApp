@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import com.example.jobhunter.utils.SessionManager;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -42,7 +40,7 @@ public class JobDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.job_detail);
+        setContentView(R.layout.activity_job_detail);
 
         sessionManager = new SessionManager(this);
 

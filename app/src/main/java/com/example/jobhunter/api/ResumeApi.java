@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import java.util.HashMap;
 import java.util.Map;
+import com.android.volley.Request;
 
 public class ResumeApi {
     // Lấy danh sách resume (GET /api/v1/resumes)
@@ -108,6 +109,27 @@ public class ResumeApi {
                 return headers;
             }
         };
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    public static void getResumesByUser(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String url = ApiConfig.RESUME + "/by-user";
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                null,
+                listener,
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 }

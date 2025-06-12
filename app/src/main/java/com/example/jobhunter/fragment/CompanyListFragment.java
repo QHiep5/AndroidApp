@@ -16,7 +16,6 @@ import android.widget.GridView;
 
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.CompanyViewModel;
-import com.example.jobhunter.ViewModel.HomeViewModel;
 import com.example.jobhunter.adapter.CompanyAdapter;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class CompanyListFragment extends Fragment {
         init();
         companiesListView.setAdapter(companyAdapter);
         companiesListView.setLayoutManager(new LinearLayoutManager(getContext()));
-        
+
         companyAdapter.setOnItemClickListener(company -> {
             Intent intent = new Intent(getContext(), com.example.jobhunter.activity.CompanyDetailActivity.class);
             intent.putExtra("company_id", company.getId());
@@ -73,7 +72,7 @@ public class CompanyListFragment extends Fragment {
         });
 
         companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
-        
+
         String token = ""; // Lấy token từ SharedPreferences hoặc nơi lưu trữ nếu có
         companyViewModel.fetchCompanies(token);
         companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(), companies -> {

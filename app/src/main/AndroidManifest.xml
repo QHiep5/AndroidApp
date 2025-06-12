@@ -33,7 +33,7 @@
         <activity android:name=".activity.ProfileDetailActivity"
             android:exported="false"
             />
-
+        <activity android:name=".activity.CvManagementActivity" />
     </application>
 
 </manifest>

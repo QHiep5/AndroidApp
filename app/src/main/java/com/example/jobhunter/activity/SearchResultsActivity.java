@@ -1,5 +1,6 @@
 package com.example.jobhunter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.JobViewModel;
 import com.example.jobhunter.adapter.JobListAdapter;
-import com.example.jobhunter.model.Job;
 
 import java.util.ArrayList;
 
@@ -52,6 +52,13 @@ public class SearchResultsActivity extends AppCompatActivity {
         rvSearchResults.setLayoutManager(new LinearLayoutManager(this));
         rvSearchResults.setAdapter(jobListAdapter);
 
+        // Xử lý sự kiện khi click vào item job
+        jobListAdapter.setOnJobClickListener(job -> {
+            Intent intent = new Intent(SearchResultsActivity.this, JobDetailActivity.class);
+            intent.putExtra("JOB_ID", job.getId());
+            startActivity(intent);
+        });
+
         // Lấy dữ liệu lọc từ Intent
         String location = getIntent().getStringExtra("location");
         ArrayList<String> skills = getIntent().getStringArrayListExtra("skills");
@@ -85,4 +92,4 @@ public class SearchResultsActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         viewModel.searchJobs(location, skills);
     }
-} 
+}
