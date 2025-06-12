@@ -9,11 +9,17 @@ import android.text.TextUtils;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.Observer;
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.UserViewModelDetails;
+import com.example.jobhunter.ViewModel.SkillViewModel;
+import com.example.jobhunter.model.Skill;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import android.widget.ImageView;
+import android.app.AlertDialog;
+import java.util.List;
 
 public class ProfileDetailActivity extends AppCompatActivity {
     @Override
@@ -35,6 +41,8 @@ public class ProfileDetailActivity extends AppCompatActivity {
         Button btnCancel = findViewById(R.id.btn_cancel);
         Spinner spinnerGender = findViewById(R.id.spinner_gender);
         Spinner spinnerLevel = findViewById(R.id.spinner_level);
+        ImageView btnBack = findViewById(R.id.btn_back);
+        Button btnEditSkills = findViewById(R.id.btn_edit_skills);
 
         // Chuẩn bị dữ liệu enum cho spinner
         String[] genderArray = new String[com.example.jobhunter.util.constant.GenderEnum.values().length];
@@ -177,6 +185,44 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 btnCancel.setEnabled(false);
                 btnCancel.setAlpha(0.5f);
             }
+        });
+        btnBack.setOnClickListener(v -> finish());
+
+        SkillViewModel skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
+        btnEditSkills.setOnClickListener(v -> {
+            skillViewModel.fetchSkills();
+            skillViewModel.getSkillsLiveData().observe(this, new Observer<List<Skill>>() {
+                @Override
+                public void onChanged(List<Skill> skills) {
+                    if (skills == null || skills.isEmpty()) {
+                        Toast.makeText(ProfileDetailActivity.this, "Không có dữ liệu kỹ năng!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String[] skillNames = new String[skills.size()];
+                    boolean[] checkedItems = new boolean[skills.size()];
+                    for (int i = 0; i < skills.size(); i++) {
+                        skillNames[i] = skills.get(i).getName();
+                        checkedItems[i] = false; // TODO: Đánh dấu true nếu user đã có kỹ năng này
+                    }
+                    new AlertDialog.Builder(ProfileDetailActivity.this)
+                        .setTitle("Chọn kỹ năng")
+                        .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
+                            // Có thể xử lý chọn/bỏ chọn ở đây nếu muốn
+                        })
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            // TODO: Lưu lại danh sách kỹ năng đã chọn
+                            StringBuilder sb = new StringBuilder("Kỹ năng đã chọn: ");
+                            for (int i = 0; i < skillNames.length; i++) {
+                                if (checkedItems[i]) sb.append(skillNames[i]).append(", ");
+                            }
+                            Toast.makeText(ProfileDetailActivity.this, sb.toString(), Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+                    // Chỉ observe 1 lần
+                    skillViewModel.getSkillsLiveData().removeObserver(this);
+                }
+            });
         });
     }
 } 
