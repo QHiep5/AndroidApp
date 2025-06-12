@@ -37,6 +37,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         TextView tvEmail = findViewById(R.id.tv_company_email);
         TextView tvHotline = findViewById(R.id.tv_company_hotline);
         TextView tvJobs = findViewById(R.id.tv_company_jobs_placeholder);
+        ImageView btnBack = findViewById(R.id.btn_back);
 
         // Handle nút quay lại
         btnBack.setOnClickListener(v -> finish());
@@ -85,5 +86,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         });
 
         viewModel.fetchCompany(String.valueOf(companyId), token);
+
+        btnBack.setOnClickListener(v -> finish());
     }
 }
