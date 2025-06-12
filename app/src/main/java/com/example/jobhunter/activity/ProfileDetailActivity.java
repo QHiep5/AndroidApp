@@ -20,6 +20,7 @@ import android.widget.Toast;
 import android.widget.ImageView;
 import android.app.AlertDialog;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.flexbox.AlignItems;
+=======
+>>>>>>> 63ae649 (View + Feat : Profile Detail)
 
 public class ProfileDetailActivity extends AppCompatActivity {
     @Override
@@ -297,6 +300,44 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 // Update initial skills display
                 updateSkillsDisplay(layoutSkillsRow, selectedSkills);
             }
+        });
+        btnBack.setOnClickListener(v -> finish());
+
+        SkillViewModel skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
+        btnEditSkills.setOnClickListener(v -> {
+            skillViewModel.fetchSkills();
+            skillViewModel.getSkillsLiveData().observe(this, new Observer<List<Skill>>() {
+                @Override
+                public void onChanged(List<Skill> skills) {
+                    if (skills == null || skills.isEmpty()) {
+                        Toast.makeText(ProfileDetailActivity.this, "Không có dữ liệu kỹ năng!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String[] skillNames = new String[skills.size()];
+                    boolean[] checkedItems = new boolean[skills.size()];
+                    for (int i = 0; i < skills.size(); i++) {
+                        skillNames[i] = skills.get(i).getName();
+                        checkedItems[i] = false; // TODO: Đánh dấu true nếu user đã có kỹ năng này
+                    }
+                    new AlertDialog.Builder(ProfileDetailActivity.this)
+                        .setTitle("Chọn kỹ năng")
+                        .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
+                            // Có thể xử lý chọn/bỏ chọn ở đây nếu muốn
+                        })
+                        .setPositiveButton("OK", (dialog, which) -> {
+                            // TODO: Lưu lại danh sách kỹ năng đã chọn
+                            StringBuilder sb = new StringBuilder("Kỹ năng đã chọn: ");
+                            for (int i = 0; i < skillNames.length; i++) {
+                                if (checkedItems[i]) sb.append(skillNames[i]).append(", ");
+                            }
+                            Toast.makeText(ProfileDetailActivity.this, sb.toString(), Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+                    // Chỉ observe 1 lần
+                    skillViewModel.getSkillsLiveData().removeObserver(this);
+                }
+            });
         });
     }
 

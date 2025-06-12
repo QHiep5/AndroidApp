@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:background="@color/background">
 
     <LinearLayout
@@ -46,6 +47,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+<<<<<<< HEAD
 
             <!-- Tiêu đề -->
             <TextView
@@ -332,5 +334,310 @@
         </LinearLayout>
 
         </LinearLayout>
+=======
+
+            <!-- Tiêu đề -->
+            <TextView
+                android:id="@+id/tv_profile_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thông Tin Cá Nhân"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Thông tin cá nhân -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:elevation="4dp"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="4dp"
+                android:backgroundTint="@android:color/white"
+                android:clipToPadding="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="4dp"
+                android:backgroundTintMode="src_in"
+                android:shape="rectangle">
+
+                <!-- Name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tên: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tên người dùng"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <!-- Email -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/et_email"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:enabled="false"
+                        android:inputType="textEmailAddress"/>
+                </LinearLayout>
+
+                <!-- Age -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tuổi: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_age"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Tuổi"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <!-- Gender -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Giới tính: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <Spinner
+                        android:id="@+id/spinner_gender"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"/>
+                </LinearLayout>
+
+                <!-- Address -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Địa chỉ: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:id="@+id/et_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:enabled="false"
+                        android:inputType="text"/>
+                </LinearLayout>
+
+                <!-- Salary -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mức lương: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_salary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Mức lương mong muốn"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <!-- Level -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cấp bậc: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <Spinner
+                        android:id="@+id/spinner_level"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"/>
+                </LinearLayout>
+
+                <!-- Company -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Công ty: "
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/tv_company"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Công ty"
+                        android:textSize="16sp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <!-- Nút chức năng -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginTop="12dp">
+                    <Button
+                        android:id="@+id/btn_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chỉnh sửa"/>
+                    <Button
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Huỷ"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Kỹ năng -->
+            <TextView
+                android:id="@+id/tv_skills_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kỹ năng"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:id="@+id/layout_skills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:id="@+id/layout_skills_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="start|center_vertical"
+                    android:layout_marginBottom="8dp">
+                    <!-- Các TextView kỹ năng sẽ được thêm động ở đây -->
+                    <TextView
+                        android:id="@+id/tv_skill_sample1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_skill_chip"
+                        android:text="Java"
+                        android:textColor="@color/colorPrimary"
+                        android:gravity="center"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tv_skill_sample2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_skill_chip"
+                        android:text="Python"
+                        android:textColor="@color/colorPrimary"
+                        android:gravity="center"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tv_skill_sample3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:background="@drawable/bg_skill_chip"
+                        android:text="SQL"
+                        android:textColor="@color/colorPrimary"
+                        android:gravity="center"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:layout_marginBottom="8dp">
+            <Button
+                android:id="@+id/btn_edit_skills"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chỉnh sửa kỹ năng"
+                android:layout_gravity="end"/>
+        </LinearLayout>
+
+        </LinearLayout>
+>>>>>>> 63ae649 (View + Feat : Profile Detail)
     </ScrollView>
 </LinearLayout>
