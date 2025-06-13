@@ -43,7 +43,7 @@ public class UploadCVActivity extends AppCompatActivity {
         cvAttachCV = findViewById(R.id.btn_attach_cv);
         btnConfirmApply = findViewById(R.id.btn_confirm_apply);
         progressBar = findViewById(R.id.progressBar);
-        btnBack = findViewById(R.id.btn_back); // <-- nút quay lại
+        btnBack = findViewById(R.id.btn_back_upload); // <-- nút quay lại
 
         viewModel = new ViewModelProvider(this).get(UploadCVViewModel.class);
 

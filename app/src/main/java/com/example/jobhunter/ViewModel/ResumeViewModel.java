@@ -43,13 +43,13 @@ public class ResumeViewModel extends AndroidViewModel {
     public void getResumesByUser(String token) {
         ResumeApi.getResumesByUser(getApplication(), token, response -> {
             try {
-                Log.d(TAG, "⏬ JSON từ server trả về: " + response.toString());
+                Log.d(TAG, "JSON từ server trả về: " + response.toString());
 
                 JSONObject dataObject = response.getJSONObject("data");
-                Log.d(TAG, "📦 JSON 'data': " + dataObject.toString());
+                Log.d(TAG, "JSON 'data': " + dataObject.toString());
 
                 JSONArray resultArray = dataObject.getJSONArray("result");
-                Log.d(TAG, "📄 JSON 'result': " + resultArray.toString());
+                Log.d(TAG, "JSON 'result': " + resultArray.toString());
 
                 List<Resume> resumeList = new java.util.ArrayList<>();
 
@@ -70,15 +70,15 @@ public class ResumeViewModel extends AndroidViewModel {
                 }
 
                 if (!resumeList.isEmpty()) {
-                    Log.d(TAG, "✅ Số lượng resume nhận được: " + resumeList.size());
+                    Log.d(TAG, "Số lượng resume nhận được: " + resumeList.size());
                     resumesLiveData.postValue(resumeList);
                 } else {
-                    Log.d(TAG, "⚠️ Không có resume nào.");
+                    Log.d(TAG, " Không có resume nào.");
                     errorLiveData.postValue("Không có CV nào.");
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "❌ Lỗi parse JSON", e);
+                Log.e(TAG, "Lỗi parse JSON", e);
                 errorLiveData.postValue("Lỗi parse JSON: " + e.getMessage());
             }
         }, this::handleError);
