@@ -18,10 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#2F3737"
+        android:background="@color/material_dynamic_neutral_variant10"
+        android:elevation="4dp"
         app:itemTextColor="@color/bottomNavSelected"
         app:itemIconTint="@color/bottomNavSelected"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu"
-        />
+        app:itemIconSize="24dp"
+        app:itemRippleColor="@color/bottomNavUnselected"
+        app:menu="@menu/bottom_nav_menu"/>
+
 </RelativeLayout>
