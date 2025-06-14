@@ -184,26 +184,26 @@
                         android:inputType="text"/>
                 </LinearLayout>
 
-                <!-- Salary -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="6dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mức lương: "
-                        android:textSize="16sp"
-                        android:textStyle="bold"/>
-                    <TextView
-                        android:id="@+id/tv_salary"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Mức lương mong muốn"
-                        android:textSize="16sp"/>
-                </LinearLayout>
+<!--                &lt;!&ndash; Salary &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_marginBottom="6dp">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Mức lương: "-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold"/>-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_salary"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="Mức lương mong muốn"-->
+<!--                        android:textSize="16sp"/>-->
+<!--                </LinearLayout>-->
 
                 <!-- Level -->
                 <LinearLayout
@@ -232,6 +232,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="6dp">
                     <TextView
+                        android:id="@+id/tv_company_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Công ty: "
@@ -247,25 +248,7 @@
                         android:visibility="gone"/>
                 </LinearLayout>
 
-                <!-- Nút chức năng -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="end"
-                    android:layout_marginTop="12dp">
-                    <Button
-                        android:id="@+id/btn_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chỉnh sửa"/>
-                    <Button
-                        android:id="@+id/btn_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Huỷ"
-                        android:layout_marginStart="8dp"/>
-                </LinearLayout>
+
             </LinearLayout>
 
             <!-- Kỹ năng -->
@@ -278,75 +261,56 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
-            <LinearLayout
-                android:id="@+id/layout_skills"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layout_skills_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="8dp"
                 android:background="@android:color/white"
                 android:elevation="2dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                app:flexWrap="wrap"
+                app:flexDirection="row"
+                app:alignItems="center"
+                app:justifyContent="flex_start">
 
-                <LinearLayout
-                    android:id="@+id/layout_skills_row"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="start|center_vertical"
-                    android:layout_marginBottom="8dp">
-                    <!-- Các TextView kỹ năng sẽ được thêm động ở đây -->
-                    <TextView
-                        android:id="@+id/tv_skill_sample1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_skill_chip"
-                        android:text="Java"
-                        android:textColor="@color/colorPrimary"
-                        android:gravity="center"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:textSize="15sp"/>
-                    <TextView
-                        android:id="@+id/tv_skill_sample2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_skill_chip"
-                        android:text="Python"
-                        android:textColor="@color/colorPrimary"
-                        android:gravity="center"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:textSize="15sp"/>
-                    <TextView
-                        android:id="@+id/tv_skill_sample3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:background="@drawable/bg_skill_chip"
-                        android:text="SQL"
-                        android:textColor="@color/colorPrimary"
-                        android:gravity="center"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:layout_marginEnd="8dp"
-                        android:textSize="15sp"/>
-                </LinearLayout>
-            </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start|center_vertical"
-            android:layout_marginBottom="8dp">
-            <Button
-                android:id="@+id/btn_edit_skills"
-                android:layout_width="wrap_content"
+                <!-- Skills will be added dynamically here -->
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chỉnh sửa kỹ năng"
-                android:layout_gravity="end"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="start|center_vertical"
+                android:layout_marginBottom="8dp">
+                <Button
+                    android:id="@+id/btn_edit_skills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chỉnh sửa kỹ năng"
+                    android:layout_gravity="end"/>
+            </LinearLayout>
+
+            <!-- Nút chức năng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_marginTop="12dp">
+                <Button
+                    android:id="@+id/btn_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chỉnh sửa"/>
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Huỷ"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

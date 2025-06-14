@@ -110,7 +110,21 @@ public class UserViewModelDetails extends AndroidViewModel {
             userJson.put("gender", user.getGender() != null ? user.getGender().name() : JSONObject.NULL);
             userJson.put("address", user.getAddress());
             userJson.put("level", user.getLevel() != null ? user.getLevel().name() : JSONObject.NULL);
-            // Không gửi company, role
+            userJson.put("salary", user.getSalary());
+
+            // Handle skills array - only include skill IDs
+            if (user.getSkills() != null && !user.getSkills().isEmpty()) {
+                JSONArray skillsArray = new JSONArray();
+                for (Skill skill : user.getSkills()) {
+                    JSONObject skillJson = new JSONObject();
+                    skillJson.put("id", skill.getId());
+                    skillsArray.put(skillJson);
+                }
+                userJson.put("skills", skillsArray);
+            } else {
+                userJson.put("skills", new JSONArray());
+            }
+
             SessionManager sessionManager = new SessionManager(getApplication().getApplicationContext());
             String token = sessionManager.getAuthToken();
             UserApi.updateUser(getApplication().getApplicationContext(), userJson, token, response -> {

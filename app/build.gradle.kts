@@ -45,5 +45,5 @@ dependencies {
     implementation("androidx.drawerlayout:drawerlayout:1.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation(libs.gson)
-
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 }
