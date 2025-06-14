@@ -112,11 +112,11 @@ public class JobDetailActivity extends AppCompatActivity {
         tvJobTitleData.setText(job.getName());
         tvJobLocationData.setText(job.getLocation());
         tvJobDescriptionData.setText(Html.fromHtml(job.getDescription()));
-        
+
         if (job.getSkills() != null && !job.getSkills().isEmpty()) {
             String skillsString = job.getSkills().stream()
-                                     .map(Skill::getName)
-                                     .collect(Collectors.joining(", "));
+                    .map(Skill::getName)
+                    .collect(Collectors.joining(", "));
             tvJobSkillsData.setText(skillsString);
         } else {
             tvJobSkillsData.setText("Không yêu cầu kỹ năng cụ thể");
