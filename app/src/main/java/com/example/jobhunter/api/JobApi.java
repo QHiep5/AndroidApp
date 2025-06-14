@@ -110,23 +110,20 @@ public class JobApi {
     }
 
     // Xóa job (DELETE /api/v1/jobs/{id})
-    public static void deleteJob(Context context, String jobId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = BASE_URL + "/" + jobId;
-        JsonObjectRequest request = new JsonObjectRequest(
-            com.android.volley.Request.Method.DELETE,
-            url,
-            null,
-            listener,
-            errorListener
-        ) {
+    public static void deleteJob(Context context, long jobId, String token,
+                                com.android.volley.Response.Listener<String> listener,
+                                com.android.volley.Response.ErrorListener errorListener) {
+        String url = ApiConfig.BASE_URL + "jobs/" + jobId;
+        com.android.volley.toolbox.StringRequest request = new com.android.volley.toolbox.StringRequest(
+                com.android.volley.Request.Method.DELETE, url, listener, errorListener) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
+            public java.util.Map<String, String> getHeaders() {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
                 headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
-        VolleySingleton.getInstance(context).addToRequestQueue(request);
+        com.android.volley.toolbox.Volley.newRequestQueue(context).add(request);
     }
 
     public static void searchJobs(Context context, String token, String location, List<String> skillIds, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {

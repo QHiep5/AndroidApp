@@ -36,6 +36,7 @@
         <activity android:name=".activity.CvManagementActivity" />
         <activity android:name=".activity.JobManageActivity" />
         <activity android:name=".activity.AddJobActivity" />
+        <activity android:name=".activity.UpdateJobActivity" />
     </application>
 
 </manifest>

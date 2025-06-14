@@ -23,7 +23,7 @@ public class JobRepository {
         JobApi.updateJob(context, jobData, token, listener, errorListener);
     }
 
-    public void deleteJob(Context context, String jobId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        JobApi.deleteJob(context, jobId, token, listener, errorListener);
-    }
+//    public void deleteJob(Context context, String jobId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+//        JobApi.deleteJob(context,jobId, token, listener, errorListener);
+//    }
 }

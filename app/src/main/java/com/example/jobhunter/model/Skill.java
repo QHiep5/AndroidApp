@@ -1,8 +1,10 @@
 package com.example.jobhunter.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Skill {
+public class Skill implements Serializable {
+    private static final long serialVersionUID = 1L;
     private long id;
     private String name;
     private String createdAt;

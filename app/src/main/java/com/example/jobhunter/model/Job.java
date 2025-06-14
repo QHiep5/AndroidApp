@@ -1,10 +1,11 @@
 package com.example.jobhunter.model;
 
 import com.example.jobhunter.util.constant.LevelEnum;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class Job {
+public class Job implements Serializable {
+    private static final long serialVersionUID = 1L;
     private long id;
     private String name;
     private String location;
