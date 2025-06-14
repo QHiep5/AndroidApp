@@ -1,7 +1,7 @@
 package com.example.jobhunter.api;
 
 public class ApiConfig {
-    public static final String BASE_HOST_URL = "http://192.168.1.115:8080/";
+    public static final String BASE_HOST_URL = "http://192.168.0.113:8080/";
     public static final String BASE_URL = BASE_HOST_URL + "api/v1/";
     public static final String LOGO_BASE_URL = BASE_HOST_URL + "storage/company/";
 
