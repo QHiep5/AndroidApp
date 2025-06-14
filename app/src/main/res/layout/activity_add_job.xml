@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header - Tiêu đề và nút quay lại (nếu là Activity độc lập) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Quay lại"
+                app:tint="@color/textPrimary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Thêm công việc mới"
+                android:textColor="@color/textPrimary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <!-- Tên Job -->
+        <TextView style="@style/InputLabel" android:text="Tên công việc" />
+        <EditText
+            android:id="@+id/et_job_name"
+            style="@style/TextInput"
+            android:hint="Nhập tên công việc" />
+
+        <!-- Kỹ năng (Multi-selection) -->
+        <TextView style="@style/InputLabel" android:text="Kỹ năng" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/round_conner_border"
+            android:padding="8dp">
+            <TextView
+                android:id="@+id/tv_select_skills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chọn kỹ năng"
+                android:padding="8dp"
+                android:textColor="@color/textPrimary"
+                android:drawableEnd="@drawable/ic_back"
+                android:clickable="true"
+                android:focusable="true"/>
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_skills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"/>
+        </LinearLayout>
+        <Space android:layout_height="8dp" android:layout_width="wrap_content"/>
+
+
+        <!-- Địa điểm -->
+        <TextView style="@style/InputLabel" android:text="Địa điểm" />
+        <EditText
+            android:id="@+id/et_location"
+            style="@style/TextInput"
+            android:hint="Nhập địa điểm" />
+
+        <!-- Mức lương -->
+        <TextView style="@style/InputLabel" android:text="Mức lương" />
+        <EditText
+            android:id="@+id/et_salary"
+            style="@style/TextInput"
+            android:hint="Ví dụ: 15000000"
+            android:inputType="numberDecimal" />
+
+        <!-- Số lượng -->
+        <TextView style="@style/InputLabel" android:text="Số lượng" />
+        <EditText
+            android:id="@+id/et_quantity"
+            style="@style/TextInput"
+            android:hint="Số lượng tuyển dụng"
+            android:inputType="number" />
+
+        <!-- Trình độ (Single-selection) -->
+        <TextView style="@style/InputLabel" android:text="Trình độ" />
+        <Spinner
+            android:id="@+id/spinner_level"
+            style="@style/SpinnerInput" />
+
+        <!-- Công ty (Single-selection) -->
+        <TextView style="@style/InputLabel" android:text="Công ty" />
+        <Spinner
+            android:id="@+id/spinner_company"
+            style="@style/SpinnerInput" />
+
+        <!-- Ngày bắt đầu -->
+        <TextView style="@style/InputLabel" android:text="Ngày bắt đầu" />
+        <EditText
+            android:id="@+id/et_start_date"
+            style="@style/TextInput"
+            android:hint="Chọn ngày bắt đầu"
+            android:focusable="false"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_back"
+            tools:text="2024-01-01"/>
+
+        <!-- Ngày kết thúc -->
+        <TextView style="@style/InputLabel" android:text="Ngày kết thúc" />
+        <EditText
+            android:id="@+id/et_end_date"
+            style="@style/TextInput"
+            android:hint="Chọn ngày kết thúc"
+            android:focusable="false"
+            android:clickable="true"
+
+            tools:text="2024-06-30"/>
+
+        <!-- Mô tả -->
+        <TextView style="@style/InputLabel" android:text="Mô tả" />
+        <EditText
+            android:id="@+id/et_description"
+            style="@style/TextInput"
+            android:minLines="3"
+            android:gravity="top"
+            android:hint="Nhập mô tả công việc" />
+
+        <!-- Trạng thái (Active/Inactive) -->
+        <TextView style="@style/InputLabel" android:text="Trạng thái" />
+        <Switch
+            android:id="@+id/switch_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOff="Không hoạt động"
+            android:textOn="Hoạt động"
+            android:showText="true"
+            android:thumbTextPadding="12dp"
+            android:checked="true"/>
+        <Space android:layout_height="16dp" android:layout_width="wrap_content"/>
+
+        <!-- Nút Thêm mới và Hủy -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Hủy"
+                android:backgroundTint="@color/gray"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btn_add_new_job"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Thêm mới"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView> 

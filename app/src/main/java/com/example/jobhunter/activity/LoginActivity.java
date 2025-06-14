@@ -17,17 +17,21 @@ import com.example.jobhunter.R;
 import com.example.jobhunter.api.AuthApi;
 import com.example.jobhunter.api.UserApi;
 import com.example.jobhunter.util.TokenManager;
+import com.example.jobhunter.utils.SessionManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText getUsername, getPassword;
     private Button btnLogin;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        sessionManager = new SessionManager(this);
 
         // Kiểm tra nếu đã đăng nhập thì chuyển sang MainActivity
         String token = TokenManager.getToken(this);
@@ -53,15 +57,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void login() {
-        Log.d("LOGIN_DEBUG", "Bắt đầu phương thức login()");
-
         String username = getUsername.getText().toString().trim();
         String password = getPassword.getText().toString().trim();
 
-        // Debug: Kiểm tra dữ liệu nhập vào
-        android.util.Log.d("LOGIN_DEBUG", "Username: " + username + ", Password: " + password);
         if (username.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ tài khoản và mật khẩu", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -75,10 +75,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        Log.d("LOGIN_DEBUG", "Chuẩn bị gọi AuthApi.login()");
-
         AuthApi.login(this, loginData, response -> {
             try {
+                Log.d("API_RESPONSE", "Full response: " + response.toString()); // Log phản hồi API
                 if (!response.has("data"))
                     return;
                 JSONObject data = response.getJSONObject("data");
@@ -86,12 +85,33 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 String token = data.getString("access_token");
                 TokenManager.saveToken(this, token);
+                sessionManager.saveAuthToken(token);
 
                 // Lấy thông tin user từ response
                 JSONObject user = data.getJSONObject("user");
                 int userId = user.optInt("id");
                 String userName = user.optString("name");
                 String userEmail = user.optString("email");
+
+                // Lấy tên role từ đối tượng role
+                String userRoleName = "USER"; // Giá trị mặc định
+                if (user.has("role")) {
+                    Object roleObj = user.get("role");
+                    Log.d("LOGIN_DEBUG", "Role object: " + roleObj.toString()); // Log role
+                    if (roleObj instanceof JSONObject) {
+                        userRoleName = ((JSONObject) roleObj).optString("name", "USER");
+                    } else if (roleObj instanceof String) {
+                        try {
+                            JSONObject roleJson = new JSONObject((String) roleObj);
+                            userRoleName = roleJson.optString("name", "USER");
+                        } catch (JSONException e) {
+                            Log.e("LOGIN_DEBUG", "Error parsing role JSON: " + e.getMessage());
+                            userRoleName = "USER"; // Dùng giá trị mặc định nếu parse thất bại
+                        }
+                    }
+                }
+                Log.d("LOGIN_DEBUG", "User role name: " + userRoleName); // Log giá trị role đã parse
+                sessionManager.saveUserRole(userRoleName);
 
                 // Lưu thông tin user vào SharedPreferences
                 SharedPreferences prefs = getSharedPreferences("jobhunter_prefs", MODE_PRIVATE);
@@ -106,39 +126,25 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(this, "Lỗi xử lý token", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi xử lý token hoặc vai trò", Toast.LENGTH_SHORT).show();
             }
         }, error -> {
-            // -- DEBUG: Cải thiện xử lý lỗi đăng nhập --
-            String errorMessage = "Đăng nhập thất bại. Vui lòng thử lại."; // Thông báo mặc định
-            if (error.networkResponse != null && error.networkResponse.data != null) {
+            String errorMessage = "Lỗi đăng nhập";
+            if (error instanceof TimeoutError) {
+                errorMessage = "Hết thời gian kết nối";
+            } else if (error instanceof NoConnectionError) {
+                errorMessage = "Không có kết nối mạng";
+            } else if (error.networkResponse != null && error.networkResponse.data != null) {
                 try {
-                    String errorData = new String(error.networkResponse.data);
-                    JSONObject errorJson = new JSONObject(errorData);
-                    // Giả sử API trả về lỗi trong trường "message" hoặc "error"
+                    JSONObject errorJson = new JSONObject(new String(error.networkResponse.data));
                     if (errorJson.has("message")) {
                         errorMessage = errorJson.getString("message");
-                    } else if (errorJson.has("error")) {
-                        errorMessage = errorJson.getString("error");
                     }
-                    // Ghi log chi tiết về lỗi từ server
-                    Log.e("LOGIN_API_ERROR", "Status Code: " + error.networkResponse.statusCode);
-                    Log.e("LOGIN_API_ERROR", "Response Data: " + errorData);
                 } catch (JSONException e) {
-                    // Lỗi khi phân tích JSON từ phản hồi lỗi
-                    Log.e("LOGIN_JSON_ERROR", "Không thể phân tích JSON lỗi: " + new String(error.networkResponse.data));
+                    e.printStackTrace();
                 }
-            } else if (error instanceof NoConnectionError) {
-                errorMessage = "Không có kết nối mạng. Vui lòng kiểm tra lại.";
-                Log.e("LOGIN_VOLLEY_ERROR", "NoConnectionError: " + error.toString());
-            } else if (error instanceof TimeoutError) {
-                errorMessage = "Hết thời gian chờ. Máy chủ không phản hồi.";
-                Log.e("LOGIN_VOLLEY_ERROR", "TimeoutError: " + error.toString());
-            } else {
-                // Các lỗi Volley khác
-                Log.e("LOGIN_VOLLEY_ERROR", "Lỗi Volley không xác định: " + error.toString());
             }
-            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         });
     }
 }

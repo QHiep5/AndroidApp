@@ -7,6 +7,7 @@ public class SessionManager {
 
     private static final String PREF_NAME = "JobHunterPref";
     private static final String KEY_AUTH_TOKEN = "auth_token";
+    private static final String KEY_USER_ROLE = "user_role";
 
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -34,6 +35,23 @@ public class SessionManager {
      */
     public String getAuthToken() {
         return pref.getString(KEY_AUTH_TOKEN, null);
+    }
+
+    /**
+     * Saves the user role to SharedPreferences.
+     * @param role The role string to save.
+     */
+    public void saveUserRole(String role) {
+        editor.putString(KEY_USER_ROLE, role);
+        editor.apply();
+    }
+
+    /**
+     * Retrieves the user role from SharedPreferences.
+     * @return The saved role, or null if no role is found.
+     */
+    public String getUserRole() {
+        return pref.getString(KEY_USER_ROLE, null);
     }
 
     /**

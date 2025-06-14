@@ -63,7 +63,7 @@ public class SkillViewModel extends AndroidViewModel {
                         }
                         skills.setValue(skillList);
                     } else {
-                        Log.e("SKILL_VIEW_MODEL", "Đối tượng 'data' không chứa key 'result'.");
+                        Log.e("SKILL_VIEW_MODEL", "Đối tượng 'data' không chứa key 'result'.") ;
                         error.setValue("Dữ liệu kỹ năng trả về không có 'result'.");
                     }
                 } else {

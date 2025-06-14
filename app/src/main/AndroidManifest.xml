@@ -34,6 +34,8 @@
             android:exported="false"
             />
         <activity android:name=".activity.CvManagementActivity" />
+        <activity android:name=".activity.JobManageActivity" />
+        <activity android:name=".activity.AddJobActivity" />
     </application>
 
 </manifest>

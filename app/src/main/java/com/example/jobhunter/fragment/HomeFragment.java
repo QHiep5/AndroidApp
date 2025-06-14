@@ -37,6 +37,7 @@ import com.example.jobhunter.utils.SessionManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
+import com.example.jobhunter.utils.NavigationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,9 @@ public class HomeFragment extends Fragment {
         drawerLayout = v.findViewById(R.id.drawer_layout);
         navView = v.findViewById(R.id.nav_view);
 
+        String userRole = sessionManager.getUserRole();
+        Log.d("DEBUG_ROLE", "Current user role: " + userRole); // Dòng này sẽ log ra Logcat
+
         ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 requireActivity(), drawerLayout, toolbar,
@@ -97,16 +101,10 @@ public class HomeFragment extends Fragment {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.action_manage_cv) {
-                startActivity(new Intent(getActivity(), CvManagementActivity.class));
-            } else {
-                Toast.makeText(getContext(), "Bạn chọn: " + item.getTitle(), Toast.LENGTH_SHORT).show();
-            }
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
-        });
+        // Setup navigation menu based on user role
+        if (getActivity() != null) {
+            NavigationManager.setupNavigationMenu((AppCompatActivity) getActivity(), navView, drawerLayout);
+        }
 
         companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
         jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
