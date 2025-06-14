@@ -1,15 +1,36 @@
 package com.example.jobhunter.api;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
+import android.database.Cursor;
+import android.provider.OpenableColumns;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.AuthFailureError;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
+
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 
 public class CompanyApi {
+    private static final String TAG = "CompanyApi";
+    private static final String BASE_URL = ApiConfig.BASE_URL; // Replace with your actual API base URL
+
     // Lấy danh sách company (GET /api/v1/companies)
     public static void getCompanies(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         String url = ApiConfig.COMPANY;
@@ -112,5 +133,150 @@ public class CompanyApi {
             }
         };
         VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    public static void uploadFile(Context context, Uri fileUri, String companyName, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        try {
+            String url = ApiConfig.FILE;
+
+            // Get the original file extension
+            String extension = "";
+            String mimeType = context.getContentResolver().getType(fileUri);
+            if (mimeType != null) {
+                extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+                if (extension != null) {
+                    extension = "." + extension;
+                } else {
+                    extension = "";
+                }
+            }
+
+            // Convert Uri to File using companyName with original extension
+            File file = new File(context.getCacheDir(), companyName + extension);
+            try (InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
+                 FileOutputStream outputStream = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            Map<String, String> params = new HashMap<>();
+            params.put("folder", "company");
+
+            Map<String, VolleyMultipartRequest.DataPart> byteData = new HashMap<>();
+            byteData.put("file", new VolleyMultipartRequest.DataPart(file.getName(), file));
+
+            Log.d("Filess", String.valueOf(file.length()));
+            // Create multipart request
+            VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(
+                    Request.Method.POST,
+                    url,
+                    params,
+                    byteData,
+                    response -> {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            listener.onResponse(jsonResponse);
+                        } catch (JSONException e) {
+                            errorListener.onErrorResponse(new VolleyError("Error parsing response"));
+                        }
+                    },
+                    errorListener
+            ) {
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("folder", "company");
+                    return params;
+                }
+
+                @Override
+                protected Map<String, DataPart> getByteData() {
+                    Map<String, DataPart> params = new HashMap<>();
+                    try {
+                        params.put("file", new DataPart(file.getName(), file));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error reading file", e);
+                        errorListener.onErrorResponse(new VolleyError("Error reading file"));
+                    }
+                    return params;
+                }
+            };
+
+            // Add to request queue
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            requestQueue.add(multipartRequest);
+        } catch (Exception e) {
+            Log.e(TAG, "Error creating request", e);
+            errorListener.onErrorResponse(new VolleyError("Error creating request"));
+        }
+    }
+
+    public static void createCompany(Context context, String name, String address, String description, String logo, 
+                                   Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        try {
+            String url = ApiConfig.COMPANY;
+            
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("name", name);
+            jsonBody.put("address", address);
+            jsonBody.put("description", description);
+            jsonBody.put("logo", logo);
+            jsonBody.put("createdAt", JSONObject.NULL);
+            jsonBody.put("updatedAt", JSONObject.NULL);
+            jsonBody.put("createdBy", JSONObject.NULL);
+            jsonBody.put("updatedBy", JSONObject.NULL);
+
+            JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                jsonBody,
+                listener,
+                errorListener
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Content-Type", "application/json");
+                    return headers;
+                }
+            };
+
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            requestQueue.add(request);
+        } catch (JSONException e) {
+            errorListener.onErrorResponse(new VolleyError("Error creating request"));
+        }
+    }
+
+    @SuppressLint("Range")
+    private static String getFileName(Context context, Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf(File.separator);
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 }

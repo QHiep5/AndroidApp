@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.jobhunter.R;
+import com.example.jobhunter.activity.CompanyManageAdminActivity;
 import com.example.jobhunter.activity.CvManagementActivity;
 import com.example.jobhunter.activity.JobManageActivity;
 import com.example.jobhunter.activity.LoginActivity;
@@ -42,7 +43,8 @@ public class NavigationManager {
 
             } else if (itemId == R.id.action_manage_company) {
                 // TODO: Implement company management activity
-                Toast.makeText(activity, "Quản lí công ty", Toast.LENGTH_SHORT).show();
+                activity.startActivity(new Intent(activity, CompanyManageAdminActivity.class));
+
             } else if (itemId == R.id.action_manage_jobs) {
                 activity.startActivity(new Intent(activity, JobManageActivity.class));
             } else if (itemId == R.id.action_manage_applications) {
