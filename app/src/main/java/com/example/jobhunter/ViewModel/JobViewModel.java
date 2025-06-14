@@ -24,6 +24,8 @@ public class JobViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Job>> jobs = new MutableLiveData<>();
     private final MutableLiveData<String> error = new MutableLiveData<>();
     private final MutableLiveData<List<Job>> filteredJobs = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> createJobResultLiveData = new MutableLiveData<>();
+
     public JobViewModel(@NonNull Application application) {
         super(application);
     }
@@ -34,6 +36,10 @@ public class JobViewModel extends AndroidViewModel {
 
     public LiveData<String> getErrorLiveData() {
         return error;
+    }
+
+    public LiveData<Boolean> getCreateJobResultLiveData() {
+        return createJobResultLiveData;
     }
 
     public void fetchJobs(String token) {
@@ -60,12 +66,54 @@ public class JobViewModel extends AndroidViewModel {
             handleError(error);
         });
     }
+
     public LiveData<List<Job>> getFilteredJobs() {
         return filteredJobs;
     }
 
     public LiveData<String> getError() {
         return error;
+    }
+
+    public void createJob(Job job, String token) {
+        JSONObject jobJson = new JSONObject();
+        try {
+            jobJson.put("name", job.getName());
+            jobJson.put("location", job.getLocation());
+            jobJson.put("salary", job.getSalary());
+            jobJson.put("quantity", job.getQuantity());
+            jobJson.put("level", job.getLevel().name()); // Convert Enum to String
+            jobJson.put("description", job.getDescription());
+            jobJson.put("startDate", job.getStartDate());
+            jobJson.put("endDate", job.getEndDate());
+            jobJson.put("active", job.isActive());
+
+            // Company ID
+            if (job.getCompany() != null) {
+                jobJson.put("companyId", job.getCompany().getId());
+            }
+
+            // Skills IDs
+            if (job.getSkills() != null && !job.getSkills().isEmpty()) {
+                JSONArray skillIdsArray = new JSONArray();
+                for (Skill skill : job.getSkills()) {
+                    skillIdsArray.put(skill.getId());
+                }
+                jobJson.put("skills", skillIdsArray);
+            }
+
+            JobApi.createJob(getApplication(), jobJson,token, response -> {
+                createJobResultLiveData.postValue(true);
+            }, error -> {
+                handleError(error);
+                createJobResultLiveData.postValue(false);
+            });
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Error creating JSON for new job", e);
+            error.postValue("Lỗi tạo dữ liệu công việc: " + e.getMessage());
+            createJobResultLiveData.postValue(false);
+        }
     }
 
     public void searchJobs(String location, List<String> skills) {
@@ -109,6 +157,7 @@ public class JobViewModel extends AndroidViewModel {
             error.postValue("Lỗi mạng: " + errorListener.toString());
         });
     }
+
     private Job parseJobFromJson(JSONObject jobJson) throws org.json.JSONException {
         Job job = new Job();
         job.setId(jobJson.optLong("id"));
@@ -146,21 +195,17 @@ public class JobViewModel extends AndroidViewModel {
     }
 
     private void handleError(VolleyError volleyError) {
-        String errorMessage = "Lỗi không xác định";
-        if (volleyError.networkResponse != null) {
-            errorMessage = "Lỗi Server " + volleyError.networkResponse.statusCode;
+        String errorMessage = "Lỗi mạng hoặc server: " + volleyError.getMessage();
+        if (volleyError.networkResponse != null && volleyError.networkResponse.data != null) {
             try {
-                String responseBody = new String(volleyError.networkResponse.data, "utf-8");
-                JSONObject data = new JSONObject(responseBody);
-                errorMessage += ": " + data.optString("message");
-                Log.e(TAG, "API Error " + volleyError.networkResponse.statusCode + ": " + responseBody, volleyError);
-            } catch (Exception e) {
+                JSONObject errorResponse = new JSONObject(new String(volleyError.networkResponse.data));
+                if (errorResponse.has("message")) {
+                    errorMessage = errorResponse.getString("message");
+                }
+            } catch (JSONException e) {
                 Log.e(TAG, "Error parsing error response", e);
             }
-        } else {
-            errorMessage = "Lỗi kết nối mạng.";
-            Log.e(TAG, "Network Error (no response)", volleyError);
         }
-        error.setValue(errorMessage);
+        error.postValue(errorMessage);
     }
 }
