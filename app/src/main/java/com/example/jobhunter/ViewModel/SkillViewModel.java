@@ -37,11 +37,11 @@ public class SkillViewModel extends AndroidViewModel {
             error.setValue("Người dùng chưa đăng nhập");
             return;
         }
-
         SkillApi.getSkills(getApplication(), token, response -> {
             try {
                 // Thêm log để xem response từ server
                 Log.d("SKILL_VIEW_MODEL", "Response: " + response.toString());
+                Log.d("SKILLS", String.valueOf(response.has("data")));
 
                 if (response.has("data")) {
                     JSONObject dataObject = response.getJSONObject("data");
