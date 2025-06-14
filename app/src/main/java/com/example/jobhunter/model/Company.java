@@ -1,6 +1,8 @@
 package com.example.jobhunter.model;
 
-public class Company {
+import java.io.Serializable;
+
+public class Company implements Serializable {
     private long id;
     private String name;
     private String description;

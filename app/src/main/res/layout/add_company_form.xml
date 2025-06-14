@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_back"
+                android:contentDescription="Quay lại"
+                android:tint="@color/textPrimary" />
+
+            <TextView
+                android:id="@+id/tittleForm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:text="Thêm công ty"
+                android:textColor="@color/textPrimary"
+                android:textSize="22sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <!-- Tên công ty -->
+        <TextView style="@style/InputLabel" android:text="Tên công ty" />
+        <EditText
+            android:id="@+id/et_company_name"
+            style="@style/TextInput"
+            android:hint="Nhập tên công ty" />
+
+        <!-- Địa chỉ -->
+        <TextView style="@style/InputLabel" android:text="Địa chỉ" />
+        <EditText
+            android:id="@+id/et_company_address"
+            style="@style/TextInput"
+            android:hint="Nhập địa chỉ" />
+
+        <!-- Mô tả -->
+        <TextView style="@style/InputLabel" android:text="Mô tả" />
+        <EditText
+            android:id="@+id/et_company_description"
+            style="@style/TextInput"
+            android:minLines="3"
+            android:gravity="top"
+            android:hint="Nhập mô tả công ty" />
+
+        <!-- Upload ảnh -->
+        <TextView style="@style/InputLabel" android:text="Ảnh đại diện công ty" />
+        <TextView
+            android:id="@+id/tv_upload_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn ảnh"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp"/>
+
+        <ImageView
+            android:id="@+id/img_company_preview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@android:color/darker_gray"
+            android:contentDescription="Ảnh công ty"
+            android:layout_marginBottom="16dp" />
+
+
+        <Space android:layout_height="16dp" android:layout_width="wrap_content"/>
+
+        <!-- Nút Hủy / Lưu -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btn_cancel_company"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Hủy"
+                android:backgroundTint="@color/gray"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btn_submit_company"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Lưu"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@android:color/white"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
