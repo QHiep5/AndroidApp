@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     android:background="@color/background">
 
     <LinearLayout
@@ -473,26 +473,26 @@
                         android:inputType="text"/>
                 </LinearLayout>
 
-                <!-- Salary -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="6dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Mức lương: "
-                        android:textSize="16sp"
-                        android:textStyle="bold"/>
-                    <TextView
-                        android:id="@+id/tv_salary"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Mức lương mong muốn"
-                        android:textSize="16sp"/>
-                </LinearLayout>
+<!--                &lt;!&ndash; Salary &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:layout_marginBottom="6dp">-->
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Mức lương: "-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold"/>-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_salary"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:text="Mức lương mong muốn"-->
+<!--                        android:textSize="16sp"/>-->
+<!--                </LinearLayout>-->
 
                 <!-- Level -->
                 <LinearLayout
@@ -521,6 +521,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="6dp">
                     <TextView
+                        android:id="@+id/tv_company_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Công ty: "
@@ -536,25 +537,7 @@
                         android:visibility="gone"/>
                 </LinearLayout>
 
-                <!-- Nút chức năng -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="end"
-                    android:layout_marginTop="12dp">
-                    <Button
-                        android:id="@+id/btn_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chỉnh sửa"/>
-                    <Button
-                        android:id="@+id/btn_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Huỷ"
-                        android:layout_marginStart="8dp"/>
-                </LinearLayout>
+
             </LinearLayout>
 
             <!-- Kỹ năng -->
@@ -567,11 +550,10 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
 
-            <LinearLayout
-                android:id="@+id/layout_skills"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/layout_skills_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="8dp"
                 android:background="@android:color/white"
                 android:elevation="2dp"
@@ -623,21 +605,40 @@
                         android:textSize="15sp"/>
                 </LinearLayout>
             </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start|center_vertical"
-            android:layout_marginBottom="8dp">
-            <Button
-                android:id="@+id/btn_edit_skills"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chỉnh sửa kỹ năng"
-                android:layout_gravity="end"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="start|center_vertical"
+                android:layout_marginBottom="8dp">
+                <Button
+                    android:id="@+id/btn_edit_skills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chỉnh sửa kỹ năng"
+                    android:layout_gravity="end"/>
+            </LinearLayout>
+
+            <!-- Nút chức năng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end"
+                android:layout_marginTop="12dp">
+                <Button
+                    android:id="@+id/btn_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chỉnh sửa"/>
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Huỷ"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
 
         </LinearLayout>
->>>>>>> 63ae649 (View + Feat : Profile Detail)
     </ScrollView>
 </LinearLayout>
