@@ -12,9 +12,6 @@ import com.example.jobhunter.activity.CompanyManageAdminActivity;
 import com.example.jobhunter.activity.CvManagementActivity;
 import com.example.jobhunter.activity.JobManageActivity;
 import com.example.jobhunter.activity.LoginActivity;
-import com.example.jobhunter.activity.CvManagementActivity;
-import com.example.jobhunter.activity.JobManageActivity;
-import com.example.jobhunter.activity.LoginActivity;
 import com.example.jobhunter.activity.ResumeManageActivity;
 import com.google.android.material.navigation.NavigationView;
 
@@ -41,20 +38,12 @@ public class NavigationManager {
         // Set up navigation item click listener
         navView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            
+
             if (itemId == R.id.action_manage_cv) {
                 activity.startActivity(new Intent(activity, CvManagementActivity.class));
 
             } else if (itemId == R.id.action_manage_company) {
-                // TODO: Implement company management activity
                 activity.startActivity(new Intent(activity, CompanyManageAdminActivity.class));
-
-            } else if (itemId == R.id.action_manage_jobs) {
-                activity.startActivity(new Intent(activity, JobManageActivity.class));
-            } else if (itemId == R.id.action_manage_applications) {
-                // TODO: Implement application management activity
-                Toast.makeText(activity, "Quản lí đơn ứng tuyển", Toast.LENGTH_SHORT).show();
-                Toast.makeText(activity, "Quản lí công ty", Toast.LENGTH_SHORT).show();
             } else if (itemId == R.id.action_manage_jobs) {
                 activity.startActivity(new Intent(activity, JobManageActivity.class));
             } else if (itemId == R.id.action_manage_applications) {
