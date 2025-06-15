@@ -21,4 +21,10 @@ public class TokenManager {
         SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         prefs.edit().remove(KEY_TOKEN).apply();
     }
+
+    public static boolean isLoggedIn(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        String email = prefs.getString("user_email", null);
+        return email != null && !email.isEmpty();
+    }
 }

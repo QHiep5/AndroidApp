@@ -228,6 +228,7 @@ public class LoginActivity extends AppCompatActivity {
                         .putInt("user_id", userId)
                         .putString("user_name", userName)
                         .putString("user_email", userEmail)
+                        .putString("user_role",userRoleName)
                         .apply();
 
                 // Chuyển đến MainActivity

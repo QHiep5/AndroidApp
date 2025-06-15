@@ -22,24 +22,40 @@ public class ProfileFragment extends Fragment {
         ImageView imgAvatar = view.findViewById(R.id.img_avatar);
         TextView tvName = view.findViewById(R.id.tv_name);
         TextView tvUserId = view.findViewById(R.id.tv_user_id);
+        TextView tvEmail = view.findViewById(R.id.tv_email);
+        TextView tvPhone = view.findViewById(R.id.tv_phone);
+        TextView tvAddress = view.findViewById(R.id.tv_address);
         Button btnLogout = view.findViewById(R.id.btn_logout);
         Button btnEditProfile = view.findViewById(R.id.btn_editProfile);
-        // Các view khác nếu cần: btn_upgrade, btn_edit_experience, ...
+        Button btnLogin = view.findViewById(R.id.btn_login);
+        View infoLayout = view.findViewById(R.id.layout_user_info);
 
         SharedPreferences prefs = getContext().getSharedPreferences("jobhunter_prefs", getContext().MODE_PRIVATE);
         String token = TokenManager.getToken(getContext());
         if (token != null) {
             String name = prefs.getString("user_name", "Tên người dùng");
             int userId = prefs.getInt("user_id", 0);
+            String email = prefs.getString("user_email", "Chưa cập nhật");
+            String phone = prefs.getString("user_phone", "Chưa cập nhật");
+            String address = prefs.getString("user_address", "Chưa cập nhật");
             tvName.setText(name);
             tvUserId.setText("Mã ứng viên: " + userId);
-            // TODO: Hiển thị các thông tin khác nếu có
+            tvEmail.setText(email);
+            tvPhone.setText(phone);
+            tvAddress.setText(address);
+            infoLayout.setVisibility(View.VISIBLE);
+            btnLogout.setVisibility(View.VISIBLE);
+            btnEditProfile.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.GONE);
         } else {
-            // Nếu chưa đăng nhập, chuyển về LoginActivity
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
+            infoLayout.setVisibility(View.GONE);
+            btnLogout.setVisibility(View.GONE);
+            btnEditProfile.setVisibility(View.GONE);
+            btnLogin.setVisibility(View.VISIBLE);
+            btnLogin.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            });
         }
 
         btnLogout.setOnClickListener(v -> {

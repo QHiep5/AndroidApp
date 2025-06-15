@@ -96,11 +96,11 @@ public class JobViewModel extends AndroidViewModel {
                 JSONObject data = response.getJSONObject("data");
                 JSONObject meta = data.getJSONObject("meta");
                 JSONArray result = data.getJSONArray("result");
-                
+
                 // Update pagination info
                 currentPage.setValue(meta.getInt("page"));
                 totalPages.setValue(meta.getInt("pages"));
-                
+
                 for (int i = 0; i < result.length(); i++) {
                     JSONObject obj = result.getJSONObject(i);
                     JSONObject jobJson = result.getJSONObject(i);
@@ -134,7 +134,7 @@ public class JobViewModel extends AndroidViewModel {
             jobJson.put("startDate", job.getStartDate());
             jobJson.put("endDate", job.getEndDate());
             jobJson.put("active", job.isActive());
-            
+
             // Company Object (gửi đầy đủ id, name, logo)
             if (job.getCompany() != null) {
                 JSONObject companyObject = new JSONObject();
@@ -172,7 +172,7 @@ public class JobViewModel extends AndroidViewModel {
     public void searchJobs(String location, List<String> skills) {
         String token = TokenManager.getToken(getApplication());
         if (token == null || token.isEmpty()) {
-            error.postValue("Người dùng chưa đăng nhập");
+            // Không post lỗi nếu chưa đăng nhập
             return;
         }
 
@@ -398,14 +398,16 @@ public class JobViewModel extends AndroidViewModel {
                 if (!errorMsg.trim().isEmpty()) {
                     try {
                         org.json.JSONObject obj = new org.json.JSONObject(errorMsg);
-                        if (obj.has("message")) errorMsg = obj.getString("message");
-                    } catch (Exception ignored) {}
+                        if (obj.has("message"))
+                            errorMsg = obj.getString("message");
+                    } catch (Exception ignored) {
+                    }
                 } else {
                     errorMsg = "Xoá thất bại, không nhận được phản hồi từ máy chủ.";
                 }
             } else if (error != null && error.getMessage() != null) {
                 errorMsg = error.getMessage();
-        }
+            }
             deleteJobErrorLiveData.postValue(errorMsg);
             android.util.Log.e(TAG, "Xoá job thất bại: " + errorMsg, error);
         });

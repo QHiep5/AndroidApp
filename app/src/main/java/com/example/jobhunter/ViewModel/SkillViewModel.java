@@ -27,14 +27,22 @@ public class SkillViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public LiveData<List<Skill>> getSkillsLiveData() { return skills; }
-    public LiveData<JSONObject> getSkillLiveData() { return skill; }
-    public LiveData<String> getErrorLiveData() { return error; }
+    public LiveData<List<Skill>> getSkillsLiveData() {
+        return skills;
+    }
+
+    public LiveData<JSONObject> getSkillLiveData() {
+        return skill;
+    }
+
+    public LiveData<String> getErrorLiveData() {
+        return error;
+    }
 
     public void fetchSkills() {
         String token = TokenManager.getToken(getApplication());
         if (token == null || token.isEmpty()) {
-            error.setValue("Người dùng chưa đăng nhập");
+            // Không set lỗi nếu chưa đăng nhập
             return;
         }
         SkillApi.getSkills(getApplication(), token, response -> {
@@ -63,7 +71,7 @@ public class SkillViewModel extends AndroidViewModel {
                         }
                         skills.setValue(skillList);
                     } else {
-                        Log.e("SKILL_VIEW_MODEL", "Đối tượng 'data' không chứa key 'result'.") ;
+                        Log.e("SKILL_VIEW_MODEL", "Đối tượng 'data' không chứa key 'result'.");
                         error.setValue("Dữ liệu kỹ năng trả về không có 'result'.");
                     }
                 } else {

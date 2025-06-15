@@ -179,12 +179,12 @@ public class CvManagementActivity extends AppCompatActivity {
     private void updatePaginationUI() {
         Integer currentPage = resumeViewModel.getCurrentPageLiveData().getValue();
         Integer totalPages = resumeViewModel.getTotalPagesLiveData().getValue();
-        
+
         if (currentPage != null && totalPages != null) {
             tvPageInfo.setText(String.format("Page %d/%d", currentPage, totalPages));
             btnPrev.setEnabled(currentPage > 1);
             btnNext.setEnabled(currentPage < totalPages);
-            
+
             // Add visual feedback for disabled buttons
             btnPrev.setAlpha(btnPrev.isEnabled() ? 1.0f : 0.5f);
             btnNext.setAlpha(btnNext.isEnabled() ? 1.0f : 0.5f);

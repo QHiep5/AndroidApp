@@ -70,7 +70,8 @@ public class HomeFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
@@ -134,12 +135,16 @@ public class HomeFragment extends Fragment {
         jobViewModel.fetchJobs(token);
         skillViewModel.fetchSkills();
 
-        companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(), companies -> companyAdapter.setData(companies));
+        companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(),
+                companies -> companyAdapter.setData(companies));
 
         jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> jobListAdapter.setData(jobs));
 
-        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
+        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
+            if (error != null && !error.equals("Người dùng chưa đăng nhập")) {
+                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         skillViewModel.getSkillsLiveData().observe(getViewLifecycleOwner(), skills -> {
             if (skills != null && !skills.isEmpty()) {
@@ -156,8 +161,10 @@ public class HomeFragment extends Fragment {
                 error -> Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
 
         searchBarContainer.setOnClickListener(view -> {
-            if (filterFormContainer.getVisibility() == View.VISIBLE) hideFilterForm();
-            else showFilterForm();
+            if (filterFormContainer.getVisibility() == View.VISIBLE)
+                hideFilterForm();
+            else
+                showFilterForm();
         });
 
         nestedScrollView.setOnTouchListener((view, event) -> {
@@ -173,14 +180,23 @@ public class HomeFragment extends Fragment {
             if (checkedId != View.NO_ID) {
                 Chip chip = v.findViewById(checkedId);
                 switch (chip.getText().toString()) {
-                    case "Hà Nội": locationValue = "HANOI"; break;
-                    case "Hồ Chí Minh": locationValue = "HOCHIMINH"; break;
-                    case "Đà Nẵng": locationValue = "DANANG"; break;
-                    case "Other": locationValue = "OTHER"; break;
+                    case "Hà Nội":
+                        locationValue = "HANOI";
+                        break;
+                    case "Hồ Chí Minh":
+                        locationValue = "HOCHIMINH";
+                        break;
+                    case "Đà Nẵng":
+                        locationValue = "DANANG";
+                        break;
+                    case "Other":
+                        locationValue = "OTHER";
+                        break;
                 }
             }
             Intent intent = new Intent(getActivity(), SearchResultsActivity.class);
-            if (!locationValue.isEmpty()) intent.putExtra("location", locationValue);
+            if (!locationValue.isEmpty())
+                intent.putExtra("location", locationValue);
             intent.putStringArrayListExtra("skills", selectedSkillIds);
             startActivity(intent);
         });
@@ -195,7 +211,8 @@ public class HomeFragment extends Fragment {
     private void hideFilterForm() {
         if (getContext() != null) {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (getView() != null) imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+            if (getView() != null)
+                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
         }
         etSearch.clearFocus();
         filterFormContainer.setVisibility(View.GONE);
@@ -209,7 +226,8 @@ public class HomeFragment extends Fragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Chọn kỹ năng");
-        builder.setMultiChoiceItems(skillNamesArray, selectedSkillsFlags, (dialog, i, isChecked) -> selectedSkillsFlags[i] = isChecked);
+        builder.setMultiChoiceItems(skillNamesArray, selectedSkillsFlags,
+                (dialog, i, isChecked) -> selectedSkillsFlags[i] = isChecked);
         builder.setPositiveButton("OK", (dialog, which) -> {
             selectedSkillIds.clear();
             for (int i = 0; i < selectedSkillsFlags.length; i++) {
@@ -221,7 +239,8 @@ public class HomeFragment extends Fragment {
         });
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.setNeutralButton("Xóa tất cả", (dialog, which) -> {
-            for (int i = 0; i < selectedSkillsFlags.length; i++) selectedSkillsFlags[i] = false;
+            for (int i = 0; i < selectedSkillsFlags.length; i++)
+                selectedSkillsFlags[i] = false;
             selectedSkillIds.clear();
             updateSelectedSkillsView();
         });
