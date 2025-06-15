@@ -10,36 +10,25 @@
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="8dp">
-
-    <ImageView
-        android:id="@+id/iv_grid_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_menu"
-        android:contentDescription="Grid Icon"
-        app:tint="@android:color/white" />
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
 
     <!-- The search bar is a TextView to make the whole area clickable -->
     <TextView
         android:id="@+id/et_search"
         android:layout_width="0dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:background="@drawable/round_conner"
         android:drawableStart="@drawable/ic_search_resized"
-        android:drawablePadding="8dp"
+        android:drawablePadding="12dp"
         android:gravity="center_vertical"
         android:hint="Tìm kiếm việc làm, công ty..."
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="18dp"
         android:textColor="@color/textPrimary"
-        android:textColorHint="@color/textHint" />
+        android:textColorHint="@color/textHint"
+        android:textSize="16sp" />
     <!-- Navigation Drawer -->
-
 
 </LinearLayout> 
