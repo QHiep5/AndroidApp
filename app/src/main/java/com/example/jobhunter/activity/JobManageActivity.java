@@ -7,6 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ public class JobManageActivity extends AppCompatActivity {
     private JobManageAdapter adapter;
     private JobViewModel jobViewModel;
     private ArrayList<Job> allJobs = new ArrayList<>();
-    private Button btnPrev, btnNext;
+    private ImageButton btnPrev, btnNext;
     private TextView tvPageInfo;
 
     @Override

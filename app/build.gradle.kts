@@ -67,4 +67,6 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
     implementation("org.apache.httpcomponents:httpmime:4.5.13")
     implementation("org.apache.httpcomponents:httpcore:4.4.15")
+    implementation ("com.google.android.material:material:1.10.0")
+
 }

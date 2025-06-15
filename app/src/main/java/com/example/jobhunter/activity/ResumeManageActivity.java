@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ public class ResumeManageActivity extends AppCompatActivity {
     private boolean isAdmin;
     private ProgressBar progressBar;
     private Toolbar toolbar;
-    private Button btnPrev, btnNext;
+    private ImageButton btnPrev, btnNext;
     private TextView tvPageInfo;
     private View paginationLayout;
 

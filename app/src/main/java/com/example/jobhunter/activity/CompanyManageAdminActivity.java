@@ -7,6 +7,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ public class CompanyManageAdminActivity extends AppCompatActivity {
     private EditText etSearch;
     private Button btnAddCompany;
     private ImageView btnBack;
-    private Button btnPrev, btnNext;
+    private ImageButton btnPrev, btnNext;
     private TextView tvPageInfo;
 
     @Override
