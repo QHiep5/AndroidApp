@@ -165,7 +165,7 @@ public class JobListFragment extends Fragment {
         btnApplyFilter.setOnClickListener(view -> {
             SearchHelper.handleSearch(
                     this,
-                    view,
+                    getView(),
                     cgLocation,
                     SearchHelper.getSelectedSkillIds(),
                     sessionManager

@@ -31,7 +31,6 @@
                     app:title="ITViec"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-                <include layout="@layout/reusable_toolbar_with_search" />
 
             </LinearLayout>
 

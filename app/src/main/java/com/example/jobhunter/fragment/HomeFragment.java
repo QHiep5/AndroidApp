@@ -189,7 +189,7 @@ public class HomeFragment extends Fragment {
         btnApplyFilter.setOnClickListener(view -> {
             SearchHelper.handleSearch(
                 this,
-                    view,
+                    getView(),
                 cgLocation,
                     SearchHelper.getSelectedSkillIds(),
                 sessionManager
