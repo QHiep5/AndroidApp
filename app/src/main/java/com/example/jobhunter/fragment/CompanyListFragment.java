@@ -21,14 +21,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridView;
-import android.widget.Button;
-import android.widget.TextView;
-
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.CompanyViewModel;
 import com.example.jobhunter.ViewModel.SkillViewModel;
@@ -49,8 +41,6 @@ public class CompanyListFragment extends Fragment {
     private SkillViewModel skillViewModel;
     private CompanyAdapter companyAdapter;
     private RecyclerView companiesListView;
-    private Button btnPrev, btnNext;
-    private TextView tvPageInfo;
     private SessionManager sessionManager;
 
     private TextView etSearch;
@@ -99,11 +89,6 @@ public class CompanyListFragment extends Fragment {
 
         // Initialize Views
         companiesListView = v.findViewById(R.id.company_listview);
-        btnPrev = v.findViewById(R.id.btn_prev);
-        btnNext = v.findViewById(R.id.btn_next);
-        tvPageInfo = v.findViewById(R.id.tv_page_info);
-        
-        init();
         etSearch = v.findViewById(R.id.et_search);
         filterFormContainer = v.findViewById(R.id.filter_form_container);
         cgLocation = v.findViewById(R.id.cg_location);
@@ -125,29 +110,6 @@ public class CompanyListFragment extends Fragment {
             startActivity(intent);
         });
 
-        companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
-
-        // Setup pagination buttons
-        btnPrev.setOnClickListener(v1 -> {
-            Integer currentPage = companyViewModel.getCurrentPage().getValue();
-            if (currentPage != null && currentPage > 1) {
-                companyViewModel.fetchCompanies("", currentPage - 1);
-            }
-        });
-
-        btnNext.setOnClickListener(v1 -> {
-            Integer currentPage = companyViewModel.getCurrentPage().getValue();
-            Integer totalPages = companyViewModel.getTotalPages().getValue();
-            if (currentPage != null && totalPages != null && currentPage < totalPages) {
-                companyViewModel.fetchCompanies("", currentPage + 1);
-            }
-        });
-
-        // Observe pagination data
-        companyViewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> updatePaginationUI());
-        companyViewModel.getTotalPages().observe(getViewLifecycleOwner(), pages -> updatePaginationUI());
-
-        String token = ""; // Lấy token từ SharedPreferences hoặc nơi lưu trữ nếu có
         // Fetch data
         String token = sessionManager.getAuthToken();
         companyViewModel.fetchCompanies(token);
@@ -160,10 +122,10 @@ public class CompanyListFragment extends Fragment {
         });
 
         companyViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
 
         skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
 
         // Initialize skills using SearchHelper
         SearchHelper.initializeSkills(skillViewModel, this, tvSelectSkills, selectedSkillsContainer);
@@ -194,16 +156,6 @@ public class CompanyListFragment extends Fragment {
         return v;
     }
 
-    private void updatePaginationUI() {
-        Integer currentPage = companyViewModel.getCurrentPage().getValue();
-        Integer totalPages = companyViewModel.getTotalPages().getValue();
-
-        if (currentPage != null && totalPages != null) {
-            tvPageInfo.setText(String.format("Page %d of %d", currentPage, totalPages));
-            btnPrev.setEnabled(currentPage > 1);
-            btnNext.setEnabled(currentPage < totalPages);
-        }
-    }
     @Override
     public void onPause() {
         super.onPause();

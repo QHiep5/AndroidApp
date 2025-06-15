@@ -86,13 +86,13 @@ public class HomeFragment extends Fragment {
 
         // Khởi tạo các Views
         initializeViews(v);
-        
+
         // Thiết lập RecyclerView
         setupRecyclerView();
-        
+
         // Thiết lập các observers
         setupObservers();
-        
+
         // Thiết lập search và filter
         setupSearchAndFilter();
 
@@ -154,44 +154,19 @@ public class HomeFragment extends Fragment {
 
         // Observer cho lỗi jobs
         jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
 
         // Observer cho lỗi skills
         skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
 
         // Fetch dữ liệu
         String token = sessionManager.getAuthToken();
         companyViewModel.fetchCompanies(token);
         jobViewModel.fetchJobs(token);
         skillViewModel.fetchSkills();
-
-        companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(),
-                companies -> companyAdapter.setData(companies));
-
-        jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> jobListAdapter.setData(jobs));
-
-        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.equals("Người dùng chưa đăng nhập")) {
-                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        skillViewModel.getSkillsLiveData().observe(getViewLifecycleOwner(), skills -> {
-            if (skills != null && !skills.isEmpty()) {
-                allSkillsList = skills;
-                skillNamesArray = new String[skills.size()];
-                for (int i = 0; i < skills.size(); i++) {
-                    skillNamesArray[i] = skills.get(i).getName();
-                }
-                selectedSkillsFlags = new boolean[skillNamesArray.length];
-            }
-        });
-
-        skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(),
-                error -> Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
     }
-                
+
     private void setupSearchAndFilter() {
         // Khởi tạo skills sử dụng SearchHelper
         SearchHelper.initializeSkills(skillViewModel, this, tvSelectSkills, selectedSkillsContainer);
@@ -213,11 +188,11 @@ public class HomeFragment extends Fragment {
         // Xử lý click vào nút apply filter
         btnApplyFilter.setOnClickListener(view -> {
             SearchHelper.handleSearch(
-                this,
+                    this,
                     getView(),
-                cgLocation,
+                    cgLocation,
                     SearchHelper.getSelectedSkillIds(),
-                sessionManager
+                    sessionManager
             );
         });
     }
@@ -229,13 +204,6 @@ public class HomeFragment extends Fragment {
         SearchHelper.resetAllData();
     }
 
-    private void hideFilterForm() {
-        if (getContext() != null) {
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (getView() != null)
-                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-        }
-    }
     @Override
     public void onResume() {
         super.onResume();

@@ -14,83 +14,34 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-        <!-- Nội dung chính -->
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/background">
-            <!-- Toolbar is now included from a reusable layout -->
-            <include layout="@layout/reusable_toolbar_with_search" />
-            <!-- Scrollable content -->
-            <androidx.core.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- ViewFlipper Banner -->
-                    <ViewFlipper
-                        android:id="@+id/viewFlipper"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_margin="16dp" />
-
-                    <!-- LINEAR 3: Gợi ý việc làm -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:padding="16dp">
+            android:padding="16dp">
 
             <!-- Filter Form -->
             <include layout="@layout/layout_filter_form" />
 
             <!-- Top Companies Section -->
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Danh sách công việc"
                 android:textColor="@color/textPrimary"
-                            android:textSize="18sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
-                        <androidx.recyclerview.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_suggested_jobs"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 tools:listitem="@layout/item_company2" />
 
-                </LinearLayout>
-
-            </androidx.core.widget.NestedScrollView>
-
-
-
         </LinearLayout>
-
-        <!-- Navigation Drawer -->
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/navigation_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start" >
-            <ListView
-                android:id="@+id/nav_list_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-        </com.google.android.material.navigation.NavigationView>
-
-
-    </androidx.drawerlayout.widget.DrawerLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
-
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

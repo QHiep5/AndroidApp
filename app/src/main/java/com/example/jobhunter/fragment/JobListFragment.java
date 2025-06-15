@@ -29,8 +29,6 @@ import java.util.List;
 
 import android.util.Log;
 import android.widget.Toast;
-import android.widget.Button;
-import android.widget.TextView;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.example.jobhunter.ViewModel.SkillViewModel;
@@ -52,8 +50,6 @@ public class JobListFragment extends Fragment {
     private RecyclerView rvSuggestedJobs;
 
     private SessionManager sessionManager;
-    private Button btnPrev, btnNext;
-    private TextView tvPageInfo;
 
     private TextView etSearch;
     private LinearLayout filterFormContainer, selectedSkillsContainer, searchBarContainer;
@@ -79,28 +75,21 @@ public class JobListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_job_list, container, false);
 
         // Initialize SessionManager
         sessionManager = new SessionManager(getContext());
 
         // Initialize Views
-        drawerLayout = view.findViewById(R.id.drawer_layout);
-        toolbar = view.findViewById(R.id.toolbar);
-        viewFlipper = view.findViewById(R.id.viewFlipper);
-        rvSuggestedJobs = view.findViewById(R.id.rv_suggested_jobs);
-        btnPrev = view.findViewById(R.id.btn_prev);
-        btnNext = view.findViewById(R.id.btn_next);
-        tvPageInfo = view.findViewById(R.id.tv_page_info);
         initializeViews(v);
 
         // Setup RecyclerView
         setupRecyclerView();
-        
+
         // Setup observers
         setupObservers();
-        
+
         // Initialize skills and search
         setupSearchAndFilter();
 
@@ -129,35 +118,16 @@ public class JobListFragment extends Fragment {
             intent.putExtra("JOB_ID", job.getId());
             startActivity(intent);
         });
-    
-
-        // Setup pagination buttons
-        btnPrev.setOnClickListener(v -> {
-            Integer currentPage = jobViewModel.getCurrentPage().getValue();
-            if (currentPage != null && currentPage > 1) {
-                jobViewModel.fetchJobs(sessionManager.getAuthToken(), currentPage - 1);
-            }
-        });
-
-        btnNext.setOnClickListener(v -> {
-            Integer currentPage = jobViewModel.getCurrentPage().getValue();
-            Integer totalPages = jobViewModel.getTotalPages().getValue();
-            if (currentPage != null && totalPages != null && currentPage < totalPages) {
-                jobViewModel.fetchJobs(sessionManager.getAuthToken(), currentPage + 1);
-            }
-        });
-
-        return view;
     }
 
     private void setupObservers() {
         jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> {
-                jobListAdapter.setData(jobs);
+            jobListAdapter.setData(jobs);
             Log.d("JOB_LIST", "Jobs loaded: " + jobs.size());
         });
 
         jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
 
         skillViewModel.getSkillsLiveData().observe(getViewLifecycleOwner(), skills -> {
             allSkillsList = skills;
@@ -170,7 +140,7 @@ public class JobListFragment extends Fragment {
         });
 
         skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-            Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
+                Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
 
         String token = sessionManager.getAuthToken();
         jobViewModel.fetchJobs(token);
@@ -268,41 +238,6 @@ public class JobListFragment extends Fragment {
         if (etSearch != null) {
             etSearch.setText("");
         }
-        viewFlipper.setFlipInterval(3000);
-        viewFlipper.setAutoStart(true);
-        viewFlipper.setInAnimation(getContext(), android.R.anim.fade_in);
-        viewFlipper.setOutAnimation(getContext(), android.R.anim.fade_out);
-
-        // Setup ViewModel and Observe Data
-        jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
-        Log.d(TAG, "ViewModel and SessionManager initialized.");
-
-        jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> {
-            if (jobs != null) {
-                Log.d(TAG, "Jobs LiveData updated. Received " + jobs.size() + " jobs. Submitting to adapter.");
-                jobListAdapter.setData(jobs);
-            } else {
-                Log.w(TAG, "Jobs LiveData updated with null list.");
-            }
-        });
-
-        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.isEmpty()) {
-                Log.e(TAG, "Error LiveData updated: " + error);
-                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_LONG).show();
-            }
-        });
-
-        // Observe pagination data
-        jobViewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> updatePaginationUI());
-        jobViewModel.getTotalPages().observe(getViewLifecycleOwner(), pages -> updatePaginationUI());
-
-        sessionManager = new SessionManager(getContext());
-        String token = sessionManager.getAuthToken();
-        if (token == null || token.isEmpty()) {
-            Log.w(TAG, "Authentication token is NULL or EMPTY. Fetching jobs without auth.");
-        } else {
-            Log.i(TAG, "Authentication token found. Fetching jobs with token.");
         if (cgLocation != null) {
             cgLocation.clearCheck();
         }
@@ -315,18 +250,6 @@ public class JobListFragment extends Fragment {
         // Ẩn filterForm khi quay lại fragment
         if (filterFormContainer != null) {
             filterFormContainer.setVisibility(View.GONE);
-        }
-    }
-}
-
-    private void updatePaginationUI() {
-        Integer currentPage = jobViewModel.getCurrentPage().getValue();
-        Integer totalPages = jobViewModel.getTotalPages().getValue();
-
-        if (currentPage != null && totalPages != null) {
-            tvPageInfo.setText(String.format("Page %d of %d", currentPage, totalPages));
-            btnPrev.setEnabled(currentPage > 1);
-            btnNext.setEnabled(currentPage < totalPages);
         }
     }
 }
