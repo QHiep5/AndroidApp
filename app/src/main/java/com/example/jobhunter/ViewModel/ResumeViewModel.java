@@ -60,15 +60,16 @@ public class ResumeViewModel extends AndroidViewModel {
         int currentPage = currentPageLiveData.getValue() != null ? currentPageLiveData.getValue() : 1;
         ResumeApi.getResumesByUser(getApplication(), token, currentPage, ITEMS_PER_PAGE, response -> {
             try {
-                Log.d(TAG, "JSON từ server trả về: " + response.toString());
-
                 JSONObject dataObject = response.getJSONObject("data");
                 Log.d(TAG, "JSON 'data': " + dataObject.toString());
+
+                JSONObject metaObject = dataObject.getJSONObject("meta");
+                int totalItems = metaObject.getInt("total");
+                Log.d(TAG, "Total items: " + totalItems);
 
                 JSONArray resultArray = dataObject.getJSONArray("result");
                 Log.d(TAG, "JSON 'result': " + resultArray.toString());
 
-                int totalItems = dataObject.getInt("total");
                 int totalPages = (int) Math.ceil((double) totalItems / ITEMS_PER_PAGE);
                 totalPagesLiveData.postValue(totalPages);
 
