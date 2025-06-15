@@ -16,6 +16,7 @@ import com.example.jobhunter.activity.JobManageActivity;
 import com.example.jobhunter.activity.LoginActivity;
 import com.example.jobhunter.activity.ResumeManageActivity;
 import com.google.android.material.navigation.NavigationView;
+import com.example.jobhunter.util.TokenManager;
 
 public class NavigationManager {
     private static ActionBarDrawerToggle drawerToggle;
@@ -27,7 +28,8 @@ public class NavigationManager {
     private static Toolbar toolbar;
     private static AppCompatActivity activity;
 
-    public static void initialize(AppCompatActivity activity, DrawerLayout drawer, NavigationView navView, Toolbar toolbar) {
+    public static void initialize(AppCompatActivity activity, DrawerLayout drawer, NavigationView navView,
+            Toolbar toolbar) {
         context = activity;
         NavigationManager.activity = activity;
         drawerLayout = drawer;
@@ -47,8 +49,7 @@ public class NavigationManager {
                 drawer,
                 toolbar,
                 R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
-        );
+                R.string.navigation_drawer_close);
 
         // Thêm listener cho drawer
         drawer.addDrawerListener(drawerToggle);
@@ -90,7 +91,7 @@ public class NavigationManager {
                     context.startActivity(intent);
                 }
             }
-            
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
@@ -126,18 +127,34 @@ public class NavigationManager {
 
     public static void updateNavigationState() {
         if (navigationView != null) {
-            // Cập nhật trạng thái menu dựa trên role
-            String userRole = sessionManager.getUserRole();
-            
             // Clear existing menu first
             navigationView.getMenu().clear();
 
-            // Set the appropriate menu based on user role
-            if ("SUPER_ADMIN".equalsIgnoreCase(userRole)) {
-                navigationView.inflateMenu(R.menu.toolbar_nav_menu);
-            } else {
+            // Check if user is logged in
+            if (!TokenManager.isLoggedIn(context)) {
+                // If not logged in, inflate main_menu but hide CV Management
                 navigationView.inflateMenu(R.menu.main_menu);
+                navigationView.getMenu().findItem(R.id.action_manage_cv).setVisible(false);
+
+                // Change logout button to login button
+                navigationView.getMenu().findItem(R.id.action_logout).setTitle("Đăng nhập");
+                navigationView.getMenu().findItem(R.id.action_logout).setOnMenuItemClickListener(item -> {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                    return true;
+                });
+            } else {
+                // Get user role
+                String userRole = sessionManager.getUserRole();
+
+                if ("SUPER_ADMIN".equalsIgnoreCase(userRole)) {
+                    // Show admin menu
+                    navigationView.inflateMenu(R.menu.toolbar_nav_menu);
+                } else if ("USER".equalsIgnoreCase(userRole)) {
+                    // Show full main menu for regular users
+                    navigationView.inflateMenu(R.menu.main_menu);
+                }
             }
         }
     }
-} 
+}
