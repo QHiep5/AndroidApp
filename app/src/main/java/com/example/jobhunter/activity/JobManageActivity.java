@@ -35,6 +35,7 @@ public class JobManageActivity extends AppCompatActivity {
         etSearchCompany = findViewById(R.id.et_search_company);
         btnAddJob = findViewById(R.id.btn_add_job);
         btnSearch = findViewById(R.id.btn_search);
+
         rvJobs = findViewById(R.id.rv_jobs);
 
 

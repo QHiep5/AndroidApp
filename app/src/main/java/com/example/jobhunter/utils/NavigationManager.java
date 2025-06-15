@@ -43,7 +43,9 @@ public class NavigationManager {
                 activity.startActivity(new Intent(activity, CvManagementActivity.class));
 
             } else if (itemId == R.id.action_manage_company) {
+                // TODO: Implement company management activity
                 activity.startActivity(new Intent(activity, CompanyManageAdminActivity.class));
+
             } else if (itemId == R.id.action_manage_jobs) {
                 activity.startActivity(new Intent(activity, JobManageActivity.class));
             } else if (itemId == R.id.action_manage_applications) {

@@ -45,9 +45,9 @@
             android:name=".activity.CompanyDetailActivity"
             android:exported="false" />
         <activity android:name=".activity.SearchResultsActivity" />
-        <activity android:name=".activity.ProfileDetailActivity"
-            android:exported="false"
-            />
+        <activity
+            android:name=".activity.ProfileDetailActivity"
+            android:exported="false" />
         <activity android:name=".activity.CvManagementActivity" />
         <activity android:name=".activity.JobManageActivity" />
         <activity android:name=".activity.AddJobActivity" />
