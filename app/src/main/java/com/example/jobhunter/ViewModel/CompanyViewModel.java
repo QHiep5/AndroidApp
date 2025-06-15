@@ -26,6 +26,9 @@ public class CompanyViewModel extends AndroidViewModel {
     private MutableLiveData<String> error = new MutableLiveData<>();
     private MutableLiveData<String> uploadResult = new MutableLiveData<>();
     private MutableLiveData<Boolean> createResult = new MutableLiveData<>();
+    private MutableLiveData<Boolean> updateResult = new MutableLiveData<>();
+    private MutableLiveData<Boolean> deleteResult = new MutableLiveData<>();
+    private MutableLiveData<String> deleteError = new MutableLiveData<>();
 
     public CompanyViewModel(@NonNull Application application) {
         super(application);
@@ -36,6 +39,9 @@ public class CompanyViewModel extends AndroidViewModel {
     public LiveData<String> getErrorLiveData() { return error; }
     public LiveData<String> getUploadResult() { return uploadResult; }
     public LiveData<Boolean> getCreateResult() { return createResult; }
+    public LiveData<Boolean> getUpdateResult() { return updateResult; }
+    public LiveData<Boolean> getDeleteResult() { return deleteResult; }
+    public LiveData<String> getDeleteError() { return deleteError; }
 
     public void fetchCompanies(String token) {
         CompanyApi.getCompanies(getApplication(), token, response -> {
@@ -119,6 +125,76 @@ public class CompanyViewModel extends AndroidViewModel {
                 }
             },
             this::handleError
+        );
+    }
+
+    public void updateCompany(long id, String name, String address, String description, String logo) {
+        try {
+            JSONObject companyData = new JSONObject();
+            companyData.put("id", id);
+            companyData.put("name", name);
+            companyData.put("address", address);
+            companyData.put("description", description);
+            companyData.put("logo", logo);
+
+            // Log JSON gốc
+            Log.d("UpdateCompany", "Sending update request with data: " + companyData.toString());
+
+            // Log JSON đẹp (pretty print)
+            Log.d("UpdateCompany", "Pretty JSON:\n" + companyData.toString(4));
+
+            CompanyApi.updateCompany(getApplication(), companyData, "",
+                    response -> {
+                        try {
+                            Log.d("UpdateCompany", "Received response: " + response.toString());
+                            JSONObject data = response.getJSONObject("data");
+                            if (data != null) {
+                                // Refresh danh sách công ty sau khi cập nhật thành công
+                                fetchCompanies("");
+                                updateResult.setValue(true);
+                            } else {
+                                error.setValue("Error updating company: No data in response");
+                            }
+                        } catch (JSONException e) {
+                            Log.e("UpdateCompany", "Error parsing response: " + e.getMessage());
+                            error.setValue("Error parsing update company response: " + e.getMessage());
+                        }
+                    },
+                    error -> {
+                        Log.e("UpdateCompany", "Network error: " + error.toString());
+                        handleError(error);
+                    }
+            );
+        } catch (JSONException e) {
+            Log.e("UpdateCompany", "Error creating request data: " + e.getMessage());
+            error.setValue("Error creating company data: " + e.getMessage());
+        }
+    }
+
+    public void deleteCompany(long companyId, String token) {
+        Log.d("DeleteCompany", "Deleting company with ID: " + companyId);
+        Log.d("DeleteCompany", "Using token: " + token);
+
+        CompanyApi.deleteCompany(getApplication(), String.valueOf(companyId), token,
+                response -> {
+                    Log.d("DeleteCompany", "Delete success. Server response: " + response.toString());
+                    deleteResult.setValue(true);
+                    // Refresh the company list after successful deletion
+                    fetchCompanies(token);
+                },
+                error -> {
+                    Log.e("DeleteCompany", "Delete failed. Error: " + error.toString());
+                    if (error instanceof VolleyError) {
+                        NetworkResponse networkResponse = ((VolleyError) error).networkResponse;
+                        if (networkResponse != null && networkResponse.statusCode == 500) {
+                            deleteError.setValue("Không thể xóa công ty vì tồn tại ràng buộc");
+                        } else {
+                            handleError(error);
+                        }
+                    } else {
+                        handleError(error);
+                    }
+                }
         );
     }
 

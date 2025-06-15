@@ -19,7 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.text.Normalizer;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,32 +110,54 @@ public class CompanyApi {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+//                headers.put("Authorization", "Bearer " + token);  // <-- token ở đây
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+        };
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    // Xóa company (DELETE /api/v1/companies/{id})
+    public static void deleteCompany(Context context, String companyId, String token,
+                                     Response.Listener<JSONObject> listener,
+                                     Response.ErrorListener errorListener) {
+        String url = ApiConfig.COMPANY + "/" + companyId;
+
+        // Log URL
+        Log.d("DeleteCompany", "DELETE URL: " + url);
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                response -> {
+                    Log.d("DeleteCompany", "Response: " + response.toString());
+                    listener.onResponse(response);
+                },
+                error -> {
+                    Log.e("DeleteCompany", "Error: " + error.toString());
+                    errorListener.onErrorResponse(error);
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                if (token != null && !token.isEmpty()) {
+//                    headers.put("Authorization", "Bearer " + token);
+                    Log.d("DeleteCompany", "Authorization: Bearer " + token);
+                } else {
+                    Log.w("DeleteCompany", "No token provided");
+                }
+                headers.put("Content-Type", "application/json");
+                Log.d("DeleteCompany", "Headers: " + headers.toString());
                 return headers;
             }
         };
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    // Xóa company (DELETE /api/v1/companies/{id})
-    public static void deleteCompany(Context context, String companyId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.COMPANY + companyId;
-        JsonObjectRequest request = new JsonObjectRequest(
-            com.android.volley.Request.Method.DELETE,
-            url,
-            null,
-            listener,
-            errorListener
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-        VolleySingleton.getInstance(context).addToRequestQueue(request);
-    }
 
     public static void uploadFile(Context context, Uri fileUri, String companyName, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
         try {
@@ -151,8 +175,16 @@ public class CompanyApi {
                 }
             }
 
-            // Convert Uri to File using companyName with original extension
-            File file = new File(context.getCacheDir(), companyName + extension);
+            // Normalize companyName: remove Vietnamese diacritics and join with hyphens
+            String normalizedName = Normalizer.normalize(companyName, Normalizer.Form.NFD)
+                    .replaceAll("\\p{M}", "") // Remove diacritics
+                    .replaceAll("[^\\p{Alnum}]", "-") // Replace non-alphanumeric with hyphen
+                    .replaceAll("-+", "-") // Replace multiple hyphens with single hyphen
+                    .toLowerCase(Locale.getDefault())
+                    .replaceAll("^-|-$", ""); // Remove leading/trailing hyphens
+
+            // Convert Uri to File using normalized companyName with original extension
+            File file = new File(context.getCacheDir(), normalizedName + extension);
             try (InputStream inputStream = context.getContentResolver().openInputStream(fileUri);
                  FileOutputStream outputStream = new FileOutputStream(file)) {
                 byte[] buffer = new byte[4096];
