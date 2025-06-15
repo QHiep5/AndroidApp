@@ -1,7 +1,7 @@
 package com.example.jobhunter.api;
 
 public class ApiConfig {
-    public static final String BASE_HOST_URL = "http://192.168.184.142:8080/";
+    public static final String BASE_HOST_URL = "http://172.20.10.3:8080/";
     public static final String BASE_URL = BASE_HOST_URL + "api/v1/";
     public static final String LOGO_BASE_URL = BASE_HOST_URL + "storage/company/";
 
@@ -18,5 +18,5 @@ public class ApiConfig {
 
     // Endpoint cho xác thực (nếu backend tách riêng /api/auth/)
     public static final String AUTH_LOGIN = BASE_URL + "auth/login";
-    public static final String AUTH_REGISTER = BASE_URL.replace("/v1/", "/auth/register");
+    public static final String AUTH_REGISTER = BASE_URL + "auth/register";
 }

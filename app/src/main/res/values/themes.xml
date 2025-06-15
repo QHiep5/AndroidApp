@@ -3,9 +3,13 @@
     <style name="Base.Theme.JobHunter" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="Theme.JobHunter" parent="Base.Theme.JobHunter" />
+
     <style name="InputLabel">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -27,8 +31,6 @@
         <item name="android:textColor">@color/textPrimary</item>
         <item name="android:textColorHint">@color/textHint</item>
     </style>
-
-    <!-- Spinner Input Style -->
     <style name="SpinnerInput">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
