@@ -132,4 +132,41 @@ public class ResumeApi {
 
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
+
+    // Lấy tất cả resume (GET /api/v1/resumes)
+    public static void fetchAllResumes(Context context, String token, com.android.volley.Response.Listener<org.json.JSONObject> listener, com.android.volley.Response.ErrorListener errorListener) {
+        String url = ApiConfig.RESUME;
+        com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
+                com.android.volley.Request.Method.GET, url, null, listener, errorListener) {
+            @Override
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
+
+    // Cập nhật trạng thái resume (PUT /api/v1/resumes)
+    public static void updateResumeState(Context context, long resumeId, com.example.jobhunter.util.constant.ResumeStateEnum newState, String token,
+                                         com.android.volley.Response.Listener<org.json.JSONObject> listener,
+                                         com.android.volley.Response.ErrorListener errorListener) {
+        String url = ApiConfig.RESUME;
+        org.json.JSONObject body = new org.json.JSONObject();
+        try {
+            body.put("id", resumeId);
+            body.put("status", newState.name());
+        } catch (Exception ignored) {}
+        com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
+                com.android.volley.Request.Method.PUT, url, body, listener, errorListener) {
+            @Override
+            public java.util.Map<String, String> getHeaders() throws AuthFailureError {
+                java.util.Map<String, String> headers = new java.util.HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
+    }
 }

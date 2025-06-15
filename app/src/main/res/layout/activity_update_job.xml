@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background">
 
     <LinearLayout
@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header - Tiêu đề và nút quay lại (nếu là Activity độc lập) -->
+        <!-- Toolbar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
@@ -26,19 +26,21 @@
                 android:layout_height="32dp"
                 android:src="@drawable/ic_back"
                 android:contentDescription="Quay lại"
-                app:tint="@color/textPrimary" />
+                app:tint="@color/textPrimary"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Thêm công việc mới"
+                android:text="Cập nhật công việc"
                 android:textColor="@color/textPrimary"
                 android:textSize="22sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
+        <!-- Copy toàn bộ phần còn lại từ activity_add_job.xml (các trường nhập liệu, spinner, chip, switch, ...) -->
+        <!-- Đổi id nút thêm thành btn_update_job và text thành 'Cập nhật' -->
 
         <!-- Tên Job -->
         <TextView style="@style/InputLabel" android:text="Tên công việc" />
@@ -62,7 +64,7 @@
                 android:text="Chọn kỹ năng"
                 android:padding="8dp"
                 android:textColor="@color/textPrimary"
-                android:drawableEnd="@drawable/ic_back"
+                android:drawableEnd="@drawable/ic_apple"
                 android:clickable="true"
                 android:focusable="true"/>
             <com.google.android.material.chip.ChipGroup
@@ -72,7 +74,6 @@
                 android:paddingTop="4dp"/>
         </LinearLayout>
         <Space android:layout_height="8dp" android:layout_width="wrap_content"/>
-
 
         <!-- Địa điểm -->
         <TextView style="@style/InputLabel" android:text="Địa điểm" />
@@ -116,11 +117,7 @@
             android:hint="Chọn ngày bắt đầu"
             android:focusable="false"
             android:clickable="true"
-<<<<<<< HEAD
-            android:drawableEnd="@drawable/ic_back"
-=======
             android:drawableEnd="@drawable/ic_calendar"
->>>>>>> origin/hiep
             tools:text="2024-01-01"/>
 
         <!-- Ngày kết thúc -->
@@ -131,37 +128,11 @@
             android:hint="Chọn ngày kết thúc"
             android:focusable="false"
             android:clickable="true"
-<<<<<<< HEAD
-
-=======
             android:drawableEnd="@drawable/ic_calendar"
->>>>>>> origin/hiep
             tools:text="2024-06-30"/>
 
         <!-- Mô tả -->
         <TextView style="@style/InputLabel" android:text="Mô tả" />
-<<<<<<< HEAD
-        <EditText
-            android:id="@+id/et_description"
-            style="@style/TextInput"
-            android:minLines="3"
-            android:gravity="top"
-            android:hint="Nhập mô tả công việc" />
-
-        <!-- Trạng thái (Active/Inactive) -->
-        <TextView style="@style/InputLabel" android:text="Trạng thái" />
-        <Switch
-            android:id="@+id/switch_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="Không hoạt động"
-            android:textOn="Hoạt động"
-            android:showText="true"
-            android:thumbTextPadding="12dp"
-            android:checked="true"/>
-        <Space android:layout_height="16dp" android:layout_width="wrap_content"/>
-
-=======
 
         <EditText
             android:id="@+id/et_description"
@@ -200,8 +171,7 @@
                 android:thumbTextPadding="12dp"
                 android:checked="true"/>
         </LinearLayout>
->>>>>>> origin/hiep
-        <!-- Nút Thêm mới và Hủy -->
+        <!-- Nút Cập nhật và Hủy -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -219,15 +189,14 @@
                 android:layout_marginEnd="8dp"/>
 
             <Button
-                android:id="@+id/btn_add_new_job"
+                android:id="@+id/btn_update_job"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Thêm mới"
+                android:text="Cập nhật"
                 android:backgroundTint="@color/colorPrimary"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView> 

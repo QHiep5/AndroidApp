@@ -119,15 +119,15 @@ public class ProfileDetailActivity extends AppCompatActivity {
                         skillView.setTextColor(getResources().getColor(R.color.colorPrimary));
                         skillView.setBackgroundResource(R.drawable.bg_skill_chip);
                         skillView.setPadding(32, 8, 32, 8);
-
+                        
                         // Create FlexboxLayout parameters
                         FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                                FlexboxLayout.LayoutParams.WRAP_CONTENT
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                            FlexboxLayout.LayoutParams.WRAP_CONTENT
                         );
                         params.setMargins(0, 0, 16, 8); // Add bottom margin for spacing between rows
                         skillView.setLayoutParams(params);
-
+                        //Hiep
                         layoutSkillsRow.addView(skillView);
                     }
                 }
@@ -249,13 +249,13 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                     String[] skillNames = new String[skills.size()];
                     boolean[] checkedItems = new boolean[skills.size()];
-
+                    
                     // Set initial checked state based on selectedSkills
                     Set<Long> selectedSkillIds = new HashSet<>();
                     for (Skill skill : selectedSkills) {
                         selectedSkillIds.add(skill.getId());
                     }
-
+                    
                     for (int i = 0; i < skills.size(); i++) {
                         skillNames[i] = skills.get(i).getName();
                         checkedItems[i] = selectedSkillIds.contains(skills.get(i).getId());
@@ -263,24 +263,24 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileDetailActivity.this);
                     builder.setTitle("Chọn kỹ năng")
-                            .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
-                                // Handle selection change if needed
-                            })
-                            .setPositiveButton("Lưu", (dialog, which) -> {
-                                // Update selected skills
-                                selectedSkills.clear();
-                                for (int i = 0; i < skills.size(); i++) {
-                                    if (checkedItems[i]) {
-                                        selectedSkills.add(skills.get(i));
-                                    }
+                        .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
+                            // Handle selection change if needed
+                        })
+                        .setPositiveButton("Lưu", (dialog, which) -> {
+                            // Update selected skills
+                            selectedSkills.clear();
+                            for (int i = 0; i < skills.size(); i++) {
+                                if (checkedItems[i]) {
+                                    selectedSkills.add(skills.get(i));
                                 }
-
-                                // Update skills display immediately
-                                updateSkillsDisplay(layoutSkillsRow, selectedSkills);
-                            })
-                            .setNegativeButton("Huỷ", null)
-                            .show();
-
+                            }
+                            
+                            // Update skills display immediately
+                            updateSkillsDisplay(layoutSkillsRow, selectedSkills);
+                        })
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+                    
                     // Remove observer after showing dialog
                     skillViewModel.getSkillsLiveData().removeObserver(this);
                 }
@@ -311,15 +311,15 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 skillView.setTextColor(getResources().getColor(R.color.colorPrimary));
                 skillView.setBackgroundResource(R.drawable.bg_skill_chip);
                 skillView.setPadding(32, 8, 32, 8);
-
+                
                 // Create FlexboxLayout parameters
                 FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                        FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                        FlexboxLayout.LayoutParams.WRAP_CONTENT
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT
                 );
                 params.setMargins(0, 0, 16, 8); // Add bottom margin for spacing between rows
                 skillView.setLayoutParams(params);
-
+                
                 layout.addView(skillView);
             }
         }

@@ -4,20 +4,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.CompanyViewModel;
 import com.example.jobhunter.ViewModel.JobViewModel;
@@ -28,28 +18,16 @@ import com.example.jobhunter.model.Skill;
 import com.example.jobhunter.utils.SessionManager;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
-
+import java.util.*;
 import com.example.jobhunter.util.constant.LevelEnum;
+import com.example.jobhunter.ViewModel.JobDetailViewModel;
+import android.text.Html;
+import java.text.DecimalFormat;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class AddJobActivity extends AppCompatActivity {
-
-    private static final String TAG = "AddJobActivity";
+public class UpdateJobActivity extends AppCompatActivity {
+    private static final String TAG = "UpdateJobActivity";
     private ImageView btnBack;
     private EditText etJobName, etSalary, etQuantity, etDescription;
     private TextView tvSelectSkills;
@@ -57,8 +35,9 @@ public class AddJobActivity extends AppCompatActivity {
     private Spinner spinnerLevel, spinnerCompany, spinnerLocation;
     private EditText etStartDate, etEndDate;
     private Switch switchStatus;
-    private Button btnAddNewJob, btnCancel;
+    private Button btnUpdateJob, btnCancel;
 
+    private JobDetailViewModel jobDetailViewModel;
     private JobViewModel jobViewModel;
     private SkillViewModel skillViewModel;
     private CompanyViewModel companyViewModel;
@@ -67,23 +46,21 @@ public class AddJobActivity extends AppCompatActivity {
     private List<Skill> allSkillsList = new ArrayList<>();
     private boolean[] selectedSkillsFlags;
     private ArrayList<String> selectedSkillNames = new ArrayList<>();
-
     private List<Company> allCompaniesList = new ArrayList<>();
     private Map<String, String> locationMap = new LinkedHashMap<>();
+    private Job currentJob;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_job);
+        setContentView(R.layout.activity_update_job);
 
         sessionManager = new SessionManager(this);
-
-        // Ánh xạ Views
         btnBack = findViewById(R.id.btn_back);
         etJobName = findViewById(R.id.et_job_name);
         tvSelectSkills = findViewById(R.id.tv_select_skills);
         chipGroupSkills = findViewById(R.id.chip_group_skills);
-        spinnerLocation = findViewById(R.id.spinner_location); // Ánh xạ Spinner Địa điểm
+        spinnerLocation = findViewById(R.id.spinner_location);
         etSalary = findViewById(R.id.et_salary);
         etQuantity = findViewById(R.id.et_quantity);
         spinnerLevel = findViewById(R.id.spinner_level);
@@ -92,53 +69,144 @@ public class AddJobActivity extends AppCompatActivity {
         etEndDate = findViewById(R.id.et_end_date);
         etDescription = findViewById(R.id.et_description);
         switchStatus = findViewById(R.id.switch_status);
-        btnAddNewJob = findViewById(R.id.btn_add_new_job);
+        btnUpdateJob = findViewById(R.id.btn_update_job);
         btnCancel = findViewById(R.id.btn_cancel);
 
-        // Setup ViewModel
+        jobDetailViewModel = new ViewModelProvider(this).get(JobDetailViewModel.class);
         jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
         skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
         companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
 
-        // Load data for Spinners and Chips
         loadSkills();
         loadCompanies();
         setupLevelSpinner();
-        setupLocationSpinner(); // Setup spinner địa điểm
+        setupLocationSpinner();
 
-        // Xử lý sự kiện
         btnBack.setOnClickListener(v -> onBackPressed());
-
         etStartDate.setOnClickListener(v -> showDatePickerDialog(etStartDate));
         etEndDate.setOnClickListener(v -> showDatePickerDialog(etEndDate));
-
         tvSelectSkills.setOnClickListener(v -> showSkillSelectionDialog());
+        btnUpdateJob.setOnClickListener(v -> updateJob());
+        btnCancel.setOnClickListener(v -> finish());
 
-        btnAddNewJob.setOnClickListener(v -> addNewJob());
-        btnCancel.setOnClickListener(v -> finish()); // Đóng activity hiện tại
-
-        // Theo dõi kết quả từ ViewModel
-        jobViewModel.getCreateJobResultLiveData().observe(this, success -> {
-            Log.d("AddJobActivity", "CreateJobResultLiveData triggered. Success = " + success);
-
+        jobViewModel.getUpdateJobResultLiveData().observe(this, success -> {
             if (success != null && success) {
-                Toast.makeText(AddJobActivity.this, "Thêm công việc thành công!", Toast.LENGTH_SHORT).show();
-                Log.d("AddJobActivity", "Công việc được thêm thành công. Đóng Activity.");
-                finish(); // Đóng Activity sau khi thêm thành công
+                Toast.makeText(UpdateJobActivity.this, "Cập nhật công việc thành công!", Toast.LENGTH_SHORT).show();
+                finish();
             } else {
-                Toast.makeText(AddJobActivity.this, "Thêm công việc thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                Log.w("AddJobActivity", "Thêm công việc thất bại.");
+                Toast.makeText(UpdateJobActivity.this, "Cập nhật công việc thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
             }
         });
-
         jobViewModel.getErrorLiveData().observe(this, error -> {
-            Log.d("AddJobActivity", "ErrorLiveData triggered. Error = " + error);
             if (error != null && !error.isEmpty()) {
-                Toast.makeText(AddJobActivity.this, "Lỗi: " + error, Toast.LENGTH_LONG).show();
-                Log.e("AddJobActivity", "Lỗi khi tạo công việc: " + error);
+                Toast.makeText(UpdateJobActivity.this, "Lỗi: " + error, Toast.LENGTH_LONG).show();
             }
         });
 
+        // Nhận JOB_ID từ Intent
+        long jobId = getIntent().getLongExtra("JOB_ID", -1);
+        if (jobId == -1) {
+            Toast.makeText(this, "Không tìm thấy ID công việc!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        // Sử dụng JobViewModel để lấy Job đầy đủ trường cho update
+        String token = sessionManager.getAuthToken();
+        jobViewModel.getJobForUpdateLiveData().observe(this, job -> {
+            if (job != null) {
+                currentJob = job;
+                fillJobData(currentJob);
+            }
+        });
+        jobViewModel.fetchJobByIdForUpdate(getApplication(), String.valueOf(jobId), token);
+    }
+
+    private void fillJobData(Job job) {
+        etJobName.setText(job.getName());
+
+        // Hiển thị mức lương đúng định dạng
+        DecimalFormat salaryFormat = new DecimalFormat("#.##");
+        etSalary.setText(job.getSalary() > 0 ? salaryFormat.format(job.getSalary()) : "");
+
+        etQuantity.setText(String.valueOf(job.getQuantity()));
+
+        // Loại bỏ HTML khỏi mô tả công việc
+        if (job.getDescription() != null) {
+            String plainDesc = Html.fromHtml(job.getDescription(), Html.FROM_HTML_MODE_LEGACY).toString().trim();
+            etDescription.setText(plainDesc);
+        } else {
+            etDescription.setText("");
+        }
+
+        switchStatus.setChecked(job.isActive());
+
+        // Ngày bắt đầu/kết thúc
+        etStartDate.setText((job.getStartDate() != null && job.getStartDate().length() >= 10) ? job.getStartDate().substring(0, 10) : "");
+        etEndDate.setText((job.getEndDate() != null && job.getEndDate().length() >= 10) ? job.getEndDate().substring(0, 10) : "");
+
+        // Set Spinner Location
+        if (job.getLocation() != null && locationMap != null) {
+            int pos = 0;
+            for (int i = 0; i < spinnerLocation.getCount(); i++) {
+                String display = spinnerLocation.getItemAtPosition(i).toString();
+                if (locationMap.get(display) != null && locationMap.get(display).equals(job.getLocation())) {
+                    pos = i;
+                    break;
+                }
+            }
+            spinnerLocation.setSelection(pos);
+        }
+
+        // Set Spinner Level
+        if (job.getLevel() != null) {
+            String levelStr = job.getLevel().name().substring(0, 1) + job.getLevel().name().substring(1).toLowerCase();
+            for (int i = 0; i < spinnerLevel.getCount(); i++) {
+                if (spinnerLevel.getItemAtPosition(i).toString().equalsIgnoreCase(levelStr)) {
+                    spinnerLevel.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        // Set Spinner Company (hiện đúng tên công ty)
+        if (job.getCompany() != null && allCompaniesList != null && allCompaniesList.size() > 0) {
+            boolean found = false;
+            long jobCompanyId = job.getCompany().getId();
+            for (int i = 0; i < allCompaniesList.size(); i++) {
+                long listCompanyId = allCompaniesList.get(i).getId();
+                if (listCompanyId == jobCompanyId) {
+                    spinnerCompany.setSelection(i + 1); // +1 vì 0 là hint
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                // Nếu không tìm thấy, log ra để debug
+                android.util.Log.w("UpdateJobActivity", "Không tìm thấy công ty với ID: " + jobCompanyId + ". Danh sách: " + allCompaniesList);
+                spinnerCompany.setSelection(0); // Chọn hint
+            }
+        }
+
+        // Set Skills (ChipGroup)
+        if (job.getSkills() != null && allSkillsList != null && selectedSkillsFlags != null) {
+            chipGroupSkills.removeAllViews();
+            for (int i = 0; i < allSkillsList.size(); i++) {
+                Skill skill = allSkillsList.get(i);
+                boolean selected = false;
+                for (Skill jobSkill : job.getSkills()) {
+                    if (jobSkill.getId() == skill.getId()) {
+                        selected = true;
+                        break;
+                    }
+                }
+                selectedSkillsFlags[i] = selected;
+                if (selected) {
+                    addChipToChipGroup(skill.getName());
+                    if (!selectedSkillNames.contains(skill.getName()))
+                        selectedSkillNames.add(skill.getName());
+                }
+            }
+        }
     }
 
     private void loadSkills() {
@@ -146,19 +214,18 @@ public class AddJobActivity extends AppCompatActivity {
             if (skills != null) {
                 allSkillsList.clear();
                 allSkillsList.addAll(skills);
-                selectedSkillsFlags = new boolean[allSkillsList.size()]; // Initialize flags
+                selectedSkillsFlags = new boolean[allSkillsList.size()];
             }
         });
-        skillViewModel.fetchSkills(); // Kích hoạt fetch skills
+        skillViewModel.fetchSkills();
     }
-
     private void loadCompanies() {
         companyViewModel.getCompaniesLiveData().observe(this, companies -> {
             if (companies != null) {
                 allCompaniesList.clear();
                 allCompaniesList.addAll(companies);
                 List<String> companyNames = new ArrayList<>();
-                companyNames.add("Hãy chọn Công Ty"); // Hint
+                companyNames.add("Hãy chọn Công Ty"); // Thêm hint vào đầu danh sách
                 for (Company company : companies) {
                     companyNames.add(company.getName());
                 }
@@ -166,12 +233,16 @@ public class AddJobActivity extends AppCompatActivity {
                         android.R.layout.simple_spinner_item, companyNames);
                 companyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerCompany.setAdapter(companyAdapter);
+
+                // Nếu đã có currentJob, gọi lại fillJobData để setSelection đúng tên công ty
+                if (currentJob != null) {
+                    fillJobData(currentJob);
+                }
             }
         });
         String token = sessionManager.getAuthToken();
-        companyViewModel.fetchCompanies(token); // Kích hoạt fetch companies
+        companyViewModel.fetchCompanies(token);
     }
-
     private void setupLevelSpinner() {
         List<String> levelsDisplay = new ArrayList<>(Arrays.asList("Hãy chọn Trình độ", "Intern", "Fresher", "Junior", "Middle", "Senior"));
         ArrayAdapter<String> levelAdapter = new ArrayAdapter<>(this,
@@ -179,55 +250,46 @@ public class AddJobActivity extends AppCompatActivity {
         levelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLevel.setAdapter(levelAdapter);
     }
-
     private void setupLocationSpinner() {
-        locationMap.put("Hãy chọn Địa điểm", ""); // Hint
+        locationMap.put("Hãy chọn Địa điểm", "");
         locationMap.put("Hồ Chí Minh", "HOCHIMINH");
         locationMap.put("Hà Nội", "HANOI");
         locationMap.put("Đà Nẵng", "DANANG");
         locationMap.put("Khác", "OTHER");
-
         List<String> locationsDisplay = new ArrayList<>(locationMap.keySet());
         ArrayAdapter<String> locationAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, locationsDisplay);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLocation.setAdapter(locationAdapter);
     }
-
     private void showDatePickerDialog(final EditText targetEditText) {
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                 (view, year1, monthOfYear, dayOfMonth) -> {
                     Calendar selectedDate = Calendar.getInstance();
                     selectedDate.set(year1, monthOfYear, dayOfMonth);
-                    // Hiển thị ngày tháng năm cho người dùng
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                     targetEditText.setText(sdf.format(selectedDate.getTime()));
                 }, year, month, day);
         datePickerDialog.show();
     }
-
     private void showSkillSelectionDialog() {
         if (allSkillsList.isEmpty()) {
             Toast.makeText(this, "Đang tải kỹ năng, vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         String[] skillNamesArray = new String[allSkillsList.size()];
         for (int i = 0; i < allSkillsList.size(); i++) {
             skillNamesArray[i] = allSkillsList.get(i).getName();
         }
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Chọn Kỹ Năng");
         builder.setMultiChoiceItems(skillNamesArray, selectedSkillsFlags, (dialog, which, isChecked) -> {
             selectedSkillsFlags[which] = isChecked;
         });
-
         builder.setPositiveButton("OK", (dialog, which) -> {
             chipGroupSkills.removeAllViews();
             selectedSkillNames.clear();
@@ -242,7 +304,6 @@ public class AddJobActivity extends AppCompatActivity {
         builder.setNegativeButton("Hủy", null);
         builder.create().show();
     }
-
     private void addChipToChipGroup(String skillName) {
         Chip chip = new Chip(this);
         chip.setText(skillName);
@@ -259,39 +320,26 @@ public class AddJobActivity extends AppCompatActivity {
         });
         chipGroupSkills.addView(chip);
     }
-
-    private void addNewJob() {
+    private void updateJob() {
+        // Lấy dữ liệu từ các trường nhập liệu
         String name = etJobName.getText().toString().trim();
+        String locationDisplay = spinnerLocation.getSelectedItem().toString();
+        String location = locationMap.get(locationDisplay);
         String salaryStr = etSalary.getText().toString().trim();
         String quantityStr = etQuantity.getText().toString().trim();
+        String levelDisplay = spinnerLevel.getSelectedItem().toString();
         String description = etDescription.getText().toString().trim();
+        String startDate = etStartDate.getText().toString().trim();
+        String endDate = etEndDate.getText().toString().trim();
         boolean isActive = switchStatus.isChecked();
+        int companyPosition = spinnerCompany.getSelectedItemPosition();
 
-        // Lấy giá trị từ Spinner Địa điểm
-        String selectedLocationDisplay = spinnerLocation.getSelectedItem() != null ? spinnerLocation.getSelectedItem().toString() : "";
-        String location = locationMap.get(selectedLocationDisplay); // Lấy giá trị API
-
-        // Lấy giá trị từ Spinner Trình độ
-        String levelDisplay = spinnerLevel.getSelectedItem() != null ? spinnerLevel.getSelectedItem().toString() : "";
-        String levelApiValue = "";
-        if (!levelDisplay.equals("Hãy chọn Trình độ")) {
-            levelApiValue = levelDisplay.toUpperCase(Locale.ROOT); // Chuyển đổi sang uppercase cho API
-        }
-
-        // Lấy giá trị từ Spinner Công ty
-        Company selectedCompany = null;
-        if (spinnerCompany.getSelectedItemPosition() > 0 && allCompaniesList != null && !allCompaniesList.isEmpty()) {
-            selectedCompany = allCompaniesList.get(spinnerCompany.getSelectedItemPosition() - 1); // Trừ 1 vì có hint
-        }
-
-        // Validate inputs
-        if (name.isEmpty() || location == null || location.isEmpty() || salaryStr.isEmpty() || quantityStr.isEmpty() ||
-                description.isEmpty() || etStartDate.getText().toString().isEmpty() || etEndDate.getText().toString().isEmpty() ||
-                selectedSkillNames.isEmpty() || levelApiValue.isEmpty() || selectedCompany == null) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin và chọn các mục bắt buộc.", Toast.LENGTH_LONG).show();
+        // Validate
+        if (name.isEmpty() || location == null || location.isEmpty() || salaryStr.isEmpty() || quantityStr.isEmpty()
+                || levelDisplay.equals("Hãy chọn Trình độ") || companyPosition == 0 || startDate.isEmpty() || endDate.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin bắt buộc.", Toast.LENGTH_LONG).show();
             return;
         }
-
         double salary;
         int quantity;
         try {
@@ -301,98 +349,46 @@ public class AddJobActivity extends AppCompatActivity {
             Toast.makeText(this, "Mức lương và Số lượng phải là số hợp lệ.", Toast.LENGTH_LONG).show();
             return;
         }
-
-        // Tạo đối tượng Job
-        Job newJob = new Job();
-        newJob.setName(name);
-        newJob.setLocation(location);
-        newJob.setSalary(salary);
-        newJob.setQuantity(quantity);
-        newJob.setLevel(LevelEnum.valueOf(levelApiValue));
-        newJob.setDescription(description);
-        newJob.setActive(isActive);
-        newJob.setCompany(selectedCompany);
-
+        // Lấy trình độ
+        String levelApiValue = levelDisplay.toUpperCase();
+        // Lấy công ty
+        Company selectedCompany = allCompaniesList.get(companyPosition - 1); // vì 0 là hint
+        // Lấy skills
+        List<Skill> selectedSkills = new ArrayList<>();
+        for (int i = 0; i < allSkillsList.size(); i++) {
+            if (selectedSkillsFlags[i]) {
+                selectedSkills.add(allSkillsList.get(i));
+            }
+        }
         // Chuyển đổi ngày tháng sang định dạng ISO 8601 (yyyy-MM-dd'T'HH:mm:ss.SSS'Z')
         SimpleDateFormat sdfDateOnly = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        isoDateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Đảm bảo múi giờ UTC
-
+        isoDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String startDateIso = startDate;
+        String endDateIso = endDate;
         try {
-            Date startDateObj = sdfDateOnly.parse(etStartDate.getText().toString());
-            Date endDateObj = sdfDateOnly.parse(etEndDate.getText().toString());
-
-            // Để có phần giờ, phút, giây, mili giây, ta có thể dùng thời gian hiện tại
-            // hoặc đặt một giá trị cố định (ví dụ: 00:00:00.000 UTC).
-            // Dựa trên mẫu JSON bạn cung cấp, có vẻ backend mong đợi một thời gian cụ thể.
-            // Tôi sẽ sử dụng thời gian hiện tại (tại thời điểm submit) nhưng vẫn đảm bảo UTC.
-
-            Calendar currentUtcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-
-            Calendar startCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            startCal.setTime(startDateObj);
-            startCal.set(Calendar.HOUR_OF_DAY, currentUtcCalendar.get(Calendar.HOUR_OF_DAY));
-            startCal.set(Calendar.MINUTE, currentUtcCalendar.get(Calendar.MINUTE));
-            startCal.set(Calendar.SECOND, currentUtcCalendar.get(Calendar.SECOND));
-            startCal.set(Calendar.MILLISECOND, currentUtcCalendar.get(Calendar.MILLISECOND));
-
-            Calendar endCal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            endCal.setTime(endDateObj);
-            endCal.set(Calendar.HOUR_OF_DAY, currentUtcCalendar.get(Calendar.HOUR_OF_DAY));
-            endCal.set(Calendar.MINUTE, currentUtcCalendar.get(Calendar.MINUTE));
-            endCal.set(Calendar.SECOND, currentUtcCalendar.get(Calendar.SECOND));
-            endCal.set(Calendar.MILLISECOND, currentUtcCalendar.get(Calendar.MILLISECOND));
-
-            newJob.setStartDate(isoDateFormat.format(startCal.getTime()));
-            newJob.setEndDate(isoDateFormat.format(endCal.getTime()));
-
-        } catch (ParseException e) {
-            Log.e(TAG, "Lỗi định dạng ngày tháng khi parse: ", e);
-            Toast.makeText(this, "Lỗi định dạng ngày tháng. Vui lòng chọn lại.", Toast.LENGTH_LONG).show();
+            startDateIso = isoDateFormat.format(sdfDateOnly.parse(startDate));
+            endDateIso = isoDateFormat.format(sdfDateOnly.parse(endDate));
+        } catch (Exception e) {
+            Toast.makeText(this, "Lỗi định dạng ngày tháng.", Toast.LENGTH_LONG).show();
             return;
         }
-
-
-        List<Skill> jobSkills = new ArrayList<>();
-        for (String skillName : selectedSkillNames) {
-            for (Skill s : allSkillsList) {
-                if (s.getName().equals(skillName)) {
-                    jobSkills.add(s);
-                    break;
-                }
-            }
-        }
-        newJob.setSkills(jobSkills);
-
-        // Log JSON object for debugging
-        JSONObject jobJson = new JSONObject();
-        try {
-            jobJson.put("name", newJob.getName());
-            jobJson.put("location", newJob.getLocation());
-            jobJson.put("salary", newJob.getSalary());
-            jobJson.put("quantity", newJob.getQuantity());
-            jobJson.put("level", newJob.getLevel().name());
-            jobJson.put("description", newJob.getDescription());
-            jobJson.put("startDate", newJob.getStartDate());
-            jobJson.put("endDate", newJob.getEndDate());
-            jobJson.put("active", newJob.isActive());
-            jobJson.put("companyId", newJob.getCompany().getId());
-
-            JSONArray skillIdsArray = new JSONArray();
-            if (newJob.getSkills() != null) {
-                for (Skill skill : newJob.getSkills()) {
-                    skillIdsArray.put(skill.getId());
-                }
-            }
-            jobJson.put("skills", skillIdsArray);
-
-            Log.d(TAG, "Sending JSON for new job: " + jobJson.toString(2)); // Log với định dạng dễ đọc
-
-        } catch (JSONException e) {
-            Log.e(TAG, "Error creating JSON for log: ", e);
-        }
-
-        // Gọi API để thêm job mới
-        jobViewModel.createJob(newJob, sessionManager.getAuthToken());
+        // Build Job object
+        Job job = new Job();
+        job.setId(currentJob.getId());
+        job.setName(name);
+        job.setLocation(location);
+        job.setSalary(salary);
+        job.setQuantity(quantity);
+        job.setLevel(com.example.jobhunter.util.constant.LevelEnum.valueOf(levelApiValue));
+        job.setDescription(description);
+        job.setStartDate(startDateIso);
+        job.setEndDate(endDateIso);
+        job.setActive(isActive);
+        job.setCompany(selectedCompany);
+        job.setSkills(selectedSkills);
+        // Gọi update
+        String token = sessionManager.getAuthToken();
+        jobViewModel.updateJob(job, token);
     }
-}
+} 

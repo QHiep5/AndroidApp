@@ -70,14 +70,29 @@
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/textPrimary"
+            android:text="Trạng thái"
             android:textStyle="bold"
+            android:visibility="gone"
+            android:paddingTop="8dp"
+            android:textColor="@color/textPrimary"
             app:layout_constraintStart_toStartOf="@id/guideline_stt_spacing"
             app:layout_constraintTop_toBottomOf="@id/tv_company_name"
             app:layout_constraintBottom_toBottomOf="@id/tv_submission_date"
             tools:text="PENDING" />
+
+        <Spinner
+            android:id="@+id/spinner_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/spinner_background"
+            android:spinnerMode="dropdown"
+            android:popupBackground="@color/white"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/guideline_stt_spacing"
+            app:layout_constraintTop_toBottomOf="@id/tv_company_name"
+            app:layout_constraintBottom_toBottomOf="@id/tv_submission_date" />
 
         <TextView
             android:id="@+id/tv_submission_date"

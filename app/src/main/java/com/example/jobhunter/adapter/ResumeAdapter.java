@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,14 +28,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+
 public class ResumeAdapter extends RecyclerView.Adapter<ResumeAdapter.ResumeViewHolder> {
 
     private final Context context;
     private List<Resume> resumeList;
+    private boolean isAdmin = false;
+    private OnStateChangeListener stateChangeListener;
 
-    public ResumeAdapter(Context context, List<Resume> resumeList) {
+    public interface OnStateChangeListener {
+        void onStateChange(Resume resume, ResumeStateEnum newState);
+    }
+
+    public ResumeAdapter(Context context, List<Resume> resumeList, boolean isAdmin, OnStateChangeListener listener) {
         this.context = context;
         this.resumeList = resumeList;
+        this.isAdmin = isAdmin;
+        this.stateChangeListener = listener;
     }
 
     public void setData(List<Resume> resumeList) {
@@ -71,7 +83,30 @@ public class ResumeAdapter extends RecyclerView.Adapter<ResumeAdapter.ResumeView
             holder.appliedDateTV.setText("Ngày nộp: " + resume.getCreatedAt());
         }
 
-        // Trạng thái CV
+        holder.sttTV.setText(String.valueOf(position + 1));
+
+        // Hiển thị trạng thái
+        if (isAdmin) {
+            holder.statusTV.setVisibility(View.GONE);
+            holder.spinnerStatus.setVisibility(View.VISIBLE);
+            ArrayAdapter<ResumeStateEnum> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, ResumeStateEnum.values());
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.spinnerStatus.setAdapter(adapter);
+            holder.spinnerStatus.setSelection(resume.getStatus().ordinal());
+            holder.spinnerStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                    ResumeStateEnum selected = ResumeStateEnum.values()[pos];
+                    if (selected != resume.getStatus() && stateChangeListener != null) {
+                        Log.d("ResumeAdapter", "Admin chọn trạng thái mới: " + selected + " cho resumeId: " + resume.getId());
+                        stateChangeListener.onStateChange(resume, selected);
+                    }
+                }
+                @Override public void onNothingSelected(AdapterView<?> parent) {}
+            });
+        } else {
+            holder.statusTV.setVisibility(View.VISIBLE);
+            holder.spinnerStatus.setVisibility(View.GONE);
         ResumeStateEnum status = resume.getStatus();
         if (status != null) {
             switch (status) {
@@ -96,7 +131,7 @@ public class ResumeAdapter extends RecyclerView.Adapter<ResumeAdapter.ResumeView
                     holder.statusTV.setTextColor(Color.DKGRAY);
             }
         }
-        holder.sttTV.setText(String.valueOf(position + 1));
+        }
 
         // Nút xem chi tiết
         holder.viewDetailsBtn.setOnClickListener(v -> {
@@ -112,7 +147,8 @@ public class ResumeAdapter extends RecyclerView.Adapter<ResumeAdapter.ResumeView
     }
 
     public static class ResumeViewHolder extends RecyclerView.ViewHolder {
-        TextView companyNameTV, jobTitleTV, appliedDateTV, statusTV,viewDetailsBtn, sttTV;;
+        TextView companyNameTV, jobTitleTV, appliedDateTV, statusTV,viewDetailsBtn, sttTV;
+        Spinner spinnerStatus;
 
         public ResumeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -122,6 +158,7 @@ public class ResumeAdapter extends RecyclerView.Adapter<ResumeAdapter.ResumeView
             statusTV = itemView.findViewById(R.id.tv_status);
             viewDetailsBtn = itemView.findViewById(R.id.btn_view_details);
             sttTV = itemView.findViewById(R.id.tv_stt);
+            spinnerStatus = itemView.findViewById(R.id.spinner_status);
         }
     }
 }

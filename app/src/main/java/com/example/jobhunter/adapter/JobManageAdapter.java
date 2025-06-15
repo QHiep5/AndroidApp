@@ -9,7 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.model.Job;
+
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class JobManageAdapter extends RecyclerView.Adapter<JobManageAdapter.JobViewHolder> {
     private List<Job> jobList;
@@ -42,7 +45,10 @@ public class JobManageAdapter extends RecyclerView.Adapter<JobManageAdapter.JobV
         Job job = jobList.get(position);
         holder.tvJobTitle.setText(job.getName());
         holder.tvCompanyName.setText(job.getCompany() != null ? job.getCompany().getName() : "");
-        holder.tvSalary.setText(String.valueOf(job.getSalary()));
+
+        // Format tiền lương
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        holder.tvSalary.setText(currencyFormat.format(job.getSalary()));
 
         holder.btnEdit.setOnClickListener(v -> actionClickListener.onEdit(job));
         holder.btnDelete.setOnClickListener(v -> actionClickListener.onDelete(job));

@@ -129,7 +129,7 @@ public class JobDetailActivity extends AppCompatActivity {
             tvCompanyName.setText(job.getCompany().getName());
             String logoFileName = job.getCompany().getLogo();
             if (logoFileName != null && !logoFileName.isEmpty()) {
-                String logoUrl = ApiConfig.BASE_URL + "storage/company/" + logoFileName;
+                String logoUrl = ApiConfig.LOGO_BASE_URL + logoFileName;
                 Picasso.get()
                         .load(logoUrl)
                         .placeholder(R.drawable.ic_company)
