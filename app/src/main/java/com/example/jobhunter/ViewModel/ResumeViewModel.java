@@ -86,7 +86,12 @@ public class ResumeViewModel extends AndroidViewModel {
 
 
 
-    private void handleError(VolleyError volleyError) {
-        error.setValue(volleyError.getMessage());
+    private void handleError(VolleyError error) {
+        if (error.networkResponse != null && error.networkResponse.data != null) {
+            this.errorLiveData.postValue(new String(error.networkResponse.data));
+        } else {
+            this.errorLiveData.postValue(error.getMessage());
+        }
     }
+
 }

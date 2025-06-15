@@ -20,7 +20,6 @@ import android.widget.Toast;
 import android.widget.ImageView;
 import android.app.AlertDialog;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
@@ -29,8 +28,6 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.flexbox.AlignItems;
-=======
->>>>>>> 63ae649 (View + Feat : Profile Detail)
 
 public class ProfileDetailActivity extends AppCompatActivity {
     @Override
@@ -122,15 +119,15 @@ public class ProfileDetailActivity extends AppCompatActivity {
                         skillView.setTextColor(getResources().getColor(R.color.colorPrimary));
                         skillView.setBackgroundResource(R.drawable.bg_skill_chip);
                         skillView.setPadding(32, 8, 32, 8);
-                        
+
                         // Create FlexboxLayout parameters
                         FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                            FlexboxLayout.LayoutParams.WRAP_CONTENT
+                                FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                                FlexboxLayout.LayoutParams.WRAP_CONTENT
                         );
                         params.setMargins(0, 0, 16, 8); // Add bottom margin for spacing between rows
                         skillView.setLayoutParams(params);
-                        
+
                         layoutSkillsRow.addView(skillView);
                     }
                 }
@@ -252,13 +249,13 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                     String[] skillNames = new String[skills.size()];
                     boolean[] checkedItems = new boolean[skills.size()];
-                    
+
                     // Set initial checked state based on selectedSkills
                     Set<Long> selectedSkillIds = new HashSet<>();
                     for (Skill skill : selectedSkills) {
                         selectedSkillIds.add(skill.getId());
                     }
-                    
+
                     for (int i = 0; i < skills.size(); i++) {
                         skillNames[i] = skills.get(i).getName();
                         checkedItems[i] = selectedSkillIds.contains(skills.get(i).getId());
@@ -266,24 +263,24 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileDetailActivity.this);
                     builder.setTitle("Chọn kỹ năng")
-                        .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
-                            // Handle selection change if needed
-                        })
-                        .setPositiveButton("Lưu", (dialog, which) -> {
-                            // Update selected skills
-                            selectedSkills.clear();
-                            for (int i = 0; i < skills.size(); i++) {
-                                if (checkedItems[i]) {
-                                    selectedSkills.add(skills.get(i));
+                            .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
+                                // Handle selection change if needed
+                            })
+                            .setPositiveButton("Lưu", (dialog, which) -> {
+                                // Update selected skills
+                                selectedSkills.clear();
+                                for (int i = 0; i < skills.size(); i++) {
+                                    if (checkedItems[i]) {
+                                        selectedSkills.add(skills.get(i));
+                                    }
                                 }
-                            }
-                            
-                            // Update skills display immediately
-                            updateSkillsDisplay(layoutSkillsRow, selectedSkills);
-                        })
-                        .setNegativeButton("Huỷ", null)
-                        .show();
-                    
+
+                                // Update skills display immediately
+                                updateSkillsDisplay(layoutSkillsRow, selectedSkills);
+                            })
+                            .setNegativeButton("Huỷ", null)
+                            .show();
+
                     // Remove observer after showing dialog
                     skillViewModel.getSkillsLiveData().removeObserver(this);
                 }
@@ -301,44 +298,6 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 updateSkillsDisplay(layoutSkillsRow, selectedSkills);
             }
         });
-        btnBack.setOnClickListener(v -> finish());
-
-        SkillViewModel skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
-        btnEditSkills.setOnClickListener(v -> {
-            skillViewModel.fetchSkills();
-            skillViewModel.getSkillsLiveData().observe(this, new Observer<List<Skill>>() {
-                @Override
-                public void onChanged(List<Skill> skills) {
-                    if (skills == null || skills.isEmpty()) {
-                        Toast.makeText(ProfileDetailActivity.this, "Không có dữ liệu kỹ năng!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    String[] skillNames = new String[skills.size()];
-                    boolean[] checkedItems = new boolean[skills.size()];
-                    for (int i = 0; i < skills.size(); i++) {
-                        skillNames[i] = skills.get(i).getName();
-                        checkedItems[i] = false; // TODO: Đánh dấu true nếu user đã có kỹ năng này
-                    }
-                    new AlertDialog.Builder(ProfileDetailActivity.this)
-                        .setTitle("Chọn kỹ năng")
-                        .setMultiChoiceItems(skillNames, checkedItems, (dialog, which, isChecked) -> {
-                            // Có thể xử lý chọn/bỏ chọn ở đây nếu muốn
-                        })
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            // TODO: Lưu lại danh sách kỹ năng đã chọn
-                            StringBuilder sb = new StringBuilder("Kỹ năng đã chọn: ");
-                            for (int i = 0; i < skillNames.length; i++) {
-                                if (checkedItems[i]) sb.append(skillNames[i]).append(", ");
-                            }
-                            Toast.makeText(ProfileDetailActivity.this, sb.toString(), Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton("Huỷ", null)
-                        .show();
-                    // Chỉ observe 1 lần
-                    skillViewModel.getSkillsLiveData().removeObserver(this);
-                }
-            });
-        });
     }
 
     // Function to update skills display
@@ -352,15 +311,15 @@ public class ProfileDetailActivity extends AppCompatActivity {
                 skillView.setTextColor(getResources().getColor(R.color.colorPrimary));
                 skillView.setBackgroundResource(R.drawable.bg_skill_chip);
                 skillView.setPadding(32, 8, 32, 8);
-                
+
                 // Create FlexboxLayout parameters
                 FlexboxLayout.LayoutParams params = new FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT,
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT,
+                        FlexboxLayout.LayoutParams.WRAP_CONTENT
                 );
                 params.setMargins(0, 0, 16, 8); // Add bottom margin for spacing between rows
                 skillView.setLayoutParams(params);
-                
+
                 layout.addView(skillView);
             }
         }
