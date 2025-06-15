@@ -3,10 +3,11 @@ package com.example.jobhunter.fragment;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -28,17 +29,21 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.jobhunter.R;
+import com.example.jobhunter.api.ApiConfig;
 import com.example.jobhunter.model.Company;
 import com.example.jobhunter.ViewModel.CompanyViewModel;
+import com.example.jobhunter.util.TokenManager;
+import com.squareup.picasso.Picasso;
 //import com.example.jobhunter.util.SharedPreferencesManager;
 
-public class AddCompanyFragment extends DialogFragment {
+public class AddEditCompanyAdminFragment extends DialogFragment {
 
     private ImageView imgPreview;
     private TextView tvUploadImage;
     private TextView tvTitleForm;
     private EditText etName, etAddress, etDescription;
     private Button btnSubmit, btnCancel;
+    private ImageView btnClose;
 
     private Uri selectedImageUri;
     private ActivityResultLauncher<Intent> imagePickerLauncher;
@@ -50,14 +55,19 @@ public class AddCompanyFragment extends DialogFragment {
     private String tempAddress;
     private String tempDescription;
 
+    private boolean type;
+
+    private static final String LOGO_BASE_URL = ApiConfig.FILE; // Replace with your actual base URL
+
     // Hàm khởi tạo Fragment và nhận dữ liệu
-    public static AddCompanyFragment newInstance(@Nullable Company company, String title) {
-        AddCompanyFragment fragment = new AddCompanyFragment();
+    public static AddEditCompanyAdminFragment newInstance(@Nullable Company company, String title,Boolean type) {
+        AddEditCompanyAdminFragment fragment = new AddEditCompanyAdminFragment();
         Bundle args = new Bundle();
         if (company != null) {
             args.putSerializable("company", company);
         }
         args.putString("title", title);
+        args.putBoolean("type", type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,8 +81,17 @@ public class AddCompanyFragment extends DialogFragment {
         companyViewModel.getUploadResult().observe(this, fileName -> {
             if (fileName != null) {
                 uploadedFileName = fileName;
-                // After successful upload, create company with the file name
-                companyViewModel.createCompany(tempName, tempAddress, tempDescription, uploadedFileName);
+                if (type) {
+                    companyViewModel.createCompany(tempName, tempAddress, tempDescription, uploadedFileName);
+                } else {
+                    companyViewModel.updateCompany(
+                        companyData.getId(),
+                        tempName,
+                        tempAddress,
+                        tempDescription,
+                        uploadedFileName
+                    );
+                }
             }
         });
 
@@ -80,6 +99,14 @@ public class AddCompanyFragment extends DialogFragment {
         companyViewModel.getCreateResult().observe(this, success -> {
             if (success) {
                 Toast.makeText(getContext(), companyData == null ? "Tạo mới thành công" : "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                dismiss();
+            }
+        });
+
+        // Observe update result
+        companyViewModel.getUpdateResult().observe(this, success -> {
+            if (success) {
+                Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -118,10 +145,17 @@ public class AddCompanyFragment extends DialogFragment {
         btnCancel = view.findViewById(R.id.btn_cancel_company);
         tvUploadImage = view.findViewById(R.id.tv_upload_image);
         imgPreview = view.findViewById(R.id.img_company_preview);
+        btnClose = view.findViewById(R.id.btn_back);
+        etDescription.setMovementMethod(new ScrollingMovementMethod());
+
+        // Set up close button click listener
+        btnClose.setOnClickListener(v -> dismiss());
 
         // Nhận dữ liệu từ arguments
         if (getArguments() != null) {
             String title = getArguments().getString("title", "");
+            type = getArguments().getBoolean("type",false);
+            Log.d("TYEPDD",String.valueOf(type));
             tvTitleForm.setText(title);
 
             companyData = (Company) getArguments().getSerializable("company");
@@ -129,7 +163,20 @@ public class AddCompanyFragment extends DialogFragment {
                 etName.setText(companyData.getName());
                 etAddress.setText(companyData.getAddress());
                 etDescription.setText(companyData.getDescription());
-                // TODO: load ảnh từ URL nếu có
+
+                // Load company logo if exists
+                // Load company logo if exists
+                if (companyData.getLogo() != null && !companyData.getLogo().isEmpty()) {
+                    // Đường dẫn API đầy đủ để tải ảnh logo
+                    String fullLogoUrl =ApiConfig.LOGO_BASE_URL+companyData.getLogo();
+                    // Tải ảnh bằng Picasso
+                    Picasso.get()
+                            .load(fullLogoUrl)
+                            .placeholder(R.drawable.ic_company)  // hiển thị ảnh mặc định khi đang tải
+                            .error(R.drawable.ic_company)        // hiển thị ảnh mặc định khi lỗi
+                            .into(imgPreview);                   // view hiển thị ảnh
+                }
+
             }
         }
 
@@ -145,9 +192,11 @@ public class AddCompanyFragment extends DialogFragment {
 
         // Nút submit
         btnSubmit.setOnClickListener(v -> {
+            //Khong chua vao dc.
             String name = etName.getText().toString().trim();
             String address = etAddress.getText().toString().trim();
             String description = etDescription.getText().toString().trim();
+            Log.d("Desciption",description);
 
             if (TextUtils.isEmpty(name) || TextUtils.isEmpty(address)) {
                 Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
@@ -163,18 +212,38 @@ public class AddCompanyFragment extends DialogFragment {
             tempName = name;
             tempAddress = address;
             tempDescription = description;
-            Log.d("CompanyName",tempName);
 
-            Log.d("ImageURL", String.valueOf(selectedImageUri));
-            // If we have a new image, upload it first
-            if (selectedImageUri != null) {
-                Log.d("chayvao1","Chayvao1");
-                companyViewModel.uploadFile(selectedImageUri,tempName);
+            if (type) {
+                if (selectedImageUri != null) {
+                    companyViewModel.uploadFile(selectedImageUri, tempName);
+                } else if (companyData != null) {
+                    // If editing existing company and no new image, use existing logo
+                    companyViewModel.createCompany(name, address, description, companyData.getLogo());
+                }
+            } else {
+                Log.d("vaodchamupdate","okookok");
+                if (selectedImageUri != null) {
+                    Log.d("vaodchamupdate1","okookok");
+                    Log.d("vaodchamupdateuri",String.valueOf(selectedImageUri));
+                    companyViewModel.uploadFile(selectedImageUri, tempName);
+                } else if (companyData != null) {
+                    //Logic forUpdate Company
+                    Log.d("vaodchamupdateId",String.valueOf(companyData.getId()));
 
-            } else if (companyData != null) {
-                Log.d("chayvao2","Chayvao2");
-                // If editing existing company and no new image, use existing logo
-                companyViewModel.createCompany(name, address, description, companyData.getLogo());
+                    Log.d("vaodchamupdate2","okookok");
+                    Log.d("vaodchamupdate3",name);
+                    Log.d("vaodchamupdate4",address);
+                    Log.d("vaodchamupdate5",description);
+                    Log.d("vaodchamupdate6",companyData.getLogo());
+
+                    companyViewModel.updateCompany(
+                        companyData.getId(),
+                        name,
+                        address,
+                        description,
+                        companyData.getLogo()
+                    );
+                }
             }
         });
 
