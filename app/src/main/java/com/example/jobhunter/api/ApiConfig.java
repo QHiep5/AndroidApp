@@ -18,5 +18,5 @@ public class ApiConfig {
 
     // Endpoint cho xác thực (nếu backend tách riêng /api/auth/)
     public static final String AUTH_LOGIN = BASE_URL + "auth/login";
-    public static final String AUTH_REGISTER = BASE_URL.replace("/v1/", "/auth/register");
+    public static final String AUTH_REGISTER = BASE_URL + "auth/register";
 }

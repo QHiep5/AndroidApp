@@ -53,6 +53,8 @@
         <activity android:name=".activity.AddJobActivity" />
         <activity android:name=".activity.UpdateJobActivity" />
         <activity android:name=".activity.ResumeManageActivity" />
+        <activity android:name=".activity.RegisterActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
