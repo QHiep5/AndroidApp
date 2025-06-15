@@ -388,7 +388,7 @@ public class JobViewModel extends AndroidViewModel {
                 }
             } else if (error != null && error.getMessage() != null) {
                 errorMsg = error.getMessage();
-            }
+        }
             deleteJobErrorLiveData.postValue(errorMsg);
             android.util.Log.e(TAG, "Xoá job thất bại: " + errorMsg, error);
         });

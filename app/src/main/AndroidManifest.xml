@@ -37,6 +37,7 @@
         <activity android:name=".activity.JobManageActivity" />
         <activity android:name=".activity.AddJobActivity" />
         <activity android:name=".activity.UpdateJobActivity" />
+        <activity android:name=".activity.ResumeManageActivity" />
     </application>
 
 </manifest>

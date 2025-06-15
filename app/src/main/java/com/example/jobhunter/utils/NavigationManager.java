@@ -11,6 +11,7 @@ import com.example.jobhunter.R;
 import com.example.jobhunter.activity.CvManagementActivity;
 import com.example.jobhunter.activity.JobManageActivity;
 import com.example.jobhunter.activity.LoginActivity;
+import com.example.jobhunter.activity.ResumeManageActivity;
 import com.google.android.material.navigation.NavigationView;
 
 public class NavigationManager {
@@ -46,8 +47,8 @@ public class NavigationManager {
             } else if (itemId == R.id.action_manage_jobs) {
                 activity.startActivity(new Intent(activity, JobManageActivity.class));
             } else if (itemId == R.id.action_manage_applications) {
-                // TODO: Implement application management activity
-                Toast.makeText(activity, "Quản lí đơn ứng tuyển", Toast.LENGTH_SHORT).show();
+                activity.startActivity(new Intent(activity, ResumeManageActivity.class));
+
             } else if (itemId == R.id.action_settings) {
                 // TODO: Implement settings activity
                 Toast.makeText(activity, "Cài đặt", Toast.LENGTH_SHORT).show();

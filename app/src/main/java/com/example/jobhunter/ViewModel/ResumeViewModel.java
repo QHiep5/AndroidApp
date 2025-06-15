@@ -25,6 +25,7 @@ public class ResumeViewModel extends AndroidViewModel {
 
     private final MutableLiveData<List<Resume>> resumesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> updateResultLiveData = new MutableLiveData<>();
     private final Gson gson = new Gson();
     private static final String TAG = "ResumeViewModel";
 
@@ -38,6 +39,10 @@ public class ResumeViewModel extends AndroidViewModel {
 
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
+    }
+
+    public LiveData<Boolean> getUpdateResultLiveData() {
+        return updateResultLiveData;
     }
 
     public void getResumesByUser(String token) {
@@ -84,7 +89,47 @@ public class ResumeViewModel extends AndroidViewModel {
         }, this::handleError);
     }
 
+    public void fetchAllResumes(String token) {
+        ResumeApi.fetchAllResumes(getApplication(), token, response -> {
+            try {
+                JSONObject dataObject = response.getJSONObject("data");
+                JSONArray resultArray = dataObject.getJSONArray("result");
+                List<Resume> resumeList = new java.util.ArrayList<>();
+                for (int i = 0; i < resultArray.length(); i++) {
+                    JSONObject resumeObj = resultArray.getJSONObject(i);
+                    Resume resume = gson.fromJson(resumeObj.toString(), Resume.class);
+                    if (resume.getJob() != null && resumeObj.has("companyName")) {
+                        String companyName = resumeObj.getString("companyName");
+                        com.example.jobhunter.model.Company company = new com.example.jobhunter.model.Company();
+                        company.setName(companyName);
+                        resume.getJob().setCompany(company);
+                    }
+                    resumeList.add(resume);
+                }
+                resumesLiveData.postValue(resumeList);
+            } catch (Exception e) {
+                Log.e(TAG, "Lỗi parse JSON fetchAllResumes", e);
+                errorLiveData.postValue("Lỗi parse JSON: " + e.getMessage());
+            }
+        }, this::handleError);
+    }
 
+    public void updateResumeState(long resumeId, com.example.jobhunter.util.constant.ResumeStateEnum newState, String token) {
+        Log.d(TAG, "Gọi updateResumeState với resumeId: " + resumeId + ", newState: " + newState);
+        ResumeApi.updateResumeState(getApplication(), resumeId, newState, token, response -> {
+            Log.d(TAG, "Update resume thành công: " + response.toString());
+            updateResultLiveData.postValue(true);
+        }, error -> {
+            Log.e(TAG, "Update resume thất bại", error);
+            if (error.networkResponse != null) {
+                int statusCode = error.networkResponse.statusCode;
+                String responseBody = error.networkResponse.data != null ? new String(error.networkResponse.data) : "";
+                Log.e(TAG, "Status code: " + statusCode + ", body: " + responseBody);
+            }
+            updateResultLiveData.postValue(false);
+            handleError(error);
+        });
+    }
 
     private void handleError(VolleyError error) {
         if (error.networkResponse != null && error.networkResponse.data != null) {

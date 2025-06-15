@@ -47,7 +47,7 @@ public class CvManagementActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         resumesRecyclerView = findViewById(R.id.resumesRecyclerView);
         resumesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        resumeAdapter = new ResumeAdapter(this, new ArrayList<>());
+        resumeAdapter = new ResumeAdapter(this, new ArrayList<>(), false, null);
         resumesRecyclerView.setAdapter(resumeAdapter);
 
         // ViewModel

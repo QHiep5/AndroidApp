@@ -132,26 +132,44 @@
 
         <!-- Mô tả -->
         <TextView style="@style/InputLabel" android:text="Mô tả" />
+
         <EditText
             android:id="@+id/et_description"
-            style="@style/TextInput"
-            android:minLines="3"
-            android:gravity="top"
-            android:hint="Nhập mô tả công việc" />
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:hint="Nhập mô tả công việc"
+            android:gravity="top|start"
+            android:background="@drawable/edittext_multiline_border"
+            android:padding="12dp"
+            android:textColor="@color/textPrimary"
+            android:textSize="16sp"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:minLines="5"
+            android:overScrollMode="always"
+            android:scrollbars="vertical"
+            android:layout_marginBottom="16dp"/>
 
         <!-- Trạng thái (Active/Inactive) -->
         <TextView style="@style/InputLabel" android:text="Trạng thái" />
-        <Switch
-            android:id="@+id/switch_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOff="Không hoạt động"
-            android:textOn="Hoạt động"
-            android:showText="true"
-            android:thumbTextPadding="12dp"
-            android:checked="true"/>
-        <Space android:layout_height="16dp" android:layout_width="wrap_content"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:paddingBottom="16dp">
+
+            <Switch
+                android:id="@+id/switch_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Không hoạt động"
+                android:textOn="Hoạt động"
+                android:showText="true"
+                android:thumbTextPadding="12dp"
+                android:checked="true"/>
+        </LinearLayout>
         <!-- Nút Thêm mới và Hủy -->
         <LinearLayout
             android:layout_width="match_parent"

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class JobManageActivity extends AppCompatActivity {
     private ImageView btnBack;
     private EditText etSearchCompany;
-    private Button btnAddJob,btnUpdatejob, btnSearch;
+    private Button btnAddJob, btnSearch;
     private RecyclerView rvJobs;
     private JobManageAdapter adapter;
     private JobViewModel jobViewModel;
