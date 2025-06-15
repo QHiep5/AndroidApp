@@ -38,11 +38,14 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.navigation.NavigationView;
 import com.example.jobhunter.utils.NavigationManager;
+import com.example.jobhunter.utils.SearchHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+
+    private static final String TAG = "HomeFragment";
 
     private RecyclerView rvTopCompanies, rvSuggestedJobs;
     private CompanyAdapter companyAdapter;
@@ -52,10 +55,6 @@ public class HomeFragment extends Fragment {
     private SkillViewModel skillViewModel;
     private SessionManager sessionManager;
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navView;
-    private Toolbar toolbar;
-
     private TextView etSearch;
     private LinearLayout filterFormContainer, selectedSkillsContainer, searchBarContainer;
     private ChipGroup cgLocation;
@@ -63,19 +62,45 @@ public class HomeFragment extends Fragment {
     private NestedScrollView nestedScrollView;
 
     private TextView tvSelectSkills;
-    private List<Skill> allSkillsList = new ArrayList<>();
-    private String[] skillNamesArray = new String[0];
-    private boolean[] selectedSkillsFlags;
-    private ArrayList<String> selectedSkillIds = new ArrayList<>();
+
+    public HomeFragment() {
+        // Constructor mặc định
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Khởi tạo các ViewModel
+        companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
+        jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
+        skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Khởi tạo SessionManager
         sessionManager = new SessionManager(getContext());
 
+        // Khởi tạo các Views
+        initializeViews(v);
+        
+        // Thiết lập RecyclerView
+        setupRecyclerView();
+        
+        // Thiết lập các observers
+        setupObservers();
+        
+        // Thiết lập search và filter
+        setupSearchAndFilter();
+
+        return v;
+    }
+
+    private void initializeViews(View v) {
+        // Khởi tạo các views
         rvTopCompanies = v.findViewById(R.id.rv_top_companies);
         rvSuggestedJobs = v.findViewById(R.id.rv_suggested_jobs);
         etSearch = v.findViewById(R.id.et_search);
@@ -86,169 +111,118 @@ public class HomeFragment extends Fragment {
         selectedSkillsContainer = v.findViewById(R.id.selected_skills_container);
         nestedScrollView = v.findViewById(R.id.nested_scroll_view);
         searchBarContainer = v.findViewById(R.id.search_bar_container);
+    }
 
-        toolbar = v.findViewById(R.id.toolbar);
-        drawerLayout = v.findViewById(R.id.drawer_layout);
-        navView = v.findViewById(R.id.nav_view);
-
-        String userRole = sessionManager.getUserRole();
-        Log.d("DEBUG_ROLE", "Current user role: " + userRole); // Dòng này sẽ log ra Logcat
-
-        ((AppCompatActivity) requireActivity()).setSupportActionBar(toolbar);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                requireActivity(), drawerLayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        // Setup navigation menu based on user role
-        if (getActivity() != null) {
-            NavigationManager.setupNavigationMenu((AppCompatActivity) getActivity(), navView, drawerLayout);
-        }
-
-        companyViewModel = new ViewModelProvider(this).get(CompanyViewModel.class);
-        jobViewModel = new ViewModelProvider(this).get(JobViewModel.class);
-        skillViewModel = new ViewModelProvider(this).get(SkillViewModel.class);
+    private void setupRecyclerView() {
+        // Thiết lập RecyclerView cho companies
         companyAdapter = new CompanyAdapter(getContext(), new ArrayList<>());
-        jobListAdapter = new JobListAdapter(getContext(), new ArrayList<>());
+        rvTopCompanies.setAdapter(companyAdapter);
+        rvTopCompanies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        // Thiết lập RecyclerView cho jobs
+        jobListAdapter = new JobListAdapter(getContext(), new ArrayList<>());
+        rvSuggestedJobs.setAdapter(jobListAdapter);
+        rvSuggestedJobs.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Xử lý click vào company
         companyAdapter.setOnItemClickListener(company -> {
             Intent intent = new Intent(getContext(), CompanyDetailActivity.class);
             intent.putExtra("company_id", company.getId());
             startActivity(intent);
         });
 
+        // Xử lý click vào job
         jobListAdapter.setOnJobClickListener(job -> {
             Intent intent = new Intent(getContext(), JobDetailActivity.class);
             intent.putExtra("JOB_ID", job.getId());
             startActivity(intent);
         });
+    }
 
-        rvTopCompanies.setAdapter(companyAdapter);
-        rvSuggestedJobs.setAdapter(jobListAdapter);
-        rvTopCompanies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        rvSuggestedJobs.setLayoutManager(new LinearLayoutManager(getContext()));
+    private void setupObservers() {
+        // Observer cho danh sách companies
+        companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(), companies -> {
+            companyAdapter.setData(companies);
+            Log.d("HOME", "Companies loaded: " + companies.size());
+        });
 
+        // Observer cho danh sách jobs
+        jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> {
+            jobListAdapter.setData(jobs);
+            Log.d("HOME", "Jobs loaded: " + jobs.size());
+        });
+
+        // Observer cho lỗi jobs
+        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
+            Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
+
+        // Observer cho lỗi skills
+        skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
+            Toast.makeText(getContext(), "Lỗi kỹ năng: " + error, Toast.LENGTH_SHORT).show());
+
+        // Fetch dữ liệu
         String token = sessionManager.getAuthToken();
         companyViewModel.fetchCompanies(token);
         jobViewModel.fetchJobs(token);
         skillViewModel.fetchSkills();
+    }
 
-        companyViewModel.getCompaniesLiveData().observe(getViewLifecycleOwner(), companies -> companyAdapter.setData(companies));
+    private void setupSearchAndFilter() {
+        // Khởi tạo skills sử dụng SearchHelper
+        SearchHelper.initializeSkills(skillViewModel, this, tvSelectSkills, selectedSkillsContainer);
 
-        jobViewModel.getJobsLiveData().observe(getViewLifecycleOwner(), jobs -> jobListAdapter.setData(jobs));
-
-        jobViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), error ->
-                Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
-
-        skillViewModel.getSkillsLiveData().observe(getViewLifecycleOwner(), skills -> {
-            if (skills != null && !skills.isEmpty()) {
-                allSkillsList = skills;
-                skillNamesArray = new String[skills.size()];
-                for (int i = 0; i < skills.size(); i++) {
-                    skillNamesArray[i] = skills.get(i).getName();
-                }
-                selectedSkillsFlags = new boolean[skillNamesArray.length];
-            }
-        });
-
-        skillViewModel.getErrorLiveData().observe(getViewLifecycleOwner(),
-                error -> Toast.makeText(getContext(), "Lỗi: " + error, Toast.LENGTH_SHORT).show());
-
+        // Xử lý click vào search bar
         searchBarContainer.setOnClickListener(view -> {
-            if (filterFormContainer.getVisibility() == View.VISIBLE) hideFilterForm();
-            else showFilterForm();
+            if (filterFormContainer.getVisibility() == View.VISIBLE)
+                SearchHelper.hideFilterForm(filterFormContainer, etSearch, getContext(), getView());
+            else
+                SearchHelper.showFilterForm(filterFormContainer);
         });
 
+        // Xử lý touch vào nested scroll view
         nestedScrollView.setOnTouchListener((view, event) -> {
-            hideFilterForm();
+            SearchHelper.hideFilterForm(filterFormContainer, etSearch, getContext(), getView());
             return false;
         });
 
-        tvSelectSkills.setOnClickListener(view -> showSkillsDialog());
-
+        // Xử lý click vào nút apply filter
         btnApplyFilter.setOnClickListener(view -> {
-            String locationValue = "";
-            int checkedId = cgLocation.getCheckedChipId();
-            if (checkedId != View.NO_ID) {
-                Chip chip = v.findViewById(checkedId);
-                switch (chip.getText().toString()) {
-                    case "Hà Nội": locationValue = "HANOI"; break;
-                    case "Hồ Chí Minh": locationValue = "HOCHIMINH"; break;
-                    case "Đà Nẵng": locationValue = "DANANG"; break;
-                    case "Other": locationValue = "OTHER"; break;
-                }
-            }
-            Intent intent = new Intent(getActivity(), SearchResultsActivity.class);
-            if (!locationValue.isEmpty()) intent.putExtra("location", locationValue);
-            intent.putStringArrayListExtra("skills", selectedSkillIds);
-            startActivity(intent);
+            SearchHelper.handleSearch(
+                this,
+                    view,
+                cgLocation,
+                    SearchHelper.getSelectedSkillIds(),
+                sessionManager
+            );
         });
-
-        return v;
     }
 
-    private void showFilterForm() {
-        filterFormContainer.setVisibility(View.VISIBLE);
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Reset dữ liệu tìm kiếm khi rời khỏi fragment
+        SearchHelper.resetAllData();
     }
 
-    private void hideFilterForm() {
-        if (getContext() != null) {
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (getView() != null) imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reset UI khi quay lại fragment
+        if (etSearch != null) {
+            etSearch.setText("");
         }
-        etSearch.clearFocus();
-        filterFormContainer.setVisibility(View.GONE);
-    }
-
-    private void showSkillsDialog() {
-        if (skillNamesArray.length == 0) {
-            Toast.makeText(getContext(), "Đang tải kỹ năng...", Toast.LENGTH_SHORT).show();
-            return;
+        if (cgLocation != null) {
+            cgLocation.clearCheck();
         }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Chọn kỹ năng");
-        builder.setMultiChoiceItems(skillNamesArray, selectedSkillsFlags, (dialog, i, isChecked) -> selectedSkillsFlags[i] = isChecked);
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            selectedSkillIds.clear();
-            for (int i = 0; i < selectedSkillsFlags.length; i++) {
-                if (selectedSkillsFlags[i]) {
-                    selectedSkillIds.add(String.valueOf(allSkillsList.get(i).getId()));
-                }
-            }
-            updateSelectedSkillsView();
-        });
-        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
-        builder.setNeutralButton("Xóa tất cả", (dialog, which) -> {
-            for (int i = 0; i < selectedSkillsFlags.length; i++) selectedSkillsFlags[i] = false;
-            selectedSkillIds.clear();
-            updateSelectedSkillsView();
-        });
-        builder.show();
-    }
-
-    private void updateSelectedSkillsView() {
-        selectedSkillsContainer.removeAllViews();
-        if (selectedSkillIds.isEmpty()) {
+        if (tvSelectSkills != null) {
             tvSelectSkills.setText("Chọn kỹ năng...");
-        } else {
-            tvSelectSkills.setText(selectedSkillIds.size() + " kỹ năng đã chọn");
         }
-
-        for (int i = 0; i < selectedSkillsFlags.length; i++) {
-            if (selectedSkillsFlags[i]) {
-                final int index = i;
-                Chip chip = new Chip(getContext());
-                chip.setText(allSkillsList.get(i).getName());
-                chip.setCloseIconVisible(true);
-                chip.setOnCloseIconClickListener(v -> {
-                    selectedSkillsFlags[index] = false;
-                    selectedSkillIds.remove(String.valueOf(allSkillsList.get(index).getId()));
-                    updateSelectedSkillsView();
-                });
-                selectedSkillsContainer.addView(chip);
-            }
+        if (selectedSkillsContainer != null) {
+            selectedSkillsContainer.removeAllViews();
+        }
+        // Ẩn filterForm khi quay lại fragment
+        if (filterFormContainer != null) {
+            filterFormContainer.setVisibility(View.GONE);
         }
     }
 }
