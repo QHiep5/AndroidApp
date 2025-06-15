@@ -112,8 +112,8 @@ public class ResumeApi {
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 
-    public static void getResumesByUser(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.RESUME + "/by-user";
+    public static void getResumesByUser(Context context, String token, int page, int pageSize, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String url = ApiConfig.RESUME + "/by-user?page=" + page + "&pageSize=" + pageSize;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.POST,
@@ -134,8 +134,10 @@ public class ResumeApi {
     }
 
     // Lấy tất cả resume (GET /api/v1/resumes)
-    public static void fetchAllResumes(Context context, String token, com.android.volley.Response.Listener<org.json.JSONObject> listener, com.android.volley.Response.ErrorListener errorListener) {
-        String url = ApiConfig.RESUME;
+    public static void fetchAllResumes(Context context, String token, int page, int pageSize, 
+            com.android.volley.Response.Listener<org.json.JSONObject> listener, 
+            com.android.volley.Response.ErrorListener errorListener) {
+        String url = ApiConfig.RESUME + "?page=" + page + "&pageSize=" + pageSize;
         com.android.volley.toolbox.JsonObjectRequest request = new com.android.volley.toolbox.JsonObjectRequest(
                 com.android.volley.Request.Method.GET, url, null, listener, errorListener) {
             @Override

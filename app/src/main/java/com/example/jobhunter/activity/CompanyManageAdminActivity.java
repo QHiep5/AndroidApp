@@ -3,9 +3,12 @@ package com.example.jobhunter.activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +32,8 @@ public class CompanyManageAdminActivity extends AppCompatActivity {
     private EditText etSearch;
     private Button btnAddCompany;
     private ImageView btnBack;
+    private Button btnPrev, btnNext;
+    private TextView tvPageInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,67 @@ public class CompanyManageAdminActivity extends AppCompatActivity {
         etSearch = findViewById(R.id.et_search_company);
         btnAddCompany = findViewById(R.id.btn_add_company);
         btnBack = findViewById(R.id.btn_back);
+        btnPrev = findViewById(R.id.btn_prev);
+        btnNext = findViewById(R.id.btn_next);
+        tvPageInfo = findViewById(R.id.tv_page_info);
 
         btnBack.setOnClickListener(v -> finish());
+
+        // Setup pagination buttons
+        btnPrev.setOnClickListener(v -> {
+            Integer currentPage = companyViewModel.getCurrentPage().getValue();
+            if (currentPage != null && currentPage > 1) {
+                companyViewModel.fetchCompanies("", currentPage - 1);
+            }
+        });
+
+        btnNext.setOnClickListener(v -> {
+            Integer currentPage = companyViewModel.getCurrentPage().getValue();
+            Integer totalPages = companyViewModel.getTotalPages().getValue();
+            if (currentPage != null && totalPages != null && currentPage < totalPages) {
+                companyViewModel.fetchCompanies("", currentPage + 1);
+            }
+        });
+
+        // Add scroll listener to RecyclerView
+        rvCompanies.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null) {
+                    int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                    if (firstVisibleItemPosition > 0) {
+                        // Show pagination bar with animation
+                        View paginationLayout = findViewById(R.id.pagination_layout);
+                        if (paginationLayout.getVisibility() != View.VISIBLE) {
+                            paginationLayout.setVisibility(View.VISIBLE);
+                            Animation fadeIn = AnimationUtils.loadAnimation(CompanyManageAdminActivity.this, R.anim.fade_in);
+                            paginationLayout.startAnimation(fadeIn);
+                        }
+                    } else {
+                        // Hide pagination bar with animation
+                        View paginationLayout = findViewById(R.id.pagination_layout);
+                        if (paginationLayout.getVisibility() == View.VISIBLE) {
+                            Animation fadeOut = AnimationUtils.loadAnimation(CompanyManageAdminActivity.this, R.anim.fade_out);
+                            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {}
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    paginationLayout.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {}
+                            });
+                            paginationLayout.startAnimation(fadeOut);
+                        }
+                    }
+                }
+            }
+        });
 
         companyViewModel = new CompanyViewModel(getApplication());
 
@@ -96,6 +160,21 @@ public class CompanyManageAdminActivity extends AppCompatActivity {
                 showErrorDialog(error);
             }
         });
+
+        // Observe pagination data
+        companyViewModel.getCurrentPage().observe(this, page -> updatePaginationUI());
+        companyViewModel.getTotalPages().observe(this, pages -> updatePaginationUI());
+    }
+
+    private void updatePaginationUI() {
+        Integer currentPage = companyViewModel.getCurrentPage().getValue();
+        Integer totalPages = companyViewModel.getTotalPages().getValue();
+
+        if (currentPage != null && totalPages != null) {
+            tvPageInfo.setText(String.format("Page %d of %d", currentPage, totalPages));
+            btnPrev.setEnabled(currentPage > 1);
+            btnNext.setEnabled(currentPage < totalPages);
+        }
     }
 
     private void showErrorDialog(String message) {

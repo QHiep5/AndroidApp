@@ -26,6 +26,8 @@ import com.example.jobhunter.utils.ToolbarManager;
 import java.util.ArrayList;
 import android.util.Log;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +44,8 @@ public class JobListFragment extends Fragment {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private SessionManager sessionManager;
+    private Button btnPrev, btnNext;
+    private TextView tvPageInfo;
 
     public JobListFragment() {
         // Required empty public constructor
@@ -71,6 +75,9 @@ public class JobListFragment extends Fragment {
         toolbar = view.findViewById(R.id.toolbar);
         viewFlipper = view.findViewById(R.id.viewFlipper);
         rvSuggestedJobs = view.findViewById(R.id.rv_suggested_jobs);
+        btnPrev = view.findViewById(R.id.btn_prev);
+        btnNext = view.findViewById(R.id.btn_next);
+        tvPageInfo = view.findViewById(R.id.tv_page_info);
 
         // Setup RecyclerView
         rvSuggestedJobs.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -82,6 +89,22 @@ public class JobListFragment extends Fragment {
             startActivity(intent);
         });
         rvSuggestedJobs.setNestedScrollingEnabled(false);
+
+        // Setup pagination buttons
+        btnPrev.setOnClickListener(v -> {
+            Integer currentPage = jobViewModel.getCurrentPage().getValue();
+            if (currentPage != null && currentPage > 1) {
+                jobViewModel.fetchJobs(sessionManager.getAuthToken(), currentPage - 1);
+            }
+        });
+
+        btnNext.setOnClickListener(v -> {
+            Integer currentPage = jobViewModel.getCurrentPage().getValue();
+            Integer totalPages = jobViewModel.getTotalPages().getValue();
+            if (currentPage != null && totalPages != null && currentPage < totalPages) {
+                jobViewModel.fetchJobs(sessionManager.getAuthToken(), currentPage + 1);
+            }
+        });
 
         return view;
     }
@@ -126,6 +149,10 @@ public class JobListFragment extends Fragment {
             }
         });
 
+        // Observe pagination data
+        jobViewModel.getCurrentPage().observe(getViewLifecycleOwner(), page -> updatePaginationUI());
+        jobViewModel.getTotalPages().observe(getViewLifecycleOwner(), pages -> updatePaginationUI());
+
         sessionManager = new SessionManager(getContext());
         String token = sessionManager.getAuthToken();
         if (token == null || token.isEmpty()) {
@@ -134,5 +161,16 @@ public class JobListFragment extends Fragment {
             Log.i(TAG, "Authentication token found. Fetching jobs with token.");
         }
         jobViewModel.fetchJobs(token);
+    }
+
+    private void updatePaginationUI() {
+        Integer currentPage = jobViewModel.getCurrentPage().getValue();
+        Integer totalPages = jobViewModel.getTotalPages().getValue();
+
+        if (currentPage != null && totalPages != null) {
+            tvPageInfo.setText(String.format("Page %d of %d", currentPage, totalPages));
+            btnPrev.setEnabled(currentPage > 1);
+            btnNext.setEnabled(currentPage < totalPages);
+        }
     }
 }

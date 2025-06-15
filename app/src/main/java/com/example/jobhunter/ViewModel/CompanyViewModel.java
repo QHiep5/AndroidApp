@@ -29,6 +29,11 @@ public class CompanyViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> updateResult = new MutableLiveData<>();
     private MutableLiveData<Boolean> deleteResult = new MutableLiveData<>();
     private MutableLiveData<String> deleteError = new MutableLiveData<>();
+    
+    // Add pagination related fields
+    private MutableLiveData<Integer> currentPage = new MutableLiveData<>(1);
+    private MutableLiveData<Integer> totalPages = new MutableLiveData<>(1);
+    private static final int PAGE_SIZE = 20;
 
     public CompanyViewModel(@NonNull Application application) {
         super(application);
@@ -42,13 +47,25 @@ public class CompanyViewModel extends AndroidViewModel {
     public LiveData<Boolean> getUpdateResult() { return updateResult; }
     public LiveData<Boolean> getDeleteResult() { return deleteResult; }
     public LiveData<String> getDeleteError() { return deleteError; }
+    public LiveData<Integer> getCurrentPage() { return currentPage; }
+    public LiveData<Integer> getTotalPages() { return totalPages; }
 
     public void fetchCompanies(String token) {
-        CompanyApi.getCompanies(getApplication(), token, response -> {
+        fetchCompanies(token, currentPage.getValue());
+    }
+
+    public void fetchCompanies(String token, int page) {
+        CompanyApi.getCompanies(getApplication(), token, page, PAGE_SIZE, response -> {
             List<Company> companyList = new ArrayList<>();
             try {
                 JSONObject data = response.getJSONObject("data");
+                JSONObject meta = data.getJSONObject("meta");
                 JSONArray result = data.getJSONArray("result");
+                
+                // Update pagination info
+                currentPage.setValue(meta.getInt("page"));
+                totalPages.setValue(meta.getInt("pages"));
+                
                 for (int i = 0; i < result.length(); i++) {
                     JSONObject obj = result.getJSONObject(i);
                     Company c = new Company();

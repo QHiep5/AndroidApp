@@ -34,8 +34,8 @@ public class CompanyApi {
     private static final String BASE_URL = ApiConfig.BASE_URL; // Replace with your actual API base URL
 
     // Lấy danh sách company (GET /api/v1/companies)
-    public static void getCompanies(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        String url = ApiConfig.COMPANY;
+    public static void getCompanies(Context context, String token, int page, int pageSize, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String url = ApiConfig.COMPANY + "?page=" + page + "&pageSize=" + pageSize;
         JsonObjectRequest request = new JsonObjectRequest(
             com.android.volley.Request.Method.GET,
             url,

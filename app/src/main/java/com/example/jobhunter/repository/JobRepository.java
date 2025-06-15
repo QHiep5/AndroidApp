@@ -8,7 +8,7 @@ import com.example.jobhunter.api.JobApi;
 
 public class JobRepository {
     public void getJobs(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        JobApi.getJobs(context, token, listener, errorListener);
+//        JobApi.getJobs(context, token, listener, errorListener);
     }
 
     public void getJob(Context context, String jobId, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {

@@ -21,9 +21,8 @@ public class JobApi {
     private static final String BASE_URL = ApiConfig.BASE_URL + "jobs";
 
     // Lấy danh sách job (GET /api/v1/jobs)
-    public static void getJobs(Context context, String token, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
-        Log.d(TAG, "getJobs called.");
-        String url = BASE_URL;
+    public static void getJobs(Context context, String token, int page, int pageSize, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
+        String url = ApiConfig.JOB + "?page=" + page + "&pageSize=" + pageSize;
         JsonObjectRequest request = new JsonObjectRequest(
             com.android.volley.Request.Method.GET,
             url,
@@ -36,14 +35,10 @@ public class JobApi {
                 Map<String, String> headers = new HashMap<>();
                 if (token != null && !token.isEmpty()) {
                     headers.put("Authorization", "Bearer " + token);
-                    Log.d(TAG, "Authorization Header Added.");
-                } else {
-                    Log.w(TAG, "No auth token provided. Request sent without Authorization header.");
                 }
                 return headers;
             }
         };
-        Log.i(TAG, "Request URL: " + url);
         VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 

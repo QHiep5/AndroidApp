@@ -36,6 +36,11 @@ public class JobViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> deleteJobResultLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> deleteJobErrorLiveData = new MutableLiveData<>();
 
+    // Add pagination related fields
+    private final MutableLiveData<Integer> currentPage = new MutableLiveData<>(1);
+    private final MutableLiveData<Integer> totalPages = new MutableLiveData<>(1);
+    private static final int PAGE_SIZE = 20;
+
     public JobViewModel(@NonNull Application application) {
         super(application);
     }
@@ -72,29 +77,41 @@ public class JobViewModel extends AndroidViewModel {
         return deleteJobErrorLiveData;
     }
 
+    public LiveData<Integer> getCurrentPage() {
+        return currentPage;
+    }
+
+    public LiveData<Integer> getTotalPages() {
+        return totalPages;
+    }
+
     public void fetchJobs(String token) {
-        Log.d(TAG, "fetchJobs called.");
-        JobApi.getJobs(getApplication(), token, response -> {
+        fetchJobs(token, currentPage.getValue());
+    }
+
+    public void fetchJobs(String token, int page) {
+        JobApi.getJobs(getApplication(), token, page, PAGE_SIZE, response -> {
             List<Job> jobList = new ArrayList<>();
             try {
-                Log.d("JobViewModel", "API Response: " + response.toString());
                 JSONObject data = response.getJSONObject("data");
+                JSONObject meta = data.getJSONObject("meta");
                 JSONArray result = data.getJSONArray("result");
+                
+                // Update pagination info
+                currentPage.setValue(meta.getInt("page"));
+                totalPages.setValue(meta.getInt("pages"));
+                
                 for (int i = 0; i < result.length(); i++) {
+                    JSONObject obj = result.getJSONObject(i);
                     JSONObject jobJson = result.getJSONObject(i);
                     Job job = parseJobFromJson(jobJson);
                     jobList.add(job);
                 }
                 jobs.setValue(jobList);
-                Log.d("JobViewModel", "Successfully parsed " + jobList.size() + " jobs.");
             } catch (Exception e) {
-                Log.e("JobViewModel", "Error parsing job list", e);
-                error.setValue("Lỗi parse danh sách việc làm: " + e.getMessage());
+                error.setValue("Lỗi parse danh sách việc làm");
             }
-        }, error -> {
-            Log.e("JobViewModel", "API Error", error);
-            handleError(error);
-        });
+        }, this::handleError);
     }
 
     public LiveData<List<Job>> getFilteredJobs() {
