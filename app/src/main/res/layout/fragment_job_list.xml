@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".fragment.JobListFragment">
 
-    <!-- DrawerLayout -->
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <include layout="@layout/reusable_toolbar_with_search" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -46,54 +49,25 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
+            <!-- Filter Form -->
+            <include layout="@layout/layout_filter_form" />
+
+            <!-- Top Companies Section -->
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tất cả việc làm"
+                android:layout_marginTop="16dp"
+                android:text="Danh sách công việc"
+                android:textColor="@color/textPrimary"
                             android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="8dp"/>
+                android:textStyle="bold" />
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_suggested_jobs"
+                android:id="@+id/rv_suggested_jobs"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"/>
-                    </LinearLayout>
-                    <!-- Pagination Layout -->
-                    <LinearLayout
-                        android:id="@+id/pagination_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:padding="16dp"
-                        android:background="@android:color/white"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent">
-
-                        <Button
-                            android:id="@+id/btn_prev"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="Previous"
-                            android:layout_marginEnd="8dp"/>
-                        <TextView
-                            android:id="@+id/tv_page_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Page 1 of 1"
-                            android:textSize="16sp"
-                            android:layout_marginHorizontal="16dp"/>
-                        <Button
-                            android:id="@+id/btn_next"
-                            android:layout_width="120dp"
-                            android:layout_height="wrap_content"
-                            android:text="Next"
-                            android:layout_marginStart="8dp"/>
-                    </LinearLayout>
+                android:layout_marginTop="8dp"
+                tools:listitem="@layout/item_company2" />
 
                 </LinearLayout>
 

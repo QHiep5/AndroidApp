@@ -1,112 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:paddingBottom="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".fragment.CompanyListFragment">
 
-    <!-- Thanh tìm kiếm cố định trên cùng -->
-    <LinearLayout
-        android:id="@+id/search_bar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical"
-        android:background="@color/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <EditText
-            android:id="@+id/et_search"
-            android:layout_width="0dp"
-            android:layout_height="44dp"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/round_conner"
-            android:drawableStart="@drawable/ic_search_resized"
-            android:drawablePadding="8dp"
-            android:hint="Tìm kiếm việc làm, công ty..."
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:singleLine="true"
-            android:textColor="@color/textPrimary"
-            android:textColorHint="@color/textHint"/>
-            android:textSize="16sp"/>
-    </LinearLayout>
+        <include layout="@layout/reusable_toolbar_with_search" />
 
-    <!-- Nội dung cuộn: tiêu đề + danh sách -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nested_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/search_bar_container"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="0dp"
-        android:clipToPadding="false">
-
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="0dp">
+            android:layout_height="match_parent">
 
-<!--            &lt;!&ndash; Tiêu đề (nếu muốn giữ) &ndash;&gt;-->
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text=""-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="#ffeaea"-->
-<!--                android:textSize="20dp"-->
-<!--                android:textStyle="bold" />-->
-
-            <!-- RecyclerView sát navigation bar -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/company_listview"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingBottom="0dp"/>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-    <!-- Pagination Layout -->
-    <LinearLayout
-        android:id="@+id/pagination_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <Button
-            android:id="@+id/btn_prev"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Previous"
-            android:layout_marginEnd="8dp"/>
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tv_page_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Page 1 of 1"
-            android:textSize="16sp"
-            android:layout_marginHorizontal="16dp"/>
+                <!-- Filter Form -->
+                <include layout="@layout/layout_filter_form" />
 
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:text="Next"
-            android:layout_marginStart="8dp"/>
+                <!-- Top Companies Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Danh sách công ty hàng đầu"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/company_listview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:listitem="@layout/item_company2" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+

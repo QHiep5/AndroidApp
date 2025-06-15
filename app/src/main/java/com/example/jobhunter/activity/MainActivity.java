@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
 
 import com.example.jobhunter.adapter.ViewpagerAdater;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -15,6 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.jobhunter.R;
 import com.example.jobhunter.fragment.JobListFragment;
+import com.example.jobhunter.utils.NavigationManager;
 import com.example.jobhunter.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     ViewPager2 mViewPager;
     BottomNavigationView mBottomNavigationView;
+    private Toolbar toolbar;
+    private NavigationView navView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +35,14 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         initView();
-        // Load the default fragment
-        if (savedInstanceState == null) {
-            loadFragment(new JobListFragment());
-        }
     }
 
     private void initView() {
         mViewPager = findViewById(R.id.view_pager);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        navView = findViewById(R.id.nav_view);
 
         ViewpagerAdater viewpagerAdater = new ViewpagerAdater(this);
         mViewPager.setAdapter(viewpagerAdater);
@@ -51,20 +54,15 @@ public class MainActivity extends AppCompatActivity {
                 switch (position){
                     case 0:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-                        // getSupportActionBar().setTitle("Person");
                         break;
                     case 1:
-                        mBottomNavigationView.getMenu().findItem(R.id.nav_job).setChecked(true);
-//                        getSupportActionBar().setTitle("Home");
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_company).setChecked(true);
                         break;
                     case 2:
-                        mBottomNavigationView.getMenu().findItem(R.id.nav_company).setChecked(true);
-                        // getSupportActionBar().setTitle("Setting");
+                        mBottomNavigationView.getMenu().findItem(R.id.nav_job).setChecked(true);
                         break;
                     case 3:
                         mBottomNavigationView.getMenu().findItem(R.id.nav_profile).setChecked(true);
-
-//                        getSupportActionBar().setTitle("Setting");
                         break;
                 }
             }
@@ -88,12 +86,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawer() {
-        // Implementation of setupDrawer method
+        NavigationManager.initialize(
+                this,
+                drawerLayout,
+                navView,
+                toolbar
+        );
+        NavigationManager.updateNavigationState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        NavigationManager.syncDrawerState();
+        NavigationManager.setDrawerIndicatorEnabled(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        NavigationManager.setDrawerIndicatorEnabled(false);
     }
 
     private void loadFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         transaction.addToBackStack(null);
         transaction.commit();
     }

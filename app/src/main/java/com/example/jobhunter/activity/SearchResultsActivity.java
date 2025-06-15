@@ -18,7 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.jobhunter.R;
 import com.example.jobhunter.ViewModel.JobViewModel;
 import com.example.jobhunter.adapter.JobListAdapter;
-
+import com.example.jobhunter.model.Job;
+import com.example.jobhunter.model.Company;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.List;
 import java.util.ArrayList;
 
 public class SearchResultsActivity extends AppCompatActivity {
@@ -59,37 +63,65 @@ public class SearchResultsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Lấy dữ liệu lọc từ Intent
+        // Lấy dữ liệu search từ intent
+        String searchResultJson = getIntent().getStringExtra("searchResultJson");
+        if (searchResultJson != null) {
+            // Parse JSON và hiển thị kết quả
+            try {
+                JSONObject response = new JSONObject(searchResultJson);
+                List<Job> jobs = new ArrayList<>();
+                JSONObject data = response.getJSONObject("data");
+                JSONArray result = data.getJSONArray("result");
+                for (int i = 0; i < result.length(); i++) {
+                    JSONObject obj = result.getJSONObject(i);
+                    Job job = new Job();
+                    job.setId(obj.optInt("id"));
+                    job.setName(obj.optString("name"));
+                    job.setLocation(obj.optString("location"));
+                    job.setSalary(obj.optDouble("salary"));
+                    // Parse các trường khác nếu cần...
+                    JSONObject companyObj = obj.optJSONObject("company");
+                    if (companyObj != null) {
+                        Company company = new Company();
+                        company.setName(companyObj.optString("name"));
+                        company.setLogo(companyObj.optString("logo"));
+                        job.setCompany(company);
+                    }
+                    jobs.add(job);
+                }
+                jobListAdapter.setData(jobs);
+                progressBar.setVisibility(View.GONE);
+                rvSearchResults.setVisibility(jobs.isEmpty() ? View.GONE : View.VISIBLE);
+                tvNoResults.setVisibility(jobs.isEmpty() ? View.VISIBLE : View.GONE);
+            } catch (Exception e) {
+                progressBar.setVisibility(View.GONE);
+                tvNoResults.setVisibility(View.VISIBLE);
+                tvNoResults.setText("Lỗi khi phân tích kết quả tìm kiếm.");
+            }
+        } else {
+            // Fallback: Cách cũ
         String location = getIntent().getStringExtra("location");
         ArrayList<String> skills = getIntent().getStringArrayListExtra("skills");
-
-        // Khởi tạo ViewModel
         viewModel = new ViewModelProvider(this).get(JobViewModel.class);
-
-        // Quan sát dữ liệu
         viewModel.getFilteredJobs().observe(this, jobs -> {
             progressBar.setVisibility(View.GONE);
             if (jobs != null && !jobs.isEmpty()) {
-                Log.d("SEARCH_DEBUG", "Tìm thấy " + jobs.size() + " công việc.");
                 jobListAdapter.setData(jobs);
                 rvSearchResults.setVisibility(View.VISIBLE);
                 tvNoResults.setVisibility(View.GONE);
             } else {
-                Log.d("SEARCH_DEBUG", "Không tìm thấy công việc nào hoặc danh sách rỗng.");
                 rvSearchResults.setVisibility(View.GONE);
                 tvNoResults.setVisibility(View.VISIBLE);
             }
         });
-
         viewModel.getError().observe(this, error -> {
             progressBar.setVisibility(View.GONE);
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             tvNoResults.setVisibility(View.VISIBLE);
             tvNoResults.setText("Đã xảy ra lỗi: " + error);
         });
-
-        // Bắt đầu tìm kiếm
         progressBar.setVisibility(View.VISIBLE);
         viewModel.searchJobs(location, skills);
+        }
     }
 }
